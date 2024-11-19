@@ -255,7 +255,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           Fluttertoast.showToast(msg: next.error.toString());
                         }
                         if (next is AsyncData &&
-                            next.value?.statusAccount == AccountStatus.ACTIVE) {
+                            next.value?.status == "Kích hoạt") {
                           context.go(feedRoute);
                         }
                       });

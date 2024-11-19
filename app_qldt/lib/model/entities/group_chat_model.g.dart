@@ -55,7 +55,7 @@ Map<String, dynamic> _$$GroupChatInfoModelImplToJson(
 _$GroupChatInfoMessageNotReadImpl _$$GroupChatInfoMessageNotReadImplFromJson(
         Map<String, dynamic> json) =>
     _$GroupChatInfoMessageNotReadImpl(
-      countMessageNotRead: json['countMessageNotRead'] as int,
+      countMessageNotRead: (json['countMessageNotRead'] as num).toInt(),
       groupId: json['groupId'] as String,
       avatar: json['avatar'] as String?,
     );

@@ -23,9 +23,10 @@ class AsyncChangePasswordNotifier extends AutoDisposeAsyncNotifier<void> {
       await repo.api
           .changePassword(oldPassword, newPassword)
           .then((value) async {
-        final account = ref.read(accountProvider).requireValue!.copyWith(
-            statusAccount: AccountStatus.values
-                .firstWhere((e) => e.name == value["data"]["statusAccount"]));
+        // final account = ref.read(accountProvider).requireValue!.copyWith(
+        //     statusAccount: AccountStatus.values
+        //         .firstWhere((e) => e.name == value["data"]["statusAccount"]));
+        final account = ref.read(accountProvider).requireValue!;
         repo.local.updateAccount(account);
         Future.microtask(() {
           ref.read(accountProvider.notifier).forward(AsyncData(account));
@@ -46,19 +47,17 @@ class AsyncResetPasswordNotifier extends AutoDisposeAsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> forgetPassword(String username) async {
+  Future<void> forgetPassword(String email) async {
     state = const AsyncValue.loading();
     try {
       var repo = (await ref.read(authRepositoryProvider.future));
-      await repo.api.forgetPassword(username).then((value) async {
+      await repo.api.forgetPassword(email).then((value) async {
         final account = AccountModel(
-            username: username,
-            accessToken: value["data"]["accessToken"],
-            refreshToken: value["data"]["refreshToken"]);
+            email: email,
+            accessToken: value["data"]["token"]);
         await repo.local.updateCurrentAccount(account);
         ref.read(accountProvider.notifier).forward(AsyncData(account));
-        await repo.local.updateToken(
-            value["data"]["accessToken"], value["data"]["refreshToken"]);
+        await repo.local.updateToken(value["data"]["token"]);
 
         await ref
             .read(verifyCodeProvider(VerifyCodeType.forget_pas).notifier)

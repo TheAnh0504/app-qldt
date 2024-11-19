@@ -19,7 +19,7 @@ class AsyncSavedAccountProvider
     final repo = (await ref.read(authRepositoryProvider.future));
     repo.local.deleteAccount(account);
     state = AsyncData((state.value ?? [])
-        .where((e) => e.username != account.username)
+        .where((e) => e.email != account.email)
         .toList());
   }
 }

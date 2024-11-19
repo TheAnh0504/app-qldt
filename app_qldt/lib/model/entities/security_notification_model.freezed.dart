@@ -12,7 +12,7 @@ part of 'security_notification_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 SecurityNotificationModel _$SecurityNotificationModelFromJson(
     Map<String, dynamic> json) {
@@ -25,8 +25,12 @@ mixin _$SecurityNotificationModel {
   String get requestSending => throw _privateConstructorUsedError;
   DeviceModel get device => throw _privateConstructorUsedError;
 
+  /// Serializes this SecurityNotificationModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SecurityNotificationModelCopyWith<SecurityNotificationModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -53,6 +57,8 @@ class _$SecurityNotificationModelCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -76,6 +82,8 @@ class _$SecurityNotificationModelCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $DeviceModelCopyWith<$Res> get device {
@@ -107,6 +115,8 @@ class __$$SecurityNotiImplCopyWithImpl<$Res>
       _$SecurityNotiImpl _value, $Res Function(_$SecurityNotiImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,12 +176,14 @@ class _$SecurityNotiImpl implements _SecurityNoti {
             (identical(other.device, device) || other.device == device));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, confirmWhat, requestSending, device);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SecurityNotiImplCopyWith<_$SecurityNotiImpl> get copyWith =>
@@ -200,8 +212,11 @@ abstract class _SecurityNoti implements SecurityNotificationModel {
   String get requestSending;
   @override
   DeviceModel get device;
+
+  /// Create a copy of SecurityNotificationModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SecurityNotiImplCopyWith<_$SecurityNotiImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

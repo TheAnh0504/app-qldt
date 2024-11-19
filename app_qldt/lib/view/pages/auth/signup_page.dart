@@ -35,9 +35,12 @@ class _BuildBody extends ConsumerStatefulWidget {
 }
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
-  final username = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
+  final ho = TextEditingController();
+  final ten = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  String selectedRole = 'STUDENT';
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +48,12 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       switch (next) {
         case AsyncError(error: final err):
           Fluttertoast.showToast(msg: err.toString());
-        case AsyncData<AccountModel?> data
-            when data.value?.statusAccount == AccountStatus.INIT:
-          context.go("$signupRoute/verify");
+          break;
+        case AsyncData<AccountModel?> data:
+          if (data.value?.accessToken == "signup") {
+            context.go("$signupRoute/verify");
+          }
+          break;
       }
     });
 
@@ -56,40 +62,68 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       child: Container(
           clipBehavior: Clip.antiAlias,
           height: MediaQuery.sizeOf(context).height -
-              MediaQuery.sizeOf(context).width / 3,
+              MediaQuery.sizeOf(context).width / 5,
           decoration: const BoxDecoration(
               color: Palette.white,
               borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(24), topRight: Radius.circular(24))),
-          margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 3),
+                  topLeft: Radius.circular(0), topRight: Radius.circular(0))),
+          margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
           padding: const EdgeInsets.all(32),
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Đăng ký tài khoản", style: TypeStyle.heading),
+                  const Center(child: Text("Đăng ký tài khoản eHust", style: TypeStyle.heading),),
+                  // Text.rich(TextSpan(children: [
+                  //   const TextSpan(text: "("),
+                  //   TextSpan(
+                  //       text: "*",
+                  //       style: TypeStyle.body5.copyWith(
+                  //           color: Theme.of(context).colorScheme.error)),
+                  //   const TextSpan(text: ") Bắt buộc"),
+                  // ], style: TypeStyle.body5)),
+                  const SizedBox(height: 22),
                   Text.rich(TextSpan(children: [
-                    const TextSpan(text: "("),
-                    TextSpan(
-                        text: "*",
-                        style: TypeStyle.body5.copyWith(
-                            color: Theme.of(context).colorScheme.error)),
-                    const TextSpan(text: ") Bắt buộc"),
-                  ], style: TypeStyle.body5)),
-                  const SizedBox(height: 32),
-                  Text.rich(TextSpan(children: [
-                    const TextSpan(text: "Tài khoản", style: TypeStyle.title4),
+                    const TextSpan(text: "Họ", style: TypeStyle.title4),
                     TextSpan(
                         text: "*",
                         style: TypeStyle.body4.copyWith(
                             color: Theme.of(context).colorScheme.error))
                   ])),
                   TextInput(
-                    controller: username,
-                    hintText: "teacher@school.edu.vn",
+                    controller: ho,
+                    hintText: "first name",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: Validator.username(),
+                    validator: Validator.ho(),
+                  ),
+                  const SizedBox(height: 16),
+                  Text.rich(TextSpan(children: [
+                    const TextSpan(text: "Tên", style: TypeStyle.title4),
+                    TextSpan(
+                        text: "*",
+                        style: TypeStyle.body4.copyWith(
+                            color: Theme.of(context).colorScheme.error))
+                  ])),
+                  TextInput(
+                    controller: ten,
+                    hintText: "last name",
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: Validator.ten(),
+                  ),
+                  const SizedBox(height: 16),
+                  Text.rich(TextSpan(children: [
+                    const TextSpan(text: "Email", style: TypeStyle.title4),
+                    TextSpan(
+                        text: "*",
+                        style: TypeStyle.body4.copyWith(
+                            color: Theme.of(context).colorScheme.error))
+                  ])),
+                  TextInput(
+                    controller: email,
+                    hintText: "student@sis.hust.edu.vn",
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: Validator.email(),
                   ),
                   const SizedBox(height: 16),
                   Text.rich(TextSpan(children: [
@@ -102,7 +136,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   TextInput(
                     isPassword: true,
                     controller: password,
-                    hintText: "Mật khẩu",
+                    hintText: "password@123",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: Validator.password(),
                   ),
@@ -118,11 +152,46 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   TextInput(
                       isPassword: true,
                       validator: (str) => str != password.text
-                          ? "Mật khẩu được nhập không khớp"
+                          ? "Nhập lại mật khẩu không chính xác"
                           : null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      hintText: "Xác nhận mật khẩu"),
+                      hintText: "password@123"),
+
+                  // Thêm vào Column của form
+                  const SizedBox(height: 16),
+                  Text.rich(TextSpan(children: [
+                    const TextSpan(text: "Loại tài khoản", style: TypeStyle.title4),
+                    TextSpan(
+                        text: "*",
+                        style: TypeStyle.body4.copyWith(
+                            color: Theme.of(context).colorScheme.error))
+                  ])),
+                  DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    decoration: InputDecoration(
+                      hintText: "Chọn loại tài khoản",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'STUDENT', child: Text('Học sinh')),
+                      DropdownMenuItem(value: 'LECTURER', child: Text('Giảng viên')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        selectedRole = value; // Cập nhật giá trị đã chọn
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Vui lòng chọn loại tài khoản";
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(height: 32),
+
                   Center(
                     child: Builder(builder: (context) {
                       return FilledButton(
@@ -132,7 +201,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                                 if (formKey.currentState?.validate() ?? false) {
                                   ref
                                       .read(signupProvider.notifier)
-                                      .signup(username.text, password.text);
+                                      .signup(ho.text, ten.text, email.text, password.text, selectedRole);
                                 }
                               },
                         child: const Center(child: Text("Đăng ký")),

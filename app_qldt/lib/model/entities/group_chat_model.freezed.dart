@@ -12,7 +12,7 @@ part of 'group_chat_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 GroupChatModel _$GroupChatModelFromJson(Map<String, dynamic> json) {
   return _GroupChatModel.fromJson(json);
@@ -24,8 +24,12 @@ mixin _$GroupChatModel {
   GroupChatInfoMessageNotRead get infoMessageNotRead =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this GroupChatModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GroupChatModelCopyWith<GroupChatModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -54,6 +58,8 @@ class _$GroupChatModelCopyWithImpl<$Res, $Val extends GroupChatModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -72,6 +78,8 @@ class _$GroupChatModelCopyWithImpl<$Res, $Val extends GroupChatModel>
     ) as $Val);
   }
 
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $GroupChatInfoModelCopyWith<$Res> get infoGroup {
@@ -80,6 +88,8 @@ class _$GroupChatModelCopyWithImpl<$Res, $Val extends GroupChatModel>
     });
   }
 
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $GroupChatInfoMessageNotReadCopyWith<$Res> get infoMessageNotRead {
@@ -116,6 +126,8 @@ class __$$GroupChatModelImplCopyWithImpl<$Res>
       _$GroupChatModelImpl _value, $Res Function(_$GroupChatModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,11 +178,13 @@ class _$GroupChatModelImpl implements _GroupChatModel {
                 other.infoMessageNotRead == infoMessageNotRead));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, infoGroup, infoMessageNotRead);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$GroupChatModelImplCopyWith<_$GroupChatModelImpl> get copyWith =>
@@ -198,8 +212,11 @@ abstract class _GroupChatModel implements GroupChatModel {
   GroupChatInfoModel get infoGroup;
   @override
   GroupChatInfoMessageNotRead get infoMessageNotRead;
+
+  /// Create a copy of GroupChatModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GroupChatModelImplCopyWith<_$GroupChatModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -219,8 +236,12 @@ mixin _$GroupChatInfoModel {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this GroupChatInfoModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupChatInfoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GroupChatInfoModelCopyWith<GroupChatInfoModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -252,6 +273,8 @@ class _$GroupChatInfoModelCopyWithImpl<$Res, $Val extends GroupChatInfoModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GroupChatInfoModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -325,6 +348,8 @@ class __$$GroupChatInfoModelImplCopyWithImpl<$Res>
       $Res Function(_$GroupChatInfoModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupChatInfoModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -443,7 +468,7 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -456,7 +481,9 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
       createdAt,
       updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupChatInfoModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$GroupChatInfoModelImplCopyWith<_$GroupChatInfoModelImpl> get copyWith =>
@@ -501,8 +528,11 @@ abstract class _GroupChatInfoModel implements GroupChatInfoModel {
   String get createdAt;
   @override
   String get updatedAt;
+
+  /// Create a copy of GroupChatInfoModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GroupChatInfoModelImplCopyWith<_$GroupChatInfoModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -518,8 +548,12 @@ mixin _$GroupChatInfoMessageNotRead {
   String get groupId => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
 
+  /// Serializes this GroupChatInfoMessageNotRead to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of GroupChatInfoMessageNotRead
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GroupChatInfoMessageNotReadCopyWith<GroupChatInfoMessageNotRead>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -546,6 +580,8 @@ class _$GroupChatInfoMessageNotReadCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GroupChatInfoMessageNotRead
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -592,6 +628,8 @@ class __$$GroupChatInfoMessageNotReadImplCopyWithImpl<$Res>
       $Res Function(_$GroupChatInfoMessageNotReadImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GroupChatInfoMessageNotRead
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -650,12 +688,14 @@ class _$GroupChatInfoMessageNotReadImpl
             (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, countMessageNotRead, groupId, avatar);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GroupChatInfoMessageNotRead
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$GroupChatInfoMessageNotReadImplCopyWith<_$GroupChatInfoMessageNotReadImpl>
@@ -686,8 +726,11 @@ abstract class _GroupChatInfoMessageNotRead
   String get groupId;
   @override
   String? get avatar;
+
+  /// Create a copy of GroupChatInfoMessageNotRead
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GroupChatInfoMessageNotReadImplCopyWith<_$GroupChatInfoMessageNotReadImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

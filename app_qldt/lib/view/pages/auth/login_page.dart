@@ -19,6 +19,7 @@ class LoginPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // tạo nút back lại page trước, nếu ko có thì null
     return PopScope(
       canPop: context.canPop(),
       onPopInvoked: (didPop) =>
@@ -48,7 +49,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 }
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
-  final username = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
@@ -69,23 +70,23 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           return;
         }
       }
+      // if (next is AsyncData &&
+      //     next.value?.statusAccount == AccountStatus.INIT) {
+      //   ref
+      //       .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
+      //       .getVerifyCode();
+      //   context.go("$signupRoute/verify");
+      // }
+      // if (next is AsyncData &&
+      //     next.value?.statusAccount == AccountStatus.CONFIRMED_OTP) {
+      //   context.go("$signupRoute/info");
+      // }
+      // if (next is AsyncData &&
+      //     next.value?.statusAccount == AccountStatus.CHANGE_PASSWORD) {
+      //   context.go(changePasswordRoute);
+      // }
       if (next is AsyncData &&
-          next.value?.statusAccount == AccountStatus.INIT) {
-        ref
-            .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
-            .getVerifyCode();
-        context.go("$signupRoute/verify");
-      }
-      if (next is AsyncData &&
-          next.value?.statusAccount == AccountStatus.CONFIRMED_OTP) {
-        context.go("$signupRoute/info");
-      }
-      if (next is AsyncData &&
-          next.value?.statusAccount == AccountStatus.CHANGE_PASSWORD) {
-        context.go(changePasswordRoute);
-      }
-      if (next is AsyncData &&
-          next.value?.statusAccount == AccountStatus.ACTIVE) {
+          next.value?.status == "Kích hoạt") {
         context.go(feedRoute);
       }
     });
@@ -95,8 +96,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       decoration: const BoxDecoration(
           color: Palette.white,
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24), topRight: Radius.circular(24))),
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 3),
+              topLeft: Radius.circular(0), topRight: Radius.circular(0))),
+      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
       padding: const EdgeInsets.all(32),
       child: Form(
         key: formKey,
@@ -104,10 +105,12 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
+            const Center(child: Text("eHust", style: TypeStyle.headingBig),),
+            const SizedBox(height: 40),
             TextInput(
-                controller: username,
-                hintText: "Tài khoản",
-                validator: Validator.username(),
+                controller: email,
+                hintText: "Email",
+                validator: Validator.email(),
                 autovalidateMode: AutovalidateMode.onUserInteraction),
             const SizedBox(height: 20),
             TextInput(
@@ -124,7 +127,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                         if (formKey.currentState?.validate() ?? false) {
                           ref
                               .read(accountProvider.notifier)
-                              .login(username.text, password.text);
+                              .login(email.text, password.text);
                         }
                       },
                 child: const Center(child: Text("Đăng nhập"))),
@@ -132,9 +135,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Chưa có tài khoản?", style: TypeStyle.body3),
+                const Text("Bạn chưa có tài khoản?", style: TypeStyle.body3),
                 TextButton(
-                    child: const Text("Đăng ký ngay."),
+                    child: const Text("Đăng ký ngay"),
                     onPressed: () {
                       context.go(signupRoute);
                     })
@@ -142,22 +145,13 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             ),
             const Spacer(),
             TextButton(
-                onPressed: _gotoHelpCenter,
-                child: const Text("Trung tâm hỗ trợ"))
+                onPressed:  () {
+                  context.go(forgetRoute);
+                },
+                child: const Text("Quên mật khẩu"))
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _gotoHelpCenter() async {
-    showOptionModal(context: context, blocks: [
-      [
-        BottomSheetListTile(
-            leading: FaIcons.key,
-            title: "Quên mật khẩu",
-            onTap: () => context.go(forgetRoute))
-      ]
-    ]);
   }
 }

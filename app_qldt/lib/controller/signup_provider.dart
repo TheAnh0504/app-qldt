@@ -17,24 +17,25 @@ class AsyncSignupNotifier extends AutoDisposeAsyncNotifier<void> {
   @override
   void build() {}
 
-  Future<void> signup(String username, String password) async {
+  Future<void> signup(String ho, String ten, String email, String password, String role) async {
     state = const AsyncValue.loading();
     try {
       ref.read(accountProvider.notifier).forward(const AsyncValue.loading());
       var repo = (await ref.read(authRepositoryProvider.future));
-      await repo.api.signup(username, password).then((value) async {
+      await repo.api.signup(ho, ten, email, password, role).then((value) async {
         final account = AccountModel(
-            username: username,
-            accessToken: value["data"]["accessToken"],
-            refreshToken: value["data"]["refreshToken"],
-            statusAccount: AccountStatus.INIT);
+            email: email,
+            ho: ho,
+            ten: ten,
+            accessToken: "signup",
+            role: role,
+            verifyCode: value["verify_code"]
+        );
         await repo.local.updateAccount(account);
-        await repo.local.updateToken(
-            value["data"]["accessToken"], value["data"]["refreshToken"]);
         Future(() {
-          ref
-              .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
-              .getVerifyCode();
+          // ref
+          //     .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
+          //     .getVerifyCode();
           ref.read(accountProvider.notifier).forward(AsyncData(account));
         });
       });
@@ -81,10 +82,8 @@ class AsyncChangeInfoAfterSignupNotifier
               avatar: avatarUpload,
               email: email)
           .then((value) {
-        final account = ref
-            .read(accountProvider)
-            .value!
-            .copyWith(statusAccount: AccountStatus.ACTIVE);
+        // final account = ref.read(accountProvider).value!.copyWith(statusAccount: AccountStatus.ACTIVE);
+        final account = ref.read(accountProvider).value!;
         repo.local.updateCurrentAccount(account);
         ref.read(accountProvider.notifier).forward(AsyncData(account));
       });

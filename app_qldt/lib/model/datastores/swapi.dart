@@ -18,10 +18,10 @@ class SWApi {
 
   SWApi(this.ref) {
     refreshTokenDio = Dio(BaseOptions(
-        baseUrl: "https://f8a8-58-186-78-110.ngrok-free.app/",
+        baseUrl: "http://160.30.168.228:8080",
         validateStatus: (status) => true));
     dio = Dio(BaseOptions(
-        baseUrl: "https://f8a8-58-186-78-110.ngrok-free.app/",
+        baseUrl: "http://160.30.168.228:8080",
         validateStatus: (status) => true))
       ..interceptors.add(QueuedInterceptorsWrapper(onRequest: (req, handler) {
         Logger.httpRequest(req);
@@ -99,59 +99,23 @@ class SWApi {
     }
   }
 
-  Future<Map<String, dynamic>> _getDeviceInfo() async {
-    final plugin = DeviceInfoPlugin();
-    if (Platform.isIOS) {
-      var info = await plugin.iosInfo;
-      return {
-        "uuid": await FirebaseMessaging.instance.getToken(),
-        "type": "mobile",
-        "model": info.model,
-        "version": info.systemVersion,
-        "serial": info.identifierForVendor,
-        "OS": "iOS",
-        "deviceName": info.name
-      };
-    } else if (Platform.isAndroid) {
-      // var info = await plugin.androidInfo;
-      // return {
-      //   "uuid": await FirebaseMessaging.instance.getToken(),
-      //   "type": "mobile",
-      //   "model": info.model,
-      //   "version": info.version.release,
-      //   "serial": info.serialNumber,
-      //   "OS": "Android",
-      //   "deviceName": info.device
-      // };
-      return {
-        "uuid": await FirebaseMessaging.instance.getToken(),
-        "type": "mobile",
-        "model": "SM-N770F",
-        "version": "12",
-        "serial": "ecc09b189cd99c4b",
-        "OS": "android",
-        "deviceName": "N10"
-      };
-    } else {
-      return {};
-    }
-  }
-
-  Future<Map<String, dynamic>> signup(String username, String password) async {
-    return dio.post<Map<String, dynamic>>("/sw3/auth/signup", data: {
-      "username": username,
+  Future<Map<String, dynamic>> signup(String ho, String ten, String email, String password, String role) async {
+    return dio.post<Map<String, dynamic>>("/it4788/signup", data: {
+      "ho": ho,
+      "ten": ten,
+      "email": email,
       "password": password,
-      "device_info": await _getDeviceInfo()
+      "uuid": await FirebaseMessaging.instance.getToken(),
+      "role": role
     }).then((value) {
       return value.data!;
     });
   }
 
-  Future<Map<String, dynamic>> login(String username, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     return dio.post("/sw3/auth/login", data: {
-      "username": username,
-      "password": password,
-      "device_info": await _getDeviceInfo()
+      "username": email,
+      "password": password
     }).then((value) {
       return value.data;
     });
@@ -271,7 +235,7 @@ class SWApi {
     return dio.post<Map<String, dynamic>>("/sw3/auth/unlock_account", data: {
       "username": username,
       "password": password,
-      "device_info": await _getDeviceInfo()
+      // "device_info": await _getDeviceInfo()
     }).then((value) {
       return value.data!;
     });
@@ -282,7 +246,7 @@ class SWApi {
     return dio.post<Map<String, dynamic>>("/sw3/auth/first_login", data: {
       "username": username,
       "password": password,
-      "device_info": await _getDeviceInfo()
+      // "device_info": await _getDeviceInfo()
     }).then((value) {
       return value.data!;
     });

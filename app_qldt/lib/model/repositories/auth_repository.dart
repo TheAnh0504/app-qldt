@@ -27,8 +27,8 @@ class AuthApiRepository {
 
   const AuthApiRepository(this.api);
 
-  Future<Map<String, dynamic>> signup(String username, String password) {
-    return api.signup(username, password).then((value) {
+  Future<Map<String, dynamic>> signup(String ho, String ten, String email, String password, String role) {
+    return api.signup(ho, ten, email, password, role).then((value) {
       if (value["code"] == 1000) return value;
       throw value;
     });
@@ -195,14 +195,13 @@ class AuthLocalRepository {
 
   const AuthLocalRepository(this.pref);
 
-  Future<bool> updateToken(String accessToken, String refreshToken) =>
+  Future<bool> updateToken(String accessToken) =>
       Future.wait([
         pref.setAccessToken(accessToken),
-        pref.setRefreshToken(refreshToken)
       ]).then((value) => value.reduce((e1, e2) => e1 && e2));
 
   Future<bool> deleteToken() =>
-      Future.wait([pref.setAccessToken(null), pref.setRefreshToken(null)])
+      Future.wait([pref.setAccessToken(null)])
           .then((value) => value.reduce((e1, e2) => e1 && e2));
 
   List<AccountModel> readAllSavedAccounts() =>

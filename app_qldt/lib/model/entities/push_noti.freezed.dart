@@ -12,7 +12,7 @@ part of 'push_noti.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 PushNoti _$PushNotiFromJson(Map<String, dynamic> json) {
   return _PushNoti.fromJson(json);
@@ -24,8 +24,12 @@ mixin _$PushNoti {
   Map<String, dynamic> get author => throw _privateConstructorUsedError;
   Map<String, dynamic> get user => throw _privateConstructorUsedError;
 
+  /// Serializes this PushNoti to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PushNoti
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PushNotiCopyWith<PushNoti> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -51,6 +55,8 @@ class _$PushNotiCopyWithImpl<$Res, $Val extends PushNoti>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PushNoti
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -97,6 +103,8 @@ class __$$PushNotiImplCopyWithImpl<$Res>
       _$PushNotiImpl _value, $Res Function(_$PushNotiImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PushNoti
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -175,7 +183,7 @@ class _$PushNotiImpl implements _PushNoti {
             const DeepCollectionEquality().equals(other._user, _user));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -183,7 +191,9 @@ class _$PushNotiImpl implements _PushNoti {
       const DeepCollectionEquality().hash(_author),
       const DeepCollectionEquality().hash(_user));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PushNoti
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PushNotiImplCopyWith<_$PushNotiImpl> get copyWith =>
@@ -212,8 +222,11 @@ abstract class _PushNoti implements PushNoti {
   Map<String, dynamic> get author;
   @override
   Map<String, dynamic> get user;
+
+  /// Create a copy of PushNoti
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PushNotiImplCopyWith<_$PushNotiImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

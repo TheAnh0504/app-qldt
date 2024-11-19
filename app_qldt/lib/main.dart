@@ -102,14 +102,14 @@ class app_qldt extends HookConsumerWidget {
       child: MaterialApp.router(
           theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-                  seedColor: Palette.blue, error: Palette.red),
+                  seedColor: Palette.redBackground, error: Palette.red),
               appBarTheme: AppBarTheme(
                   titleTextStyle:
                   TypeStyle.title1.copyWith(color: Palette.black),
                   scrolledUnderElevation: 0,
                   color: Colors.transparent),
               scaffoldBackgroundColor:
-              Color.lerp(Palette.blue, Palette.white, 0.95),
+              Color.lerp(Palette.green, Palette.white, 0.95),
               listTileTheme: ListTileThemeData(
                   minLeadingWidth: 30,
                   titleTextStyle: TypeStyle.body3.copyWith(

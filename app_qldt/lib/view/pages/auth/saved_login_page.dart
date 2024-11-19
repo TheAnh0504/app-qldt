@@ -42,7 +42,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
         Fluttertoast.showToast(msg: next.error.toString());
       }
       if (next is AsyncData &&
-          next.value?.statusAccount == AccountStatus.ACTIVE) {
+          next.value?.status == "Kích hoạt") {
         context.go(feedRoute);
       }
     });
@@ -77,7 +77,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       onTap: () =>
                           ref.read(accountProvider.notifier).fastLogin(e),
                       leading: const FaIcon(FaIcons.solidCircleUser),
-                      title: Text(e.username),
+                      title: Text(e.email),
                       trailing: PopupMenuButton(
                           itemBuilder: (context) => [
                                 PopupMenuItem<int>(

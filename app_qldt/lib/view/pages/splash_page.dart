@@ -31,7 +31,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   Future<void> _navigate() async {
     final pref = await SharedPreferences.getInstance();
     if (pref.getCurrentAccount() != null && mounted) {
-      if (pref.getCurrentAccount()?.statusAccount == AccountStatus.ACTIVE) {
+      if (pref.getCurrentAccount()?.status == "Kích hoạt") {
         ref.read(accountProvider);
         Future.microtask(() => ref
             .read(accountProvider.notifier)

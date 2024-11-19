@@ -12,7 +12,7 @@ part of 'message_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MessageModel {
@@ -24,7 +24,9 @@ mixin _$MessageModel {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MessageModelCopyWith<MessageModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,6 +59,8 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -100,6 +104,8 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
     ) as $Val);
   }
 
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $MessageUserModelCopyWith<$Res> get user {
@@ -138,6 +144,8 @@ class __$$MessageModelImplCopyWithImpl<$Res>
       _$MessageModelImpl _value, $Res Function(_$MessageModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -244,7 +252,9 @@ class _$MessageModelImpl implements _MessageModel {
   int get hashCode => Object.hash(runtimeType, id, user, message, media,
       const DeepCollectionEquality().hash(_isRead), createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MessageModelImplCopyWith<_$MessageModelImpl> get copyWith =>
@@ -275,8 +285,11 @@ abstract class _MessageModel implements MessageModel {
   String get createdAt;
   @override
   String get updatedAt;
+
+  /// Create a copy of MessageModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MessageModelImplCopyWith<_$MessageModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -291,8 +304,12 @@ mixin _$MessageUserModel {
   String get displayName => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
 
+  /// Serializes this MessageUserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MessageUserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MessageUserModelCopyWith<MessageUserModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -316,6 +333,8 @@ class _$MessageUserModelCopyWithImpl<$Res, $Val extends MessageUserModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MessageUserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -359,6 +378,8 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
       $Res Function(_$MessageUserModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MessageUserModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -416,11 +437,13 @@ class _$MessageUserModelImpl implements _MessageUserModel {
             (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, userId, displayName, avatar);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MessageUserModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MessageUserModelImplCopyWith<_$MessageUserModelImpl> get copyWith =>
@@ -450,8 +473,11 @@ abstract class _MessageUserModel implements MessageUserModel {
   String get displayName;
   @override
   String? get avatar;
+
+  /// Create a copy of MessageUserModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MessageUserModelImplCopyWith<_$MessageUserModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

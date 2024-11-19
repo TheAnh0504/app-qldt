@@ -12,7 +12,7 @@ part of 'post_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 PostModel _$PostModelFromJson(Map<String, dynamic> json) {
   return _PostModel.fromJson(json);
@@ -26,8 +26,12 @@ mixin _$PostModel {
   List<InfoAuthorModel> get infoAuthor => throw _privateConstructorUsedError;
   List<InfoAuthorModel> get tagInfo => throw _privateConstructorUsedError;
 
+  /// Serializes this PostModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PostModelCopyWith<PostModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -57,6 +61,8 @@ class _$PostModelCopyWithImpl<$Res, $Val extends PostModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -90,6 +96,8 @@ class _$PostModelCopyWithImpl<$Res, $Val extends PostModel>
     ) as $Val);
   }
 
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $InfoPostModelCopyWith<$Res> get infoPost {
@@ -126,6 +134,8 @@ class __$$PostModelImplCopyWithImpl<$Res>
       _$PostModelImpl _value, $Res Function(_$PostModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -232,7 +242,7 @@ class _$PostModelImpl implements _PostModel {
             const DeepCollectionEquality().equals(other._tagInfo, _tagInfo));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -242,7 +252,9 @@ class _$PostModelImpl implements _PostModel {
       const DeepCollectionEquality().hash(_infoAuthor),
       const DeepCollectionEquality().hash(_tagInfo));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PostModelImplCopyWith<_$PostModelImpl> get copyWith =>
@@ -277,8 +289,11 @@ abstract class _PostModel implements PostModel {
   List<InfoAuthorModel> get infoAuthor;
   @override
   List<InfoAuthorModel> get tagInfo;
+
+  /// Create a copy of PostModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PostModelImplCopyWith<_$PostModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -302,8 +317,12 @@ mixin _$InfoPostModel {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this InfoPostModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of InfoPostModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $InfoPostModelCopyWith<InfoPostModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -339,6 +358,8 @@ class _$InfoPostModelCopyWithImpl<$Res, $Val extends InfoPostModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of InfoPostModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -439,6 +460,8 @@ class __$$InfoPostModelImplCopyWithImpl<$Res>
       _$InfoPostModelImpl _value, $Res Function(_$InfoPostModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of InfoPostModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -607,7 +630,7 @@ class _$InfoPostModelImpl implements _InfoPostModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -624,7 +647,9 @@ class _$InfoPostModelImpl implements _InfoPostModel {
       createdAt,
       updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of InfoPostModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$InfoPostModelImplCopyWith<_$InfoPostModelImpl> get copyWith =>
@@ -680,8 +705,11 @@ abstract class _InfoPostModel implements InfoPostModel {
   String get createdAt;
   @override
   String get updatedAt;
+
+  /// Create a copy of InfoPostModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$InfoPostModelImplCopyWith<_$InfoPostModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -699,8 +727,12 @@ mixin _$InfoCommentModel {
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
 
+  /// Serializes this InfoCommentModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of InfoCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $InfoCommentModelCopyWith<InfoCommentModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -730,6 +762,8 @@ class _$InfoCommentModelCopyWithImpl<$Res, $Val extends InfoCommentModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of InfoCommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -794,6 +828,8 @@ class __$$InfoCommentModelImplCopyWithImpl<$Res>
       $Res Function(_$InfoCommentModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of InfoCommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -884,12 +920,14 @@ class _$InfoCommentModelImpl implements _InfoCommentModel {
                 other.updatedAt == updatedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, commentId, description, author, lock, createdAt, updatedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of InfoCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$InfoCommentModelImplCopyWith<_$InfoCommentModelImpl> get copyWith =>
@@ -928,8 +966,11 @@ abstract class _InfoCommentModel implements InfoCommentModel {
   String get createdAt;
   @override
   String get updatedAt;
+
+  /// Create a copy of InfoCommentModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$InfoCommentModelImplCopyWith<_$InfoCommentModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -944,8 +985,12 @@ mixin _$InfoAuthorModel {
   String? get avatar => throw _privateConstructorUsedError;
   String get displayName => throw _privateConstructorUsedError;
 
+  /// Serializes this InfoAuthorModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of InfoAuthorModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $InfoAuthorModelCopyWith<InfoAuthorModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -969,6 +1014,8 @@ class _$InfoAuthorModelCopyWithImpl<$Res, $Val extends InfoAuthorModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of InfoAuthorModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1012,6 +1059,8 @@ class __$$InfoAuthorModelImplCopyWithImpl<$Res>
       _$InfoAuthorModelImpl _value, $Res Function(_$InfoAuthorModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of InfoAuthorModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1069,11 +1118,13 @@ class _$InfoAuthorModelImpl implements _InfoAuthorModel {
                 other.displayName == displayName));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, userId, avatar, displayName);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of InfoAuthorModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$InfoAuthorModelImplCopyWith<_$InfoAuthorModelImpl> get copyWith =>
@@ -1103,8 +1154,11 @@ abstract class _InfoAuthorModel implements InfoAuthorModel {
   String? get avatar;
   @override
   String get displayName;
+
+  /// Create a copy of InfoAuthorModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$InfoAuthorModelImplCopyWith<_$InfoAuthorModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

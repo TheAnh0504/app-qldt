@@ -39,7 +39,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 }
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
-  final username = TextEditingController();
+  final email = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +60,16 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           const Text("Nhập địa chỉ email của bạn"),
           const SizedBox(height: 16),
           TextInput(
-              controller: username,
-              hintText: "Tài khoản",
+              controller: email,
+              hintText: "Email",
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: Validator.username()),
+              validator: Validator.email()),
           const SizedBox(height: 16),
           FilledButton(
             onPressed: () {
               ref
                   .read(forgetPasswordProvider.notifier)
-                  .forgetPassword(username.text);
+                  .forgetPassword(email.text);
             },
             child: const Center(child: Text("Tiếp tục")),
           )

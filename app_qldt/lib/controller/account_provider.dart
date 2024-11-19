@@ -32,39 +32,45 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
           .login(username, password)
           .then<AsyncValue<AccountModel?>>((value) async {
             final account = AccountModel(
-                username: username,
-                accessToken: value["data"]["accessToken"],
-                refreshToken: value["data"]["refreshToken"],
-                statusAccount: AccountStatus.values.firstWhere((e) => e.name == value["data"]["statusAccount"])
+                email: value["data"]["email"],
+                id: value["data"]["id"],
+                ho: value["data"]["ho"],
+                ten: value["data"]["ten"],
+                name: value["data"]["name"],
+                accessToken: value["data"]["token"],
+                role: value["data"]["role"],
+                status: value["data"]["status"],
+                avatar: value["data"]["avatar"],
+                classList: value["data"]["class_list"]
             );
             authRepository.local.updateAccount(account);
             authRepository.local.updateCurrentAccount(account);
-            authRepository.local.updateToken(value["data"]["accessToken"], value["data"]["refreshToken"]);
+            authRepository.local.updateToken(value["data"]["token"]);
             // 1 data success from async
             return AsyncData(account);
           });
     // bắt lỗi Map<String, dynamic> map
     } on Map<String, dynamic> catch (map) {
-      if (map["code"] == 1000 && map["type"] == "firstLogin") {
-        var authRepository = (await ref.read(authRepositoryProvider.future));
-        authRepository.local.updateToken(map["data"]["accessToken"], map["data"]["refreshToken"]);
-        // tạo ra 1 micro-task để thực thi 1 đoạn mã ko đồng bộ, sau đó mới call return
-        Future.microtask(() async {
-          await ref.read(verifyCodeProvider(VerifyCodeType.first_login).notifier).getVerifyCode();
-          // 1 error from async
-          state = AsyncError("Đã yêu cầu đăng nhập lần đầu thành công. Hãy đợi phê duyệt.",StackTrace.current);
-        });
-        return;
-      }
-      if (map["code"] == 1000 && map["type"] == "unlockAccount") {
-        var authRepository = (await ref.read(authRepositoryProvider.future));
-        authRepository.local.updateToken(map["data"]["accessToken"], map["data"]["refreshToken"]);
-        Future.microtask(() async {
-          await ref.read(verifyCodeProvider(VerifyCodeType.unlock_acc).notifier).getVerifyCode();
-          state = AsyncError("Đã yêu cầu mở khóa tài khoản thành công.", StackTrace.current);
-        });
-        return;
-      }
+      // if (map["code"] == 1000 && map["type"] == "firstLogin") {
+      //   var authRepository = (await ref.read(authRepositoryProvider.future));
+      //   authRepository.local.updateToken(map["data"]["token"]);
+      //   // tạo ra 1 micro-task để thực thi 1 đoạn mã ko đồng bộ, sau đó mới call return
+      //   Future.microtask(() async {
+      //     await ref.read(verifyCodeProvider(VerifyCodeType.first_login).notifier).getVerifyCode();
+      //     // 1 error from async
+      //     state = AsyncError("Đã yêu cầu đăng nhập lần đầu thành công. Hãy đợi phê duyệt.",StackTrace.current);
+      //   });
+      //   return;
+      // }
+      // if (map["code"] == 1000 && map["type"] == "unlockAccount") {
+      //   var authRepository = (await ref.read(authRepositoryProvider.future));
+      //   authRepository.local.updateToken(map["data"]["token"]);
+      //   Future.microtask(() async {
+      //     await ref.read(verifyCodeProvider(VerifyCodeType.unlock_acc).notifier).getVerifyCode();
+      //     state = AsyncError("Đã yêu cầu mở khóa tài khoản thành công.", StackTrace.current);
+      //   });
+      //   return;
+      // }
       state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
     }
   }
@@ -74,9 +80,9 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
 
   Future<void> fastLogin(AccountModel account) async {
     var repo = (await ref.read(authRepositoryProvider.future));
-    await repo.local.updateCurrentAccount(account.copyWith(statusAccount: AccountStatus.ACTIVE));
+    // await repo.local.updateCurrentAccount(account.copyWith(statusAccount: AccountStatus.ACTIVE));
     await repo.local.updateAccount(account);
-    await repo.local.updateToken(account.accessToken, account.refreshToken);
+    // await repo.local.updateToken(account.accessToken, account.refreshToken);
     state = AsyncValue.data(repo.local.readCurrentAccount());
   }
 

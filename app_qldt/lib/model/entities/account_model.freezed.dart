@@ -12,7 +12,7 @@ part of 'account_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 AccountModel _$AccountModelFromJson(Map<String, dynamic> json) {
   return _AccountModel.fromJson(json);
@@ -20,16 +20,25 @@ AccountModel _$AccountModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AccountModel {
-  String get username => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  dynamic get ho => throw _privateConstructorUsedError;
+  String get ten => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
   String get accessToken => throw _privateConstructorUsedError;
-  String get refreshToken => throw _privateConstructorUsedError;
-  @_AccountStatusConverter()
-  AccountStatus get statusAccount => throw _privateConstructorUsedError;
-  String? get avatar => throw _privateConstructorUsedError;
+  String get role => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
+  String get avatar => throw _privateConstructorUsedError;
+  String get verifyCode => throw _privateConstructorUsedError;
+  List<dynamic>? get classList => throw _privateConstructorUsedError;
   bool get saved => throw _privateConstructorUsedError;
 
+  /// Serializes this AccountModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AccountModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AccountModelCopyWith<AccountModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -41,11 +50,17 @@ abstract class $AccountModelCopyWith<$Res> {
       _$AccountModelCopyWithImpl<$Res, AccountModel>;
   @useResult
   $Res call(
-      {String username,
+      {int id,
+      dynamic ho,
+      String ten,
+      String name,
+      String email,
       String accessToken,
-      String refreshToken,
-      @_AccountStatusConverter() AccountStatus statusAccount,
-      String? avatar,
+      String role,
+      String status,
+      String avatar,
+      String verifyCode,
+      List<dynamic>? classList,
       bool saved});
 }
 
@@ -59,37 +74,69 @@ class _$AccountModelCopyWithImpl<$Res, $Val extends AccountModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AccountModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
+    Object? id = null,
+    Object? ho = freezed,
+    Object? ten = null,
+    Object? name = null,
+    Object? email = null,
     Object? accessToken = null,
-    Object? refreshToken = null,
-    Object? statusAccount = null,
-    Object? avatar = freezed,
+    Object? role = null,
+    Object? status = null,
+    Object? avatar = null,
+    Object? verifyCode = null,
+    Object? classList = freezed,
     Object? saved = null,
   }) {
     return _then(_value.copyWith(
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      ho: freezed == ho
+          ? _value.ho
+          : ho // ignore: cast_nullable_to_non_nullable
+              as dynamic,
+      ten: null == ten
+          ? _value.ten
+          : ten // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       accessToken: null == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      refreshToken: null == refreshToken
-          ? _value.refreshToken
-          : refreshToken // ignore: cast_nullable_to_non_nullable
+      role: null == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
               as String,
-      statusAccount: null == statusAccount
-          ? _value.statusAccount
-          : statusAccount // ignore: cast_nullable_to_non_nullable
-              as AccountStatus,
-      avatar: freezed == avatar
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      avatar: null == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      verifyCode: null == verifyCode
+          ? _value.verifyCode
+          : verifyCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      classList: freezed == classList
+          ? _value.classList
+          : classList // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
       saved: null == saved
           ? _value.saved
           : saved // ignore: cast_nullable_to_non_nullable
@@ -107,11 +154,17 @@ abstract class _$$AccountModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String username,
+      {int id,
+      dynamic ho,
+      String ten,
+      String name,
+      String email,
       String accessToken,
-      String refreshToken,
-      @_AccountStatusConverter() AccountStatus statusAccount,
-      String? avatar,
+      String role,
+      String status,
+      String avatar,
+      String verifyCode,
+      List<dynamic>? classList,
       bool saved});
 }
 
@@ -123,37 +176,66 @@ class __$$AccountModelImplCopyWithImpl<$Res>
       _$AccountModelImpl _value, $Res Function(_$AccountModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AccountModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? username = null,
+    Object? id = null,
+    Object? ho = freezed,
+    Object? ten = null,
+    Object? name = null,
+    Object? email = null,
     Object? accessToken = null,
-    Object? refreshToken = null,
-    Object? statusAccount = null,
-    Object? avatar = freezed,
+    Object? role = null,
+    Object? status = null,
+    Object? avatar = null,
+    Object? verifyCode = null,
+    Object? classList = freezed,
     Object? saved = null,
   }) {
     return _then(_$AccountModelImpl(
-      username: null == username
-          ? _value.username
-          : username // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      ho: freezed == ho ? _value.ho! : ho,
+      ten: null == ten
+          ? _value.ten
+          : ten // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
               as String,
       accessToken: null == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      refreshToken: null == refreshToken
-          ? _value.refreshToken
-          : refreshToken // ignore: cast_nullable_to_non_nullable
+      role: null == role
+          ? _value.role
+          : role // ignore: cast_nullable_to_non_nullable
               as String,
-      statusAccount: null == statusAccount
-          ? _value.statusAccount
-          : statusAccount // ignore: cast_nullable_to_non_nullable
-              as AccountStatus,
-      avatar: freezed == avatar
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      avatar: null == avatar
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      verifyCode: null == verifyCode
+          ? _value.verifyCode
+          : verifyCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      classList: freezed == classList
+          ? _value._classList
+          : classList // ignore: cast_nullable_to_non_nullable
+              as List<dynamic>?,
       saved: null == saved
           ? _value.saved
           : saved // ignore: cast_nullable_to_non_nullable
@@ -167,35 +249,71 @@ class __$$AccountModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$AccountModelImpl implements _AccountModel {
   const _$AccountModelImpl(
-      {required this.username,
-      required this.accessToken,
-      required this.refreshToken,
-      @_AccountStatusConverter() this.statusAccount = AccountStatus.NO,
-      this.avatar,
-      this.saved = false});
+      {this.id = 0,
+      this.ho = "",
+      this.ten = "",
+      this.name = "",
+      this.email = "",
+      this.accessToken = "",
+      this.role = "",
+      this.status = "",
+      this.avatar = "",
+      this.verifyCode = "",
+      final List<dynamic>? classList = const [],
+      this.saved = false})
+      : _classList = classList;
 
   factory _$AccountModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AccountModelImplFromJson(json);
 
   @override
-  final String username;
-  @override
-  final String accessToken;
-  @override
-  final String refreshToken;
+  @JsonKey()
+  final int id;
   @override
   @JsonKey()
-  @_AccountStatusConverter()
-  final AccountStatus statusAccount;
+  final dynamic ho;
   @override
-  final String? avatar;
+  @JsonKey()
+  final String ten;
+  @override
+  @JsonKey()
+  final String name;
+  @override
+  @JsonKey()
+  final String email;
+  @override
+  @JsonKey()
+  final String accessToken;
+  @override
+  @JsonKey()
+  final String role;
+  @override
+  @JsonKey()
+  final String status;
+  @override
+  @JsonKey()
+  final String avatar;
+  @override
+  @JsonKey()
+  final String verifyCode;
+  final List<dynamic>? _classList;
+  @override
+  @JsonKey()
+  List<dynamic>? get classList {
+    final value = _classList;
+    if (value == null) return null;
+    if (_classList is EqualUnmodifiableListView) return _classList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   @JsonKey()
   final bool saved;
 
   @override
   String toString() {
-    return 'AccountModel(username: $username, accessToken: $accessToken, refreshToken: $refreshToken, statusAccount: $statusAccount, avatar: $avatar, saved: $saved)';
+    return 'AccountModel(id: $id, ho: $ho, ten: $ten, name: $name, email: $email, accessToken: $accessToken, role: $role, status: $status, avatar: $avatar, verifyCode: $verifyCode, classList: $classList, saved: $saved)';
   }
 
   @override
@@ -203,24 +321,43 @@ class _$AccountModelImpl implements _AccountModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AccountModelImpl &&
-            (identical(other.username, username) ||
-                other.username == username) &&
+            (identical(other.id, id) || other.id == id) &&
+            const DeepCollectionEquality().equals(other.ho, ho) &&
+            (identical(other.ten, ten) || other.ten == ten) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
-            (identical(other.refreshToken, refreshToken) ||
-                other.refreshToken == refreshToken) &&
-            (identical(other.statusAccount, statusAccount) ||
-                other.statusAccount == statusAccount) &&
+            (identical(other.role, role) || other.role == role) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
+            (identical(other.verifyCode, verifyCode) ||
+                other.verifyCode == verifyCode) &&
+            const DeepCollectionEquality()
+                .equals(other._classList, _classList) &&
             (identical(other.saved, saved) || other.saved == saved));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, username, accessToken,
-      refreshToken, statusAccount, avatar, saved);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      const DeepCollectionEquality().hash(ho),
+      ten,
+      name,
+      email,
+      accessToken,
+      role,
+      status,
+      avatar,
+      verifyCode,
+      const DeepCollectionEquality().hash(_classList),
+      saved);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AccountModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AccountModelImplCopyWith<_$AccountModelImpl> get copyWith =>
@@ -236,31 +373,51 @@ class _$AccountModelImpl implements _AccountModel {
 
 abstract class _AccountModel implements AccountModel {
   const factory _AccountModel(
-      {required final String username,
-      required final String accessToken,
-      required final String refreshToken,
-      @_AccountStatusConverter() final AccountStatus statusAccount,
-      final String? avatar,
+      {final int id,
+      final dynamic ho,
+      final String ten,
+      final String name,
+      final String email,
+      final String accessToken,
+      final String role,
+      final String status,
+      final String avatar,
+      final String verifyCode,
+      final List<dynamic>? classList,
       final bool saved}) = _$AccountModelImpl;
 
   factory _AccountModel.fromJson(Map<String, dynamic> json) =
       _$AccountModelImpl.fromJson;
 
   @override
-  String get username;
+  int get id;
+  @override
+  dynamic get ho;
+  @override
+  String get ten;
+  @override
+  String get name;
+  @override
+  String get email;
   @override
   String get accessToken;
   @override
-  String get refreshToken;
+  String get role;
   @override
-  @_AccountStatusConverter()
-  AccountStatus get statusAccount;
+  String get status;
   @override
-  String? get avatar;
+  String get avatar;
+  @override
+  String get verifyCode;
+  @override
+  List<dynamic>? get classList;
   @override
   bool get saved;
+
+  /// Create a copy of AccountModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AccountModelImplCopyWith<_$AccountModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,11 +1,19 @@
+import 'package:app_qldt/core/theme/palette.dart';
 import 'package:flutter/material.dart';
 
 class TypeStyle {
+  static const headingBig = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 36,
+      letterSpacing: 0.1,
+      height: 1.5,
+      color: Palette.red100);
   static const heading = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 24,
       letterSpacing: 0.1,
-      height: 1.5);
+      height: 1.5,
+      color: Palette.red100);
   static const title1 = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 20,

@@ -12,7 +12,7 @@ part of 'device_model.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-model');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 DeviceModel _$DeviceModelFromJson(Map<String, dynamic> json) {
   return _Device.fromJson(json);
@@ -30,8 +30,12 @@ mixin _$DeviceModel {
   String get serial => throw _privateConstructorUsedError;
   String get deviceName => throw _privateConstructorUsedError;
 
+  /// Serializes this DeviceModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of DeviceModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $DeviceModelCopyWith<DeviceModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -63,6 +67,8 @@ class _$DeviceModelCopyWithImpl<$Res, $Val extends DeviceModel>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of DeviceModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -139,6 +145,8 @@ class __$$DeviceImplCopyWithImpl<$Res>
       _$DeviceImpl _value, $Res Function(_$DeviceImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of DeviceModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -248,12 +256,14 @@ class _$DeviceImpl implements _Device {
                 other.deviceName == deviceName));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, deviceId, uuid, type, model,
       version, OS, serial, deviceName);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of DeviceModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$DeviceImplCopyWith<_$DeviceImpl> get copyWith =>
@@ -289,15 +299,18 @@ abstract class _Device implements DeviceModel {
   @override
   String? get model;
   @override
-  String get version;
-  @override // ignore: non_constant_identifier_names
+  String get version; // ignore: non_constant_identifier_names
+  @override
   String get OS;
   @override
   String get serial;
   @override
   String get deviceName;
+
+  /// Create a copy of DeviceModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DeviceImplCopyWith<_$DeviceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,6 +1,10 @@
 // map lỗi theo JSON
 const errorMap = {
   1000: "OK",
+  9995: "Định dạng email không chính xác",
+  9994: "Mật khẩu không hợp lệ (Giới hạn 6 - 15 ký tự)",
+  9996: "Email đã tồn tại",
+
   1001: "Tham số không hợp lệ.",
   1002: "Lỗi kết nối tới cơ sở dữ liệu.",
   1003: "Tài khoản đã tồn tại.",

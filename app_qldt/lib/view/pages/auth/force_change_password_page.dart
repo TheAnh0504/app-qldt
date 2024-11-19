@@ -68,7 +68,7 @@ class _BuildBody extends ConsumerWidget {
     });
     ref.listen(accountProvider, (prev, next) {
       if (next is AsyncData<AccountModel?> &&
-          next.value?.statusAccount == AccountStatus.ACTIVE) {
+          next.value?.status == "Kích hoạt") {
         context.go(feedRoute);
       }
     });

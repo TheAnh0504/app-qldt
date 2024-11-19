@@ -124,7 +124,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                               text:
                                   "Mã xác nhận đã được gửi tới địa chỉ email "),
                           TextSpan(
-                              text: ref.watch(accountProvider).value?.username,
+                              text: ref.watch(accountProvider).value?.email,
                               style: TypeStyle.body2
                                   .copyWith(fontStyle: FontStyle.italic)),
                           const TextSpan(text: ".")

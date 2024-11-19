@@ -30,6 +30,7 @@ final router = GoRouter(
     initialLocation: splashRoute,
     navigatorKey: rootNavigatorKey,
     routes: [
+      // page giao diện chờ
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: splashRoute,
@@ -46,6 +47,7 @@ final router = GoRouter(
           path: welcomeRoute,
           pageBuilder: (context, state) =>
               MaterialPage(key: state.pageKey, child: const WelcomePage())),
+      // đăng ký
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: signupRoute,
@@ -58,6 +60,7 @@ final router = GoRouter(
                 pageBuilder: (context, state) => MaterialPage(
                     key: state.pageKey,
                     child: const ChangeInfoAfterSignupPage())),
+            // sau khi đăng ký bay vào đây xác thực mã code gửi về
             GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
                 path: "verify",
@@ -76,6 +79,7 @@ final router = GoRouter(
                 pageBuilder: (context, state) => MaterialPage(
                     key: state.pageKey, child: const VerifyForgetPasPage())),
           ]),
+      // login page --> k có account nào đc lưu, và đang login (feedRoute)
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: loginRoute,
@@ -83,6 +87,7 @@ final router = GoRouter(
             return MaterialPage(key: state.pageKey, child: const LoginPage());
           },
           routes: [
+            // nếu có listAccount được save
             GoRoute(
                 parentNavigatorKey: rootNavigatorKey,
                 path: "saved",
