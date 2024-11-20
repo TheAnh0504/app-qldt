@@ -21,7 +21,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
     return null;
   }
 
-  Future<void> login(String username, String password) async {
+  Future<void> login(String email, String password) async {
     // đặt trạng thái provider sang loading, biểu thị ứng dụng đang xử lý đăng nhập
     state = const AsyncValue.loading();
     try {
@@ -29,10 +29,11 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
       // chứa các phương thức API và dữ liệu cục bộ.
       var authRepository = (await ref.read(authRepositoryProvider.future));
       state = await authRepository.api
-          .login(username, password)
+          .login(email, password)
           .then<AsyncValue<AccountModel?>>((value) async {
             final account = AccountModel(
                 email: value["data"]["email"],
+                password: password,
                 id: value["data"]["id"],
                 ho: value["data"]["ho"],
                 ten: value["data"]["ten"],

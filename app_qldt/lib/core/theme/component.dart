@@ -190,12 +190,13 @@ class _DateInputState extends State<DateInput> {
 }
 
 class VerifyCodeInput extends StatelessWidget {
-  const VerifyCodeInput(
-      {required this.onCompleted,
-      required this.isError,
-      this.onChanged,
-      super.key,
-      this.errorText});
+  const VerifyCodeInput({
+    required this.onCompleted,
+    required this.isError,
+    this.onChanged,
+    super.key,
+    this.errorText,
+  });
 
   final void Function(String) onCompleted;
   final void Function(String)? onChanged;
@@ -205,42 +206,61 @@ class VerifyCodeInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Pinput(
-        length: 6,
-        onCompleted: onCompleted,
-        forceErrorState: isError,
-        onChanged: onChanged,
-        errorTextStyle: TypeStyle.body5.copyWith(
-            color: Theme.of(context).colorScheme.error,
-            fontStyle: FontStyle.italic),
-        errorText: errorText,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        defaultPinTheme: PinTheme(
-            width: 56,
-            height: 56,
-            textStyle: TypeStyle.bodySemiBold,
-            decoration: BoxDecoration(
-                color: Palette.grey40,
-                borderRadius: BorderRadius.circular(20))),
-        focusedPinTheme: PinTheme(
-          width: 56,
-          height: 56,
-          textStyle: TypeStyle.bodySemiBold,
-          decoration: BoxDecoration(
-            color: Palette.grey40,
-            border: Border.all(color: Theme.of(context).colorScheme.primary),
-            borderRadius: BorderRadius.circular(20),
-          ),
+      length: 6,
+      onCompleted: onCompleted,
+      forceErrorState: isError,
+      onChanged: onChanged,
+      errorTextStyle: TypeStyle.body5.copyWith(
+        color: Theme.of(context).colorScheme.error,
+        fontStyle: FontStyle.italic,
+      ),
+      errorText: errorText,
+      inputFormatters: [
+        UpperCaseTextFormatter(), // Formatter chuyển chữ thành in hoa
+        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')), // Chỉ cho phép chữ và số
+      ],
+      defaultPinTheme: PinTheme(
+        width: 56,
+        height: 56,
+        textStyle: TypeStyle.bodySemiBold,
+        decoration: BoxDecoration(
+          color: Palette.grey40,
+          borderRadius: BorderRadius.circular(20),
         ),
-        errorPinTheme: PinTheme(
-          width: 56,
-          height: 56,
-          textStyle: TypeStyle.bodySemiBold,
-          decoration: BoxDecoration(
-            color: Palette.grey40,
-            border: Border.all(color: Theme.of(context).colorScheme.error),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ));
+      ),
+      focusedPinTheme: PinTheme(
+        width: 56,
+        height: 56,
+        textStyle: TypeStyle.bodySemiBold,
+        decoration: BoxDecoration(
+          color: Palette.grey40,
+          border: Border.all(color: Theme.of(context).colorScheme.primary),
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      errorPinTheme: PinTheme(
+        width: 56,
+        height: 56,
+        textStyle: TypeStyle.bodySemiBold,
+        decoration: BoxDecoration(
+          color: Palette.grey40,
+          border: Border.all(color: Theme.of(context).colorScheme.error),
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+    );
+  }
+}
+
+/// Formatter để chuyển chữ thường thành chữ in hoa
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return newValue.copyWith(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
   }
 }
 

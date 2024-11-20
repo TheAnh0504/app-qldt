@@ -8,6 +8,9 @@ import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/model/repositories/auth_repository.dart";
 import "package:app_qldt/controller/security_provider.dart";
 
+import "../model/entities/account_model.dart";
+import "account_provider.dart";
+
 final verifyCodeProvider = AsyncNotifierProvider.autoDispose
     .family<AsyncVerifyCodeNotifier, VerifyCodeState, VerifyCodeType>(
         AsyncVerifyCodeNotifier.new);
@@ -24,8 +27,11 @@ class AsyncVerifyCodeNotifier
     try {
       state = const AsyncLoading();
       final repo = await ref.read(authRepositoryProvider.future);
-      await repo.api.getVerifyCode(arg.name).then((value) {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      await repo.api.getVerifyCode(ref.watch(accountProvider).value!.email, ref.watch(accountProvider).value!.password).then((value) {
         print("code: $value");
+        var account = authRepository.local.readCurrentAccount()?.copyWith(verifyCode: value["verify_code"]);
+        authRepository.local.updateCurrentAccount(account!);
         state = const AsyncData(VerifyCodeState.sent);
       });
     } on Map<String, dynamic> catch (map) {
@@ -40,11 +46,8 @@ class AsyncVerifyCodeNotifier
       state = const AsyncLoading();
       final repo = (await ref.read(authRepositoryProvider.future));
       await repo.api
-          .checkVerifyCode(verifyCode, arg.name)
+          .checkVerifyCode(verifyCode, repo.local.readCurrentAccount()!.email)
           .then((value) => state = const AsyncData(VerifyCodeState.success));
-      if (arg == VerifyCodeType.first_login) {
-        ref.invalidate(securityNotificationProvider);
-      }
     } on Map<String, dynamic> catch (map) {
       state = AsyncError(
           errorMap[map["code"]] ?? "Lỗi không xác định.", StackTrace.current);

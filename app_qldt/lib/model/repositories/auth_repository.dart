@@ -34,23 +34,23 @@ class AuthApiRepository {
     });
   }
 
-  Future<Map<String, dynamic>> login(String username, String password) {
-    return api.login(username, password).then((value) async {
+  Future<Map<String, dynamic>> login(String email, String password) {
+    return api.login(email, password).then((value) async {
       if (value["code"] == 1000) return value;
-      if (value["code"] == 1010) {
-        final res = await api.firstLogin(username, password);
-        if (res["code"] == 1000) {
-          throw {...res, "type": "firstLogin"};
-        }
-        throw res;
-      }
-      if (value["code"] == 1014) {
-        final res = await api.unlockAccount(username, password);
-        if (res["code"] == 1000) {
-          throw {...res, "type": "unlockAccount"};
-        }
-        throw res;
-      }
+      // if (value["code"] == 1010) {
+      //   final res = await api.firstLogin(username, password);
+      //   if (res["code"] == 1000) {
+      //     throw {...res, "type": "firstLogin"};
+      //   }
+      //   throw res;
+      // }
+      // if (value["code"] == 1014) {
+      //   final res = await api.unlockAccount(username, password);
+      //   if (res["code"] == 1000) {
+      //     throw {...res, "type": "unlockAccount"};
+      //   }
+      //   throw res;
+      // }
       throw value;
     });
   }
@@ -80,16 +80,16 @@ class AuthApiRepository {
     });
   }
 
-  Future<Map<String, dynamic>> getVerifyCode(String confirmWhat) {
-    return api.getVerifyCode(confirmWhat).then((value) {
+  Future<Map<String, dynamic>> getVerifyCode(String email, String password) {
+    return api.getVerifyCode(email, password).then((value) {
       if (value["code"] == 1000) return value;
       throw value;
     });
   }
 
   Future<Map<String, dynamic>> checkVerifyCode(
-      String verifyCode, String confirmWhat) {
-    return api.checkVerifyCode(verifyCode, confirmWhat).then((value) {
+      String verifyCode, String email) {
+    return api.checkVerifyCode(verifyCode, email).then((value) {
       if (value["code"] == 1000) return value;
       throw value;
     });

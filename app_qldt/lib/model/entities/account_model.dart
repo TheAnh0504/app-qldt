@@ -19,6 +19,7 @@ class AccountModel with _$AccountModel {
         @Default("") String ten,
         @Default("") String name,
         @Default("") String email,
+        @Default("") String password,
         @Default("") String accessToken,
         @Default("") String role,
         @Default("") String status,

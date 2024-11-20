@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:app_qldt/model/repositories/auth_repository.dart";
 import "package:flutter/material.dart";
 import "package:flutter/scheduler.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -21,7 +22,7 @@ class VerifyUserPage extends StatelessWidget {
         builder: (context) => AlertDialog.adaptive(
                 title: const Text("Xác nhận thoát"),
                 content: const Text(
-                    "Nếu thoát, bạn sẽ phải nhập mã xác nhận trong lần đăng nhập kế tiếp. Bạn có chắc chắn muốn thoát?"),
+                    "Nếu thoát, bạn sẽ phải liên hệ nhân viên hỗ trợ để hoàn thành đăng ký. Bạn có chắc chắn muốn thoát?"),
                 actions: [
                   TextButton(
                       onPressed: () => context.pop(false),
@@ -55,7 +56,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
   Timer? _timer;
-  int remainingSeconds = 180;
+  int remainingSeconds = 300;
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
   void setTimer() {
     _timer?.cancel();
-    remainingSeconds = 180;
+    remainingSeconds = 300;
     SchedulerBinding.instance.addPostFrameCallback((timestamp) {
       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
         if (!mounted) return;
@@ -84,8 +85,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(verifyCodeProvider(VerifyCodeType.add_user), (prev, next) {
+    ref.listen(verifyCodeProvider(VerifyCodeType.add_user), (prev, next) async {
       if (next.value == VerifyCodeState.success) {
+        await ref.read(accountProvider.notifier).login(ref.watch(accountProvider).value!.email, ref.watch(accountProvider).value!.password);
         context.go("$signupRoute/info");
       } else if (next.value == VerifyCodeState.sent) {
         setTimer();
@@ -96,8 +98,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
         decoration: const BoxDecoration(
             color: Palette.white,
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24), topRight: Radius.circular(24))),
-        margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 3),
+                topLeft: Radius.circular(0), topRight: Radius.circular(0))),
+        margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
         padding: const EdgeInsets.all(32),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -105,34 +107,35 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             children: [
               Center(
                 child: Text("NHẬP MÃ XÁC NHẬN",
-                    style: TypeStyle.title2.copyWith(
+                    style: TypeStyle.title1.copyWith(
                         color: Theme.of(context).colorScheme.primary)),
               ),
-              const SizedBox(height: 32),
-              Builder(builder: (context) {
-                return Card(
-                  elevation: 0,
-                  color: Palette.grey25,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 16),
-                    child: Text.rich(
-                        TextSpan(children: [
-                          const TextSpan(
-                              text:
-                                  "Mã xác nhận đã được gửi tới địa chỉ email "),
-                          TextSpan(
-                              text: ref.watch(accountProvider).value?.email,
-                              style: TypeStyle.body2
-                                  .copyWith(fontStyle: FontStyle.italic)),
-                          const TextSpan(text: ".")
-                        ], style: TypeStyle.body2),
-                        textAlign: TextAlign.center),
-                  ),
-                );
-              }),
+              const SizedBox(height: 24),
+              Center(
+                child: Builder(builder: (context) {
+                  return Card(
+                    elevation: 0,
+                    color: Palette.grey25,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16),
+                      child: Text.rich(
+                          TextSpan(children: [
+                            const TextSpan(
+                                text:
+                                "Mã xác nhận của bạn là "),
+                            TextSpan(
+                                text: ref.watch(accountProvider).value?.verifyCode,
+                                style: TypeStyle.body2
+                                    .copyWith(fontStyle: FontStyle.italic, color: Palette.red)),
+                          ], style: TypeStyle.body2),
+                          textAlign: TextAlign.center),
+                    ),
+                  );
+                }),
+              ),
               const SizedBox(height: 32),
               Builder(builder: (context) {
                 return VerifyCodeInput(
@@ -156,7 +159,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
               }),
               const SizedBox(height: 16),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Text("Không nhận được mã?", style: TypeStyle.body3),
+                const Text("Mã xác nhận hết hạn?", style: TypeStyle.body3),
                 TextButton(
                     onPressed: remainingSeconds == 0
                         ? () async {

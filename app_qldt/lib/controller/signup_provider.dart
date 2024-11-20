@@ -25,6 +25,7 @@ class AsyncSignupNotifier extends AutoDisposeAsyncNotifier<void> {
       await repo.api.signup(ho, ten, email, password, role).then((value) async {
         final account = AccountModel(
             email: email,
+            password: password,
             ho: ho,
             ten: ten,
             accessToken: "signup",
@@ -32,6 +33,7 @@ class AsyncSignupNotifier extends AutoDisposeAsyncNotifier<void> {
             verifyCode: value["verify_code"]
         );
         await repo.local.updateAccount(account);
+        await repo.local.updateCurrentAccount(account);
         Future(() {
           // ref
           //     .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
@@ -56,37 +58,23 @@ class AsyncChangeInfoAfterSignupNotifier
   void build() {}
 
   Future<void> changeInfoAfterSignup(
-      {required String firstName,
-      required String lastName,
-      required String phoneNumber,
-      required String address,
-      required DateTime dateOfBirth,
-      required String gender,
-      File? avatar,
-      String? email}) async {
+      {
+      File? avatar}) async {
     state = const AsyncValue.loading();
     try {
       var repo = (await ref.read(authRepositoryProvider.future));
-      var avatarUpload = avatar == null
-          ? null
-          : await ref.read(mediaRepositoryProvider).api.addImage(avatar);
-
-      await repo.api
-          .changeInfoAfterSignup(
-              firstName: firstName,
-              lastName: lastName,
-              phoneNumber: phoneNumber,
-              address: address,
-              dateOfBirth: dateOfBirth,
-              gender: gender,
-              avatar: avatarUpload,
-              email: email)
-          .then((value) {
-        // final account = ref.read(accountProvider).value!.copyWith(statusAccount: AccountStatus.ACTIVE);
-        final account = ref.read(accountProvider).value!;
-        repo.local.updateCurrentAccount(account);
+      if (avatar == null) {
+        final account = repo.local.readCurrentAccount()?.copyWith(avatar: "");
+        repo.local.updateCurrentAccount(account!);
+        repo.local.updateAccount(account);
         ref.read(accountProvider.notifier).forward(AsyncData(account));
-      });
+      } else {
+        var avatarUpload =  await ref.read(mediaRepositoryProvider).api.addImage(avatar);
+        final account = repo.local.readCurrentAccount()?.copyWith(avatar: avatarUpload);
+        repo.local.updateCurrentAccount(account!);
+        repo.local.updateAccount(account);
+        ref.read(accountProvider.notifier).forward(AsyncData(account));
+      }
     } on Map<String, dynamic> catch (map) {
       ref.read(accountProvider.notifier).forward(
           AsyncError(errorMap[map["code"]].toString(), StackTrace.current));

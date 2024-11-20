@@ -73,8 +73,7 @@ void main() async {
 
   // run 1 page + follow provider
   // runApp(
-  //   const ProviderScope(
-  //     observers: [SWProviderObserver()],  // Đưa SWProviderObserver vào danh sách observers
+  //   const ProviderScope(  // Đưa SWProviderObserver vào danh sách observers
   //     child: Test(),
   //   )
   // );

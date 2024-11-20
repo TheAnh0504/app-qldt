@@ -4,6 +4,7 @@ const errorMap = {
   9995: "Định dạng email không chính xác",
   9994: "Mật khẩu không hợp lệ (Giới hạn 6 - 15 ký tự)",
   9996: "Email đã tồn tại",
+  1011: "Định dạng email không chính xác",
 
   1001: "Tham số không hợp lệ.",
   1002: "Lỗi kết nối tới cơ sở dữ liệu.",
@@ -15,7 +16,7 @@ const errorMap = {
   1008: "Sai tài khoản hoặc mật khẩu.",
   1009: "Tài khoản không tồn tại.",
   1010: "Thiết bị không có trong hệ thống.",
-  1011: "Lỗi cơ sở dữ liệu. Hãy liên lạc với CSKH.",
+
   1012: "Mã xác nhận đã hết hạn. Hãy gửi lại mã xác nhận.",
   1013: "Tài khoản đã được xác nhận.",
   1014: "Tài khoản đã bị khóa.",

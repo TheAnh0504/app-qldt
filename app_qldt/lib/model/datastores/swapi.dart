@@ -113,54 +113,36 @@ class SWApi {
   }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    return dio.post("/sw3/auth/login", data: {
-      "username": email,
-      "password": password
+    return dio.post("/it4788/login", data: {
+      "email": email,
+      "password": password,
+      "deviceId": await FirebaseMessaging.instance.getToken()
     }).then((value) {
       return value.data;
     });
   }
 
-  Future<Map<String, dynamic>> getVerifyCode(String confirmWhat) async {
-    try {
-      if (confirmWhat != "first_login") throw 0;
-      final res = await dio.post("/sw3/auth/get_verify_code",
+  Future<Map<String, dynamic>> getVerifyCode(String email, String password) async {
+      final res = await dio.post("/it4788/get_verify_code",
           data: {
-            "confirmWhat": confirmWhat,
-            "confirmBy": "confirm_by_root_device"
-          },
-          options: Options(
-              headers: {"Authorization": "Bearer ${await accessToken}"}));
+            "email": email,
+            "password": password
+          });
       if (res.data["code"] != 1000) {
         throw 0;
       } else {
         return res.data;
       }
-    } catch (_) {
-      return dio
-          .post("/sw3/auth/get_verify_code",
-              data: {
-                "confirmWhat": confirmWhat,
-                "confirmBy": "confirm_by_mail"
-              },
-              options: Options(
-                  headers: {"Authorization": "Bearer ${await accessToken}"}))
-          .then((value) => value.data);
-    }
   }
 
-  /// [confirmWhat] : "unlock_acc" || "add_user"
   Future<Map<String, dynamic>> checkVerifyCode(
-      String code, String confirmWhat) async {
+      String code, String email) async {
     return dio
-        .post("/sw3/auth/check_verify_code",
+        .post("/it4788/check_verify_code",
             data: {
-              "codeVerify": code,
-              "confirmWhat": confirmWhat,
-              "confirmBy": "confirm_by_mail"
-            },
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+              "email": email,
+              "verify_code": code
+            })
         .then((value) => value.data);
   }
 
@@ -480,11 +462,10 @@ class SWApi {
 
   Future<Map<String, dynamic>> addImage(File file) async {
     return dio
-        .post("/sw3/post/add_image",
+        .post("it4788/change_info_after_signup",
             data: FormData.fromMap(
-                {"image": await MultipartFile.fromFile(file.path)}),
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+                {"file": await MultipartFile.fromFile(file.path),
+                "token": await accessToken}))
         .then((value) => value.data);
   }
 

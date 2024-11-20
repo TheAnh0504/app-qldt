@@ -25,6 +25,7 @@ mixin _$AccountModel {
   String get ten => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  String get password => throw _privateConstructorUsedError;
   String get accessToken => throw _privateConstructorUsedError;
   String get role => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
@@ -55,6 +56,7 @@ abstract class $AccountModelCopyWith<$Res> {
       String ten,
       String name,
       String email,
+      String password,
       String accessToken,
       String role,
       String status,
@@ -84,6 +86,7 @@ class _$AccountModelCopyWithImpl<$Res, $Val extends AccountModel>
     Object? ten = null,
     Object? name = null,
     Object? email = null,
+    Object? password = null,
     Object? accessToken = null,
     Object? role = null,
     Object? status = null,
@@ -112,6 +115,10 @@ class _$AccountModelCopyWithImpl<$Res, $Val extends AccountModel>
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
               as String,
       accessToken: null == accessToken
           ? _value.accessToken
@@ -159,6 +166,7 @@ abstract class _$$AccountModelImplCopyWith<$Res>
       String ten,
       String name,
       String email,
+      String password,
       String accessToken,
       String role,
       String status,
@@ -186,6 +194,7 @@ class __$$AccountModelImplCopyWithImpl<$Res>
     Object? ten = null,
     Object? name = null,
     Object? email = null,
+    Object? password = null,
     Object? accessToken = null,
     Object? role = null,
     Object? status = null,
@@ -211,6 +220,10 @@ class __$$AccountModelImplCopyWithImpl<$Res>
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      password: null == password
+          ? _value.password
+          : password // ignore: cast_nullable_to_non_nullable
               as String,
       accessToken: null == accessToken
           ? _value.accessToken
@@ -254,6 +267,7 @@ class _$AccountModelImpl implements _AccountModel {
       this.ten = "",
       this.name = "",
       this.email = "",
+      this.password = "",
       this.accessToken = "",
       this.role = "",
       this.status = "",
@@ -281,6 +295,9 @@ class _$AccountModelImpl implements _AccountModel {
   @override
   @JsonKey()
   final String email;
+  @override
+  @JsonKey()
+  final String password;
   @override
   @JsonKey()
   final String accessToken;
@@ -313,7 +330,7 @@ class _$AccountModelImpl implements _AccountModel {
 
   @override
   String toString() {
-    return 'AccountModel(id: $id, ho: $ho, ten: $ten, name: $name, email: $email, accessToken: $accessToken, role: $role, status: $status, avatar: $avatar, verifyCode: $verifyCode, classList: $classList, saved: $saved)';
+    return 'AccountModel(id: $id, ho: $ho, ten: $ten, name: $name, email: $email, password: $password, accessToken: $accessToken, role: $role, status: $status, avatar: $avatar, verifyCode: $verifyCode, classList: $classList, saved: $saved)';
   }
 
   @override
@@ -326,6 +343,8 @@ class _$AccountModelImpl implements _AccountModel {
             (identical(other.ten, ten) || other.ten == ten) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
             (identical(other.role, role) || other.role == role) &&
@@ -347,6 +366,7 @@ class _$AccountModelImpl implements _AccountModel {
       ten,
       name,
       email,
+      password,
       accessToken,
       role,
       status,
@@ -378,6 +398,7 @@ abstract class _AccountModel implements AccountModel {
       final String ten,
       final String name,
       final String email,
+      final String password,
       final String accessToken,
       final String role,
       final String status,
@@ -399,6 +420,8 @@ abstract class _AccountModel implements AccountModel {
   String get name;
   @override
   String get email;
+  @override
+  String get password;
   @override
   String get accessToken;
   @override
