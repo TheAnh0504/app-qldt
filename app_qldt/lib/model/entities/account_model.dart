@@ -14,8 +14,8 @@ class AccountModel with _$AccountModel {
   @JsonSerializable(explicitToJson: true)
   const factory AccountModel(
       {
-        @Default(0) int id,
-        @Default("") ho,
+        @Default("") String idAccount,
+        @Default("") String ho,
         @Default("") String ten,
         @Default("") String name,
         @Default("") String email,

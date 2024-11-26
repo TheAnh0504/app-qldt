@@ -18,10 +18,10 @@ class SWApi {
 
   SWApi(this.ref) {
     refreshTokenDio = Dio(BaseOptions(
-        baseUrl: "http://160.30.168.228:8080",
+        baseUrl: "http://157.66.24.126:8080",
         validateStatus: (status) => true));
     dio = Dio(BaseOptions(
-        baseUrl: "http://160.30.168.228:8080",
+        baseUrl: "http://157.66.24.126:8080",
         validateStatus: (status) => true))
       ..interceptors.add(QueuedInterceptorsWrapper(onRequest: (req, handler) {
         Logger.httpRequest(req);
@@ -30,36 +30,37 @@ class SWApi {
         Logger.httpResponse(res);
 
         if (res.data is String) {
-          res.data = {"code": 0, "message": "Lỗi không xác định"};
+          res.data = {"code": "0", "message": "Lỗi không xác định"};
           return handler.resolve(res);
         }
 
-        if (res.data["code"] == 1009) {
+        // bắt error access-token expired
+        if (res.data["code"] == "1009") {
           ref.read(accountProvider.notifier).logout(isSaved: false);
           return handler.next(res);
         }
 
-        if (res.data["code"] == 1007 || res.data["code"] == 1004) {
-          if (await accessToken.then((value) => value.toString()) ==
-                  res.requestOptions.headers["Authorization"].split(" ")[1] &&
-              await refreshToken != null) {
-            try {
-              var data = await refreshTokenDio.post("/sw3/auth/refresh", data: {
-                "refreshToken": await refreshToken
-              }).then((value) => value.data);
-              await setToken(
-                  data["data"]["accessToken"], data["data"]["refreshToken"]);
-            } catch (e) {
-              ref
-                  .read(accountProvider.notifier)
-                  .forward(const AsyncValue.data(null));
-              return handler.next(res);
-            }
-          }
-          res.requestOptions.headers["Authorization"] =
-              "Bearer ${await accessToken}";
-          return handler.resolve(await _retry(res.requestOptions));
-        }
+        // if (res.data["code"] == 1007 || res.data["code"] == 1004) {
+        //   if (await accessToken.then((value) => value.toString()) ==
+        //           res.requestOptions.headers["Authorization"].split(" ")[1] &&
+        //       await refreshToken != null) {
+        //     try {
+        //       var data = await refreshTokenDio.post("/sw3/auth/refresh", data: {
+        //         "refreshToken": await refreshToken
+        //       }).then((value) => value.data);
+        //       await setToken(
+        //           data["data"]["accessToken"], data["data"]["refreshToken"]);
+        //     } catch (e) {
+        //       ref
+        //           .read(accountProvider.notifier)
+        //           .forward(const AsyncValue.data(null));
+        //       return handler.next(res);
+        //     }
+        //   }
+        //   res.requestOptions.headers["Authorization"] =
+        //       "Bearer ${await accessToken}";
+        //   return handler.resolve(await _retry(res.requestOptions));
+        // }
         return handler.next(res);
       }));
   }
@@ -106,6 +107,7 @@ class SWApi {
       "email": email,
       "password": password,
       "uuid": await FirebaseMessaging.instance.getToken(),
+      "fcm_token": await FirebaseMessaging.instance.getToken(),
       "role": role
     }).then((value) {
       return value.data!;
@@ -116,7 +118,8 @@ class SWApi {
     return dio.post("/it4788/login", data: {
       "email": email,
       "password": password,
-      "deviceId": await FirebaseMessaging.instance.getToken()
+      "device_id": await FirebaseMessaging.instance.getToken(),
+      "fcm_token": await FirebaseMessaging.instance.getToken()
     }).then((value) {
       return value.data;
     });
@@ -128,7 +131,7 @@ class SWApi {
             "email": email,
             "password": password
           });
-      if (res.data["code"] != 1000) {
+      if (res.data["code"] != "1000") {
         throw 0;
       } else {
         return res.data;
@@ -148,10 +151,8 @@ class SWApi {
 
   Future<Map<String, dynamic>> logout() async {
     return dio
-        .post("/sw3/auth/logout",
-            data: {"refreshToken": await refreshToken},
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+        .post("/it4788/logout",
+            data: {"token": await accessToken})
         .then((value) => value.data);
   }
 
@@ -192,10 +193,9 @@ class SWApi {
   Future<Map<String, dynamic>> changePassword(
       String oldPassword, String newPassword) async {
     return dio
-        .post("/sw3/auth/change_password",
-            data: {"oldPassword": oldPassword, "newPassword": newPassword},
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+        .post("/it4788/change_password",
+            data: {"old_password": oldPassword, "new_password": newPassword, "token": await accessToken},
+            )
         .then((value) => value.data);
   }
 

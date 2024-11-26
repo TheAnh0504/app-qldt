@@ -19,7 +19,7 @@ class MediaApiRepository {
 
   Future<String> addImage(File image) {
     return swapi.addImage(image).then((value) {
-      if (value["code"] == 1000) return value["data"]["avatar"];
+      if (value["code"] == "1000") return value["data"]["avatar"];
       throw value;
     });
   }

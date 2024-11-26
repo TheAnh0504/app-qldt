@@ -20,8 +20,8 @@ AccountModel _$AccountModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AccountModel {
-  int get id => throw _privateConstructorUsedError;
-  dynamic get ho => throw _privateConstructorUsedError;
+  String get idAccount => throw _privateConstructorUsedError;
+  String get ho => throw _privateConstructorUsedError;
   String get ten => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
@@ -51,8 +51,8 @@ abstract class $AccountModelCopyWith<$Res> {
       _$AccountModelCopyWithImpl<$Res, AccountModel>;
   @useResult
   $Res call(
-      {int id,
-      dynamic ho,
+      {String idAccount,
+      String ho,
       String ten,
       String name,
       String email,
@@ -81,8 +81,8 @@ class _$AccountModelCopyWithImpl<$Res, $Val extends AccountModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? ho = freezed,
+    Object? idAccount = null,
+    Object? ho = null,
     Object? ten = null,
     Object? name = null,
     Object? email = null,
@@ -96,14 +96,14 @@ class _$AccountModelCopyWithImpl<$Res, $Val extends AccountModel>
     Object? saved = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      ho: freezed == ho
+      idAccount: null == idAccount
+          ? _value.idAccount
+          : idAccount // ignore: cast_nullable_to_non_nullable
+              as String,
+      ho: null == ho
           ? _value.ho
           : ho // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as String,
       ten: null == ten
           ? _value.ten
           : ten // ignore: cast_nullable_to_non_nullable
@@ -161,8 +161,8 @@ abstract class _$$AccountModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
-      dynamic ho,
+      {String idAccount,
+      String ho,
       String ten,
       String name,
       String email,
@@ -189,8 +189,8 @@ class __$$AccountModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
-    Object? ho = freezed,
+    Object? idAccount = null,
+    Object? ho = null,
     Object? ten = null,
     Object? name = null,
     Object? email = null,
@@ -204,11 +204,14 @@ class __$$AccountModelImplCopyWithImpl<$Res>
     Object? saved = null,
   }) {
     return _then(_$AccountModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      ho: freezed == ho ? _value.ho! : ho,
+      idAccount: null == idAccount
+          ? _value.idAccount
+          : idAccount // ignore: cast_nullable_to_non_nullable
+              as String,
+      ho: null == ho
+          ? _value.ho
+          : ho // ignore: cast_nullable_to_non_nullable
+              as String,
       ten: null == ten
           ? _value.ten
           : ten // ignore: cast_nullable_to_non_nullable
@@ -262,7 +265,7 @@ class __$$AccountModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$AccountModelImpl implements _AccountModel {
   const _$AccountModelImpl(
-      {this.id = 0,
+      {this.idAccount = "",
       this.ho = "",
       this.ten = "",
       this.name = "",
@@ -282,10 +285,10 @@ class _$AccountModelImpl implements _AccountModel {
 
   @override
   @JsonKey()
-  final int id;
+  final String idAccount;
   @override
   @JsonKey()
-  final dynamic ho;
+  final String ho;
   @override
   @JsonKey()
   final String ten;
@@ -330,7 +333,7 @@ class _$AccountModelImpl implements _AccountModel {
 
   @override
   String toString() {
-    return 'AccountModel(id: $id, ho: $ho, ten: $ten, name: $name, email: $email, password: $password, accessToken: $accessToken, role: $role, status: $status, avatar: $avatar, verifyCode: $verifyCode, classList: $classList, saved: $saved)';
+    return 'AccountModel(idAccount: $idAccount, ho: $ho, ten: $ten, name: $name, email: $email, password: $password, accessToken: $accessToken, role: $role, status: $status, avatar: $avatar, verifyCode: $verifyCode, classList: $classList, saved: $saved)';
   }
 
   @override
@@ -338,8 +341,9 @@ class _$AccountModelImpl implements _AccountModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AccountModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            const DeepCollectionEquality().equals(other.ho, ho) &&
+            (identical(other.idAccount, idAccount) ||
+                other.idAccount == idAccount) &&
+            (identical(other.ho, ho) || other.ho == ho) &&
             (identical(other.ten, ten) || other.ten == ten) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
@@ -361,8 +365,8 @@ class _$AccountModelImpl implements _AccountModel {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      id,
-      const DeepCollectionEquality().hash(ho),
+      idAccount,
+      ho,
       ten,
       name,
       email,
@@ -393,8 +397,8 @@ class _$AccountModelImpl implements _AccountModel {
 
 abstract class _AccountModel implements AccountModel {
   const factory _AccountModel(
-      {final int id,
-      final dynamic ho,
+      {final String idAccount,
+      final String ho,
       final String ten,
       final String name,
       final String email,
@@ -411,9 +415,9 @@ abstract class _AccountModel implements AccountModel {
       _$AccountModelImpl.fromJson;
 
   @override
-  int get id;
+  String get idAccount;
   @override
-  dynamic get ho;
+  String get ho;
   @override
   String get ten;
   @override

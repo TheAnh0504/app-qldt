@@ -80,7 +80,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
                 [feedRoute, monitorRoute, profileRoute, settingsRoute][value]),
             destinations: [
               const NavigationDestination(
-                  icon: FaIcon(FaIcons.house), label: "Bảng tin"),
+                  icon: FaIcon(FaIcons.house), label: "Trang chủ"),
               const NavigationDestination(
                   icon: FaIcon(FaIcons.chartLine), label: "Giám sát"),
               const NavigationDestination(

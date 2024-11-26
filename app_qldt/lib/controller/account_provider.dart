@@ -34,14 +34,14 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
             final account = AccountModel(
                 email: value["data"]["email"],
                 password: password,
-                id: value["data"]["id"],
+                idAccount: value["data"]["id"],
                 ho: value["data"]["ho"],
                 ten: value["data"]["ten"],
                 name: value["data"]["name"],
                 accessToken: value["data"]["token"],
                 role: value["data"]["role"],
                 status: value["data"]["status"],
-                avatar: value["data"]["avatar"],
+                avatar: value["data"]["avatar"] ?? "",
                 classList: value["data"]["class_list"]
             );
             authRepository.local.updateAccount(account);

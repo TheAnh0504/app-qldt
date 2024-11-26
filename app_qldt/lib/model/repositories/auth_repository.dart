@@ -29,14 +29,14 @@ class AuthApiRepository {
 
   Future<Map<String, dynamic>> signup(String ho, String ten, String email, String password, String role) {
     return api.signup(ho, ten, email, password, role).then((value) {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       throw value;
     });
   }
 
   Future<Map<String, dynamic>> login(String email, String password) {
     return api.login(email, password).then((value) async {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       // if (value["code"] == 1010) {
       //   final res = await api.firstLogin(username, password);
       //   if (res["code"] == 1000) {
@@ -58,7 +58,7 @@ class AuthApiRepository {
   Future<Map<String, dynamic>> changePassword(
       String oldPassword, String newPassword) {
     return api.changePassword(oldPassword, newPassword).then((value) async {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       throw value;
     });
   }
@@ -82,7 +82,7 @@ class AuthApiRepository {
 
   Future<Map<String, dynamic>> getVerifyCode(String email, String password) {
     return api.getVerifyCode(email, password).then((value) {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       throw value;
     });
   }
@@ -90,7 +90,7 @@ class AuthApiRepository {
   Future<Map<String, dynamic>> checkVerifyCode(
       String verifyCode, String email) {
     return api.checkVerifyCode(verifyCode, email).then((value) {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       throw value;
     });
   }
@@ -121,7 +121,7 @@ class AuthApiRepository {
 
   Future<Map<String, dynamic>> logout() {
     return api.logout().then((value) {
-      if (value["code"] == 1000) return value;
+      if (value["code"] == "1000") return value;
       throw value;
     });
   }

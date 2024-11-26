@@ -8,8 +8,8 @@ part of 'account_model.dart';
 
 _$AccountModelImpl _$$AccountModelImplFromJson(Map<String, dynamic> json) =>
     _$AccountModelImpl(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      ho: json['ho'] ?? "",
+      idAccount: json['idAccount'] as String? ?? "",
+      ho: json['ho'] as String? ?? "",
       ten: json['ten'] as String? ?? "",
       name: json['name'] as String? ?? "",
       email: json['email'] as String? ?? "",
@@ -25,7 +25,7 @@ _$AccountModelImpl _$$AccountModelImplFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$$AccountModelImplToJson(_$AccountModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'idAccount': instance.idAccount,
       'ho': instance.ho,
       'ten': instance.ten,
       'name': instance.name,

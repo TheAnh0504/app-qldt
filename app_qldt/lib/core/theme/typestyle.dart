@@ -19,6 +19,13 @@ class TypeStyle {
       fontSize: 20,
       letterSpacing: 0.0,
       height: 1.2);
+  static const title1White = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 20,
+      letterSpacing: 0.0,
+      height: 1.2,
+      color: Colors.white
+  );
   static const title2 = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,

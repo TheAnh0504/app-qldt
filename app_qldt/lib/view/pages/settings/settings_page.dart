@@ -59,53 +59,53 @@ class _BuildBody extends ConsumerWidget {
                 trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
           ]),
           const SizedBox(height: 16),
-          ListTileSection(title: "Hỗ trợ", tiles: [
-            ListTile(
-                onTap: () => Navigator.push(
-                    rootNavigatorKey.currentContext!,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsInfoPage())),
-                leading: const FaIcon(FaIcons.circleInfo),
-                title: const Text("Thông tin"),
-                trailing: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text("v1.0.0"),
-                    SizedBox(width: 16),
-                    FaIcon(FaIcons.chevronRight, size: 20),
-                  ],
-                )),
-            ListTile(
-                onTap: () {
-                  launchUrl(Uri.parse("market://search?q=app_qldt&c=apps"));
-                },
-                leading: const FaIcon(FaIcons.solidStar),
-                title: const Text("Đánh giá 5 sao"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  launchUrl(Uri(
-                      scheme: 'mailto',
-                      path: 'ntd271102@gmail.com',
-                      queryParameters: {
-                        'subject': '[app_qldt][Feedback] <Nội dung>'
-                      }));
-                },
-                leading: const FaIcon(FaIcons.envelopesBulk),
-                title: const Text("Phản hồi"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingsHelpPage()));
-                },
-                leading: const FaIcon(FaIcons.solidCircleQuestion),
-                title: const Text("Hỗ trợ"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-          ]),
-          const SizedBox(height: 16),
+          // ListTileSection(title: "Hỗ trợ", tiles: [
+          //   ListTile(
+          //       onTap: () => Navigator.push(
+          //           rootNavigatorKey.currentContext!,
+          //           MaterialPageRoute(
+          //               builder: (context) => const SettingsInfoPage())),
+          //       leading: const FaIcon(FaIcons.circleInfo),
+          //       title: const Text("Thông tin"),
+          //       trailing: const Row(
+          //         mainAxisSize: MainAxisSize.min,
+          //         children: [
+          //           Text("v1.0.0"),
+          //           SizedBox(width: 16),
+          //           FaIcon(FaIcons.chevronRight, size: 20),
+          //         ],
+          //       )),
+          //   ListTile(
+          //       onTap: () {
+          //         launchUrl(Uri.parse("market://search?q=app_qldt&c=apps"));
+          //       },
+          //       leading: const FaIcon(FaIcons.solidStar),
+          //       title: const Text("Đánh giá 5 sao"),
+          //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+          //   ListTile(
+          //       onTap: () {
+          //         launchUrl(Uri(
+          //             scheme: 'mailto',
+          //             path: 'ntd271102@gmail.com',
+          //             queryParameters: {
+          //               'subject': '[app_qldt][Feedback] <Nội dung>'
+          //             }));
+          //       },
+          //       leading: const FaIcon(FaIcons.envelopesBulk),
+          //       title: const Text("Phản hồi"),
+          //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+          //   ListTile(
+          //       onTap: () {
+          //         Navigator.push(
+          //             rootNavigatorKey.currentContext!,
+          //             MaterialPageRoute(
+          //                 builder: (context) => const SettingsHelpPage()));
+          //       },
+          //       leading: const FaIcon(FaIcons.solidCircleQuestion),
+          //       title: const Text("Hỗ trợ"),
+          //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+          // ]),
+          // const SizedBox(height: 16),
           ListTileSection(title: "Bảo mật", tiles: [
             ListTile(
                 onTap: () {
@@ -118,53 +118,53 @@ class _BuildBody extends ConsumerWidget {
                 leading: const FaIcon(FaIcons.key),
                 title: const Text("Đổi mật khẩu"),
                 trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const SettingsLockAccountPage()));
-                },
-                leading: const FaIcon(FaIcons.userLock),
-                title: const Text("Khóa tài khoản"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const SettingsDeviceListPage()));
-                },
-                leading: const FaIcon(FaIcons.mobile),
-                title: const Text("Danh sách thiết bị"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const SettingsSecurityNotiPage()));
-                },
-                leading: Badge(
-                    isLabelVisible:
-                        ref.watch(securityNotificationProvider).value != null,
-                    child: const FaIcon(FaIcons.circleExclamation)),
-                title: const Text("Thông báo bảo mật"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-            ListTile(
-                onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const SettingsDigitalSignaturePage()));
-                },
-                leading: const FaIcon(FaIcons.mobileScreen),
-                title: const Text("Xác thực trên thiết bị gốc"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+            // ListTile(
+            //     onTap: () {
+            //       Navigator.push(
+            //           rootNavigatorKey.currentContext!,
+            //           MaterialPageRoute(
+            //               builder: (context) =>
+            //                   const SettingsLockAccountPage()));
+            //     },
+            //     leading: const FaIcon(FaIcons.userLock),
+            //     title: const Text("Khóa tài khoản"),
+            //     trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+            // ListTile(
+            //     onTap: () {
+            //       Navigator.push(
+            //           rootNavigatorKey.currentContext!,
+            //           MaterialPageRoute(
+            //               builder: (context) =>
+            //                   const SettingsDeviceListPage()));
+            //     },
+            //     leading: const FaIcon(FaIcons.mobile),
+            //     title: const Text("Danh sách thiết bị"),
+            //     trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+            // ListTile(
+            //     onTap: () {
+            //       Navigator.push(
+            //           rootNavigatorKey.currentContext!,
+            //           MaterialPageRoute(
+            //               builder: (context) =>
+            //                   const SettingsSecurityNotiPage()));
+            //     },
+            //     leading: Badge(
+            //         isLabelVisible:
+            //             ref.watch(securityNotificationProvider).value != null,
+            //         child: const FaIcon(FaIcons.circleExclamation)),
+            //     title: const Text("Thông báo bảo mật"),
+            //     trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+            // ListTile(
+            //     onTap: () {
+            //       Navigator.push(
+            //           rootNavigatorKey.currentContext!,
+            //           MaterialPageRoute(
+            //               builder: (context) =>
+            //                   const SettingsDigitalSignaturePage()));
+            //     },
+            //     leading: const FaIcon(FaIcons.mobileScreen),
+            //     title: const Text("Xác thực trên thiết bị gốc"),
+            //     trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
           ]),
           const Divider(),
           ListTileSection(title: "", tiles: [

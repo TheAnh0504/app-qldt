@@ -51,11 +51,16 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCWYy_xtir__PRS7HS7oj0UMqlSVHHJJic',
-    appId: '1:897529918419:android:64c13798f0071cccf9f526',
-    messagingSenderId: '897529918419',
-    projectId: 'app-qldt',
-    storageBucket: 'app-qldt.firebasestorage.app',
+    // current_key
+    apiKey: 'AIzaSyD_ZD2aFvMCId2fWQ--byva2YQrpt2C1gU',
+    // mobilesdk_app_id
+    appId: '1:844626516109:android:1c122a7d1d7acc8ffd2ac4',
+    // project_number
+    messagingSenderId: '844626516109',
+    // project_id
+    projectId: 'crossplatform-it4788-f38e0',
+    // storage_bucket
+    storageBucket: 'crossplatform-it4788-f38e0.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

@@ -23,10 +23,7 @@ class AsyncChangePasswordNotifier extends AutoDisposeAsyncNotifier<void> {
       await repo.api
           .changePassword(oldPassword, newPassword)
           .then((value) async {
-        // final account = ref.read(accountProvider).requireValue!.copyWith(
-        //     statusAccount: AccountStatus.values
-        //         .firstWhere((e) => e.name == value["data"]["statusAccount"]));
-        final account = ref.read(accountProvider).requireValue!;
+        final account = ref.read(accountProvider).requireValue!.copyWith(password: newPassword);
         repo.local.updateAccount(account);
         Future.microtask(() {
           ref.read(accountProvider.notifier).forward(AsyncData(account));
