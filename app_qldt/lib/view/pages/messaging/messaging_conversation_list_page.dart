@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_qldt/controller/account_provider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,17 @@ class MessagingConversationListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: context.pop, icon: const FaIcon(FaIcons.arrowLeft)),
+          // leading: IconButton(
+          //     onPressed: context.pop, icon: const FaIcon(FaIcons.arrowLeft)),
+          backgroundColor: Theme.of(context).colorScheme.primary,
           centerTitle: true,
-          title: const Text("Nhắn tin", style: TypeStyle.title1),
+          title: const Align(
+            alignment: Alignment(0.2, 0), // Căn phải một chút
+            child: Text("Tin nhắn", style: TypeStyle.title1White),
+          ),
           actions: [
             IconButton(
-                onPressed: () {}, icon: const FaIcon(FaIcons.penToSquare))
+                onPressed: () {}, icon: const FaIcon(FaIcons.penToSquare), color: Palette.white,)
           ],
         ),
         body: const _BuildBody());

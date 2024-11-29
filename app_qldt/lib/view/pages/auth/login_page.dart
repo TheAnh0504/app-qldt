@@ -29,11 +29,12 @@ class LoginPage extends ConsumerWidget {
         resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).colorScheme.primary,
         appBar: AppBar(
-            elevation: 0,
+            elevation: 50,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             leading: context.canPop()
                 ? IconButton(
                     onPressed: () => context.pop(),
-                    icon: const FaIcon(FaIcons.arrowLeft))
+                    icon: const FaIcon(FaIcons.arrowLeft, color: Palette.white,))
                 : null),
         body: const _BuildBody(),
       ),

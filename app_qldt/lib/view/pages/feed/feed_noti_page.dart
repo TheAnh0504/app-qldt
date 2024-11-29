@@ -8,6 +8,7 @@ import "package:app_qldt/controller/push_notification_provider.dart";
 import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/core/theme/typestyle.dart";
 import "package:app_qldt/model/entities/push_noti.dart";
+import "package:app_qldt/core/theme/palette.dart";
 
 class FeedNotiPage extends ConsumerStatefulWidget {
   const FeedNotiPage({super.key});
@@ -36,11 +37,14 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: const Text("Thông báo"),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: const Align(
+            alignment: Alignment(-0.25, 0), // Căn phải một chút
+            child: Text("Thông báo", style: TypeStyle.title1White),
+          ),
           leading: IconButton(
               onPressed: () => context.pop(),
-              icon: const FaIcon(FaIcons.arrowLeft))),
+              icon: const FaIcon(FaIcons.arrowLeft, color: Palette.white,))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: PagedListView<int, PushNoti>(

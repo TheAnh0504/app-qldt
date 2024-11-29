@@ -216,12 +216,12 @@ class AuthLocalRepository {
 
   Future<bool> updateAccount(AccountModel account) async {
     final currentAccounts = pref.getAccounts();
-    final updateIndex = currentAccounts.indexOf(account);
+    final updateIndex = currentAccounts.indexWhere((acc) => acc.email == account.email);
     if (updateIndex == -1) {
       return pref.setAccounts([account, ...currentAccounts]);
     }
 
-    currentAccounts[updateIndex] == account;
+    currentAccounts[updateIndex] = account;
     return pref.setAccounts(currentAccounts);
   }
 

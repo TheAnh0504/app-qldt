@@ -15,6 +15,7 @@ import "package:app_qldt/view/pages/feed/feed_post.dart";
 import "package:app_qldt/controller/post_provider.dart";
 import "package:app_qldt/controller/user_provider.dart";
 import "package:app_qldt/core/theme/palette.dart";
+import "package:intl/intl.dart";
 
 class FeedPage extends ConsumerWidget {
   const FeedPage({super.key});
@@ -23,7 +24,7 @@ class FeedPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        leadingWidth: 50,
+        // leadingWidth: 50,
         backgroundColor: Theme.of(context).colorScheme.primary,
         // leading: GestureDetector(
         //   onTap: () => context.push(profileRoute),
@@ -84,9 +85,32 @@ class _BuildBody extends ConsumerStatefulWidget {
 }
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
+  // Danh sách trạng thái màu
+  List<Color> listColor = List.generate(7, (index) => Colors.grey[300]!);
+  int selectedDayIndex = -1;
+  bool schedule = false;
   @override
   Widget build(BuildContext context) {
     var avatar = ref.watch(accountProvider).value?.avatar;
+    final currentDate = DateTime.now();
+    final formattedDate = DateFormat('dd/MM/yyyy').format(currentDate);
+    // Tính ngày đầu tiên của tuần (Thứ Hai)
+    final firstDayOfWeek = currentDate.subtract(Duration(days: currentDate.weekday - 1));
+    final List<String> listDayOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    // Tạo danh sách các ngày trong tuần
+    final listDay = List.generate(7, (index) {
+      final day = firstDayOfWeek.add(Duration(days: index));
+      return DateFormat('dd').format(day);
+    });
+    final indexDay = listDay.indexOf(DateFormat('dd').format(currentDate));
+    // Đặt màu đỏ cho ngày hôm nay
+    // Đặt màu đỏ cho ngày hôm nay nếu chưa có ngày nào được chọn
+    if (selectedDayIndex == -1) {
+      selectedDayIndex = indexDay;
+      listColor[selectedDayIndex] = Palette.red;
+    }
+    print(listDay);
+    
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -112,7 +136,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       )
                           : CircleAvatar(
                           backgroundImage: ExtendedNetworkImageProvider(
-                              avatar ?? "https://picsum.photos/1024"),
+                              avatar!.startsWith('https://drive.google.com/')
+                                  ? 'https://drive.google.com/uc?id=${avatar.split('/d/')[1].split('/')[0]}'
+                                  : "https://picsum.photos/1024"),
                           radius: 20)
                       ,
                     ),
@@ -123,19 +149,19 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                 const SizedBox(width: 12),
 
                 // Phần text căn trái
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start, // Căn trái cho cả 2 dòng text
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa theo trục dọc trong `Row`
                     children: [
                       Text(
-                        "Hoàng Thế Anh | 20204508",
+                        "${ref.watch(accountProvider).value!.name} | ${ref.watch(accountProvider).value!.idAccount}",
                         style: TypeStyle.body1,
                         overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
                         maxLines: 1,
                       ),
                       Text(
-                        "Giảng viên or Sinh viên",
+                        ref.watch(accountProvider).value!.role == "STUDENT" ? "Sinh viên": "Giảng viên",
                         style: TypeStyle.body4,
                         overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
                         maxLines: 1,
@@ -144,60 +170,191 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   ),
                 ),
 
-                // Spacer để đẩy button sang phải
+                // button phải
                 IconButton(
-                  icon: const Icon(Icons.calendar_month),
+                  icon: const Icon(Icons.calendar_month, color: Palette.red100,),
                   onPressed: () {
-                    // Xử lý khi nhấn nút
+                    setState(() {
+                      schedule = !schedule;
+                    });
                   },
                 ),
               ],
             ),
           ),
 
-          // 2 IconButton với text mô tả
+          Container(
+            margin: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.white, // Màu nền trắng
+              borderRadius: BorderRadius.circular(12.0), // Bo góc
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3), // Màu bóng mờ
+                  blurRadius: 8, // Độ mờ của bóng
+                  offset: Offset(0, 4), // Vị trí bóng
+                ),
+              ],
+            ),
+            child: schedule
+                ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Today: $formattedDate",
+                        style: TypeStyle.body1,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          setState(() {
+                            schedule = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  // tuần trong tháng
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(7, (index) {
+                      return Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              listDayOfWeek[index],
+                              style: TypeStyle.body2,
+                            ),
+                            Material(
+                              color: listColor[index], // Màu nền xám
+                              shape: const CircleBorder(), // Tạo hình tròn xung quanh
+                              child: IconButton(
+                                icon: Text(
+                                  listDay[index],
+                                  style: TypeStyle.body2, // Màu chữ
+                                ),
+                                iconSize: 48, // Kích thước vùng ấn
+                                onPressed: () {
+                                  setState(() {
+                                    for (int i = 0; i < listColor.length; i++) {
+                                      listColor[i] = i == index ? Palette.red : Colors.grey[300]!;
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Colors.black,      // Màu đường kẻ
+                    thickness: 1,             // Độ dày của đường kẻ
+                    indent: 50,                // Khoảng cách từ trái
+                    endIndent: 50,             // Khoảng cách từ phải
+                  ),
+                  const SizedBox(height: 16),
+                  // TODO: 1.info class in day
+                ],
+              ),
+            )
+                : const SizedBox(),
+          ),
+          // TODO: 1. go to other page
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
               children: [
-                // IconButton 1
-                Expanded( // Cho phép chia đều không gian giữa các Column
+                // Ô vuông 1
+                Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.thumb_up),
-                        iconSize: 40.0, // Kích thước icon lớn hơn
-                        onPressed: () {
-                          // Xử lý khi nhấn nút 1
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 1
+                          print("Ô vuông 1 được nhấn!");
                         },
+                        child: Container(
+                          width: 80, // Chiều rộng ô vuông
+                          height: 80, // Chiều cao ô vuông
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Màu nền của ô
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Màu đổ bóng
+                                blurRadius: 8.0, // Bán kính làm mờ bóng
+                                offset: Offset(2, 2), // Vị trí bóng
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 40.0, // Kích thước icon
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
                       ),
+                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
                       const Text(
                         "Thời khóa biểu",
-                        style: TypeStyle.body1,
+                        style: TextStyle(fontSize: 14.0),
                         overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
                         maxLines: 1,
                       ),
                     ],
                   ),
                 ),
-                // IconButton 2
-                Expanded( // Cho phép chia đều không gian giữa các Column
+                // Ô vuông 2
+                Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.comment),
-                        iconSize: 40.0,
-                        onPressed: () {
-                          // Xử lý cho nút 2
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 2
+                          print("Ô vuông 2 được nhấn!");
                         },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.comment,
+                              size: 40.0,
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
                       ),
+                      const SizedBox(height: 8),
                       const Text(
-                        "Thời khóa biểu",
-                        style: TypeStyle.body1,
-                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+                        "Nhận xét",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ],
@@ -206,6 +363,383 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+              children: [
+                // Ô vuông 1
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 1
+                          print("Ô vuông 1 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80, // Chiều rộng ô vuông
+                          height: 80, // Chiều cao ô vuông
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Màu nền của ô
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Màu đổ bóng
+                                blurRadius: 8.0, // Bán kính làm mờ bóng
+                                offset: Offset(2, 2), // Vị trí bóng
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 40.0, // Kích thước icon
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+                      const Text(
+                        "Thời khóa biểu",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                // Ô vuông 2
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 2
+                          print("Ô vuông 2 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.comment,
+                              size: 40.0,
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Nhận xét",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+              children: [
+                // Ô vuông 1
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 1
+                          print("Ô vuông 1 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80, // Chiều rộng ô vuông
+                          height: 80, // Chiều cao ô vuông
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Màu nền của ô
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Màu đổ bóng
+                                blurRadius: 8.0, // Bán kính làm mờ bóng
+                                offset: Offset(2, 2), // Vị trí bóng
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 40.0, // Kích thước icon
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+                      const Text(
+                        "Thời khóa biểu",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                // Ô vuông 2
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 2
+                          print("Ô vuông 2 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.comment,
+                              size: 40.0,
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Nhận xét",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+              children: [
+                // Ô vuông 1
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 1
+                          print("Ô vuông 1 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80, // Chiều rộng ô vuông
+                          height: 80, // Chiều cao ô vuông
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Màu nền của ô
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Màu đổ bóng
+                                blurRadius: 8.0, // Bán kính làm mờ bóng
+                                offset: Offset(2, 2), // Vị trí bóng
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 40.0, // Kích thước icon
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+                      const Text(
+                        "Thời khóa biểu",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                // Ô vuông 2
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 2
+                          print("Ô vuông 2 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.comment,
+                              size: 40.0,
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Nhận xét",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+              children: [
+                // Ô vuông 1
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 1
+                          print("Ô vuông 1 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80, // Chiều rộng ô vuông
+                          height: 80, // Chiều cao ô vuông
+                          decoration: BoxDecoration(
+                            color: Colors.white, // Màu nền của ô
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26, // Màu đổ bóng
+                                blurRadius: 8.0, // Bán kính làm mờ bóng
+                                offset: Offset(2, 2), // Vị trí bóng
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.thumb_up,
+                              size: 40.0, // Kích thước icon
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+                      const Text(
+                        "Thời khóa biểu",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+                // Ô vuông 2
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          // Xử lý khi click vào ô vuông 2
+                          print("Ô vuông 2 được nhấn!");
+                        },
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 8.0,
+                                offset: Offset(2, 2),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.comment,
+                              size: 40.0,
+                              color: Palette.red100,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Nhận xét",
+                        style: TextStyle(fontSize: 14.0),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
 
 
         ],

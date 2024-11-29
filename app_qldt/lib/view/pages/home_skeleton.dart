@@ -25,6 +25,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        // TODO: 1. get info device and notify --> notify
         ref
           ..read(rootDeviceProvider.notifier)
           ..read(accessDeviceProvider.notifier)
@@ -42,7 +43,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
             builder: (_) => AlertDialog(
                   title: const Text("Thông báo"),
                   content: const Text(
-                      "Đã hết phiên đăng nhập. Vui lòng đăng nhập lại."),
+                      "Token hết hạn. Vui lòng đăng nhập lại"),
                   actions: [
                     TextButton(
                         onPressed: () => _.pop(), child: const Text("OK"))
@@ -61,7 +62,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
         bottomNavigationBar: NavigationBar(
             selectedIndex: ![
               feedRoute,
-              monitorRoute,
+              messagingRoute,
               profileRoute,
               settingsRoute
             ].contains(GoRouter.of(context)
@@ -70,19 +71,19 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
                     .uri
                     .toString())
                 ? 3
-                : [feedRoute, monitorRoute, profileRoute, settingsRoute]
+                : [feedRoute, messagingRoute, profileRoute, settingsRoute]
                     .indexOf(GoRouter.of(context)
                         .routeInformationProvider
                         .value
                         .uri
                         .toString()),
             onDestinationSelected: (value) => context.go(
-                [feedRoute, monitorRoute, profileRoute, settingsRoute][value]),
+                [feedRoute, messagingRoute, profileRoute, settingsRoute][value]),
             destinations: [
               const NavigationDestination(
                   icon: FaIcon(FaIcons.house), label: "Trang chủ"),
               const NavigationDestination(
-                  icon: FaIcon(FaIcons.chartLine), label: "Giám sát"),
+                  icon: FaIcon(FaIcons.solidComments), label: "Tin nhắn"),
               const NavigationDestination(
                   icon: FaIcon(FaIcons.solidCircleUser), label: "Hồ sơ"),
               NavigationDestination(

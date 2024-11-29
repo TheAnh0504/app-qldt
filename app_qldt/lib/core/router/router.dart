@@ -36,12 +36,12 @@ final router = GoRouter(
           path: splashRoute,
           pageBuilder: (context, state) =>
               MaterialPage(key: state.pageKey, child: const SplashPage())),
-      GoRoute(
-        parentNavigatorKey: rootNavigatorKey,
-        path: messagingRoute,
-        pageBuilder: (context, state) => MaterialPage(
-            key: state.pageKey, child: const MessagingConversationListPage()),
-      ),
+      // GoRoute(
+      //   parentNavigatorKey: rootNavigatorKey,
+      //   path: messagingRoute,
+      //   pageBuilder: (context, state) => MaterialPage(
+      //       key: state.pageKey, child: const MessagingConversationListPage()),
+      // ),
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: welcomeRoute,
@@ -145,8 +145,8 @@ final router = GoRouter(
             ),
             GoRoute(
               parentNavigatorKey: _shellNavigatorKey,
-              path: monitorRoute,
-              builder: (context, state) => const MonitorPage(),
+              path: messagingRoute,
+              builder: (context, state) => const MessagingConversationListPage(),
             ),
             GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,

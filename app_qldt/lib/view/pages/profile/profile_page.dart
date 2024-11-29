@@ -1,3 +1,5 @@
+import "package:app_qldt/controller/account_provider.dart";
+import "package:app_qldt/model/entities/account_model.dart";
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -27,17 +29,27 @@ class _BuildBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(userProvider).when(
+    return ref.watch(accountProvider).when(
         skipLoadingOnRefresh: false,
         data: (data) {
-          final displayName = data.displayName;
-          final avatar = data.avatar;
+          final idAccount = data?.idAccount;
+          var ho = data?.ho;
+          var ten = data?.ten;
+          final name = data?.name;
+          final email = data?.email;
+          final role = data?.role;
+          final status = data?.status;
+          var avatar = data?.avatar != ""
+              ? 'https://drive.google.com/uc?id=${data?.avatar.split('/d/')[1].split('/')[0]}'
+              : null;
+          var linkAvatarHust = 'https://drive.google.com/file/d/1RD5P0nSyYtL8DcSbaUDb7iBWUgK7MBEC/view?usp=sharing';
+          var avatarHust = 'https://drive.google.com/uc?id=${linkAvatarHust.split('/d/')[1].split('/')[0]}';
+          final classList = data?.classList;
           return RefreshIndicator(
             onRefresh: () async {
-              ref
-                ..invalidate(userProvider)
-                ..invalidate(userFollowerProvider)
-                ..invalidate(userFollowingProvider);
+              ref.invalidate(accountProvider);
+                // ..invalidate(userFollowerProvider)
+                // ..invalidate(userFollowingProvider);
             },
             child: CustomScrollView(
               slivers: [
@@ -47,7 +59,7 @@ class _BuildBody extends ConsumerWidget {
                   floating: true,
                   pinned: true,
                   stretch: true,
-                  title: Text(displayName),
+                  title: Text(name!),
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
                       children: [
@@ -55,9 +67,9 @@ class _BuildBody extends ConsumerWidget {
                           bottom: MediaQuery.sizeOf(context).height / 6,
                           child: GestureDetector(
                             onTap: () => context.push(
-                                "$imageRoute?url=https://picsum.photos/1024"),
+                                "$imageRoute?url=$avatarHust"),
                             child: Hero(
-                              tag: "https://picsum.photos/1024",
+                              tag: linkAvatarHust,
                               child: Container(
                                 clipBehavior: Clip.antiAlias,
                                 decoration: BoxDecoration(
@@ -74,7 +86,7 @@ class _BuildBody extends ConsumerWidget {
                                       colorFilter: const ColorFilter.mode(
                                           Colors.black54, BlendMode.darken),
                                       image: ExtendedNetworkImageProvider(
-                                          "https://picsum.photos/1024"),
+                                          avatarHust),
                                       fit: BoxFit.cover),
                                 ),
                               ),
@@ -96,8 +108,12 @@ class _BuildBody extends ConsumerWidget {
                                       color: Colors.white,
                                       shape: CircleBorder()),
                                   child: Hero(
-                                    tag: avatar ?? "https://picsum.photos/1024",
-                                    child: CircleAvatar(
+                                    tag: avatar ?? "Default avatar",
+                                    child: avatar == null
+                                        ? const CircleAvatar(
+                                      backgroundImage: AssetImage('images/avatar-trang.jpg'),
+                                      radius: 45,
+                                    ) : CircleAvatar(
                                         backgroundImage:
                                             ExtendedNetworkImageProvider(avatar ??
                                                 "https://picsum.photos/1024"),
@@ -107,15 +123,15 @@ class _BuildBody extends ConsumerWidget {
                               ),
                               Row(
                                 children: [
-                                  Text(displayName, style: TypeStyle.title1),
+                                  Text(name, style: TypeStyle.title1),
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () =>
-                                          handleShowContactInfo(context, data),
+                                          handleShowContactInfo(context, data!),
                                       icon: const FaIcon(FaIcons.addressCard)),
-                                  IconButton(
-                                      onPressed: handleShare,
-                                      icon: const FaIcon(FaIcons.share))
+                                  // IconButton(
+                                  //     onPressed: handleShare,
+                                  //     icon: const FaIcon(FaIcons.share))
                                 ],
                               ),
                               Card(
@@ -131,44 +147,44 @@ class _BuildBody extends ConsumerWidget {
                                       InkWell(
                                           onTap: () {},
                                           child: Text.rich(TextSpan(children: [
-                                            TextSpan(
-                                                text: ref
-                                                        .watch(
-                                                            userFollowingProvider)
-                                                        .value
-                                                        ?.length
-                                                        .toString() ??
-                                                    "0",
-                                                style: TypeStyle.body4.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(
-                                                text: " Đang theo dõi",
-                                                style: TypeStyle.body4.copyWith(
-                                                    color: Palette.grey70,
-                                                    fontWeight:
-                                                        FontWeight.w400))
+                                            // TextSpan(
+                                            //     text: ref
+                                            //             .watch(
+                                            //                 userFollowingProvider)
+                                            //             .value
+                                            //             ?.length
+                                            //             .toString() ??
+                                            //         "0",
+                                            //     style: TypeStyle.body4.copyWith(
+                                            //         fontWeight:
+                                            //             FontWeight.bold)),
+                                            // TextSpan(
+                                            //     text: " Đang theo dõi",
+                                            //     style: TypeStyle.body4.copyWith(
+                                            //         color: Palette.grey70,
+                                            //         fontWeight:
+                                            //             FontWeight.w400))
                                           ]))),
                                       InkWell(
                                           onTap: () {},
                                           child: Text.rich(TextSpan(children: [
-                                            TextSpan(
-                                                text: ref
-                                                        .watch(
-                                                            userFollowerProvider)
-                                                        .value
-                                                        ?.length
-                                                        .toString() ??
-                                                    "0",
-                                                style: TypeStyle.body4.copyWith(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            TextSpan(
-                                                text: " Người theo dõi",
-                                                style: TypeStyle.body4.copyWith(
-                                                    color: Palette.grey70,
-                                                    fontWeight:
-                                                        FontWeight.w400))
+                                            // TextSpan(
+                                            //     text: ref
+                                            //             .watch(
+                                            //                 userFollowerProvider)
+                                            //             .value
+                                            //             ?.length
+                                            //             .toString() ??
+                                            //         "0",
+                                            //     style: TypeStyle.body4.copyWith(
+                                            //         fontWeight:
+                                            //             FontWeight.bold)),
+                                            // TextSpan(
+                                            //     text: " Người theo dõi",
+                                            //     style: TypeStyle.body4.copyWith(
+                                            //         color: Palette.grey70,
+                                            //         fontWeight:
+                                            //             FontWeight.w400))
                                           ]))),
                                     ],
                                   ),
@@ -199,84 +215,90 @@ class _BuildBody extends ConsumerWidget {
   }
 
   Future<void> handleShowContactInfo(
-      BuildContext context, UserModel user) async {
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Palette.white,
-        showDragHandle: true,
-        builder: (context) => SingleChildScrollView(
-              child: Container(
-                  width: MediaQuery.sizeOf(context).width,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: const BoxDecoration(color: Palette.white),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15),
-                        child: Row(
-                          children: [
-                            const Text("Thông tin người dùng",
-                                style: TypeStyle.title1),
-                            const Spacer(),
-                            TextButton(
-                                onPressed: () {
-                                  rootNavigatorKey.currentContext
-                                      ?.go("$profileRoute/edit");
-                                },
-                                child: const Text("Chỉnh sửa"))
-                          ],
-                        ),
-                      ),
-                      ListTile(
-                          title: const Text("Tên", style: TypeStyle.body4),
-                          subtitle: Text(user.displayName,
-                              style: TypeStyle.body3.copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.primary))),
-                      if (user.email != null)
-                        InkWell(
-                          splashFactory: InkRipple.splashFactory,
-                          onTap: () =>
-                              launchUrl(Uri.parse("mailto:${user.email}")),
-                          child: ListTile(
-                              title:
-                                  const Text("Email", style: TypeStyle.body4),
-                              subtitle: Text(user.email!,
+      BuildContext context, AccountModel account) async {
+        showModalBottomSheet(
+            context: context,
+            backgroundColor: Palette.white,
+            showDragHandle: true,
+            builder: (context) => SingleChildScrollView(
+                  child: Container(
+                      width: MediaQuery.sizeOf(context).width,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: const BoxDecoration(color: Palette.white),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 15),
+                            child: Row(
+                              children: [
+                                 Text('Thông tin ${account.role == 'STUDENT' ? 'sinh viên' : 'giảng viên'}',
+                                    style: TypeStyle.title1),
+                                const Spacer(),
+                                TextButton(
+                                    onPressed: () {
+                                      rootNavigatorKey.currentContext
+                                          ?.go("$profileRoute/edit");
+                                    },
+                                    child: const Text("Chỉnh sửa"))
+                              ],
+                            ),
+                          ),
+                          ListTile(
+                              title: Text(account.role == 'STUDENT' ? 'Sinh viên' : 'Giảng viên', style: TypeStyle.body4),
+                              subtitle: Text(account.name,
                                   style: TypeStyle.body3.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary))),
-                        ),
-                      ListTile(
-                          title:
-                              const Text("Giới tính", style: TypeStyle.body4),
-                          subtitle: Text(user.gender.raw,
-                              style: TypeStyle.body3.copyWith(
-                                  color:
+                                      color:
+                                          Theme.of(context).colorScheme.primary))),
+                          InkWell(
+                            splashFactory: InkRipple.splashFactory,
+                            onTap: () =>
+                                launchUrl(Uri.parse("mailto:${account.email}")),
+                            child: ListTile(
+                                title:
+                                    const Text("Email", style: TypeStyle.body4),
+                                subtitle: Text(account.email,
+                                    style: TypeStyle.body3.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary))),
+                          ),
+                          ListTile(
+                              title: const Text("Id", style: TypeStyle.body4),
+                              subtitle: Text(account.idAccount,
+                                  style: TypeStyle.body3.copyWith(
+                                      color:
                                       Theme.of(context).colorScheme.primary))),
-                      InkWell(
-                        splashFactory: InkRipple.splashFactory,
-                        onTap: () =>
-                            launchUrl(Uri.parse("tel:${user.phoneNumber}")),
-                        child: ListTile(
-                            title: const Text("Số điện thoại",
-                                style: TypeStyle.body4),
-                            subtitle: Text(user.phoneNumber,
-                                style: TypeStyle.body3.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary))),
-                      ),
-                      ListTile(
-                          title: const Text("Địa chỉ", style: TypeStyle.body4),
-                          subtitle: Text(user.address,
-                              style: TypeStyle.body3.copyWith(
-                                  color:
+                          ListTile(
+                              title: const Text("Họ", style: TypeStyle.body4),
+                              subtitle: Text(account.ho,
+                                  style: TypeStyle.body3.copyWith(
+                                      color:
+                                          Theme.of(context).colorScheme.primary))),
+                          ListTile(
+                              title: const Text("Tên", style: TypeStyle.body4),
+                              subtitle: Text(account.ten,
+                                  style: TypeStyle.body3.copyWith(
+                                      color:
                                       Theme.of(context).colorScheme.primary))),
-                    ],
-                  )),
-            ));
-  }
+                          // InkWell(
+                          //   splashFactory: InkRipple.splashFactory,
+                          //   onTap: () =>
+                          //       launchUrl(Uri.parse("tel:${account.idAccount}")),
+                          //   child: ListTile(
+                          //       title: const Text("Số điện thoại",
+                          //           style: TypeStyle.body4),
+                          //       subtitle: Text(account.idAccount,
+                          //           style: TypeStyle.body3.copyWith(
+                          //               color: Theme.of(context)
+                          //                   .colorScheme
+                          //                   .primary))),
+                          // ),
+                        ],
+                      )
+                  ),
+            )
+        );
+      }
 }

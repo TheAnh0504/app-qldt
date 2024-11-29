@@ -81,9 +81,9 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
 
   Future<void> fastLogin(AccountModel account) async {
     var repo = (await ref.read(authRepositoryProvider.future));
-    // await repo.local.updateCurrentAccount(account.copyWith(statusAccount: AccountStatus.ACTIVE));
+    await repo.local.updateCurrentAccount(account);
     await repo.local.updateAccount(account);
-    // await repo.local.updateToken(account.accessToken, account.refreshToken);
+    await repo.local.updateToken(account.accessToken);
     state = AsyncValue.data(repo.local.readCurrentAccount());
   }
 

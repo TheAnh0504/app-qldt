@@ -26,7 +26,7 @@ class AccountModel with _$AccountModel {
         @Default("") String avatar,
         @Default("") String verifyCode,
         @Default([]) List<dynamic>? classList,
-        @Default(false) bool saved
+        @Default(true) bool saved
       }) = _AccountModel;
 
   factory AccountModel.fromJson(Map<String, dynamic> json) =>

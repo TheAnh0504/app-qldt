@@ -39,15 +39,15 @@ class _BuildBody extends ConsumerWidget {
       padding: const EdgeInsets.only(left: 16, right: 16, top: 32),
       child: SingleChildScrollView(
         child: Column(children: [
-          ListTileSection(title: "Chung", tiles: [
-            ListTile(
-                onTap: () =>
-                    rootNavigatorKey.currentContext?.push(messagingRoute),
-                leading: const FaIcon(FaIcons.solidComments),
-                title: const Text("Nhắn tin"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-          ]),
-          const SizedBox(height: 16),
+          // ListTileSection(title: "Chung", tiles: [
+          //   ListTile(
+          //       onTap: () =>
+          //           rootNavigatorKey.currentContext?.push(messagingRoute),
+          //       leading: const FaIcon(FaIcons.solidComments),
+          //       title: const Text("Nhắn tin"),
+          //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+          // ]),
+          // const SizedBox(height: 16),
           ListTileSection(title: "Thông báo", tiles: [
             ListTile(
                 onTap: () => Navigator.push(

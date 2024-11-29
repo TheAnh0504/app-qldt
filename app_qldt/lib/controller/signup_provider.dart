@@ -32,7 +32,6 @@ class AsyncSignupNotifier extends AutoDisposeAsyncNotifier<void> {
             role: role,
             verifyCode: value["verify_code"]
         );
-        await repo.local.updateAccount(account);
         await repo.local.updateCurrentAccount(account);
         Future(() {
           // ref

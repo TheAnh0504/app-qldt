@@ -58,8 +58,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       decoration: const BoxDecoration(
           color: Palette.white,
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24), topRight: Radius.circular(24))),
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 3),
+              topLeft: Radius.circular(0), topRight: Radius.circular(0))),
+      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
       padding: const EdgeInsets.all(32),
       child: Column(children: [
         const Spacer(),
