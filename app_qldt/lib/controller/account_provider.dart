@@ -79,12 +79,29 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
   // update state với AccountModel mới
   void forward(AsyncValue<AccountModel?> value) => state = value;
 
-  Future<void> fastLogin(AccountModel account) async {
+  Future<void> fastLogin(AccountModel account1) async {
     var repo = (await ref.read(authRepositoryProvider.future));
-    await repo.local.updateCurrentAccount(account);
-    await repo.local.updateAccount(account);
-    await repo.local.updateToken(account.accessToken);
-    state = AsyncValue.data(repo.local.readCurrentAccount());
+      await repo.api
+          .login(account1.email, account1.password)
+          .then((value) async {
+        final account = AccountModel(
+            email: value["data"]["email"],
+            password: account1.password,
+            idAccount: value["data"]["id"],
+            ho: value["data"]["ho"],
+            ten: value["data"]["ten"],
+            name: value["data"]["name"],
+            accessToken: value["data"]["token"],
+            role: value["data"]["role"],
+            status: value["data"]["status"],
+            avatar: value["data"]["avatar"] ?? "",
+            classList: value["data"]["class_list"]
+        );
+        await repo.local.updateCurrentAccount(account);
+        await repo.local.updateAccount(account);
+        await repo.local.updateToken(account.accessToken);
+        state = AsyncValue.data(account);
+      });
   }
 
   Future<void> logout({required bool isSaved}) async {

@@ -3,6 +3,7 @@ import "dart:io";
 import "package:device_info_plus/device_info_plus.dart";
 import "package:dio/dio.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
+import "package:flutter/cupertino.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:app_qldt/core/extension/extension.dart";
@@ -35,7 +36,7 @@ class SWApi {
         }
 
         // bắt error access-token expired
-        if (res.data["code"] == "1009") {
+        if (res.data == null) {
           ref.read(accountProvider.notifier).logout(isSaved: false);
           return handler.next(res);
         }
@@ -727,13 +728,16 @@ class SWApi {
         .then((value) => value.data);
   }
 
-  Future<Map<String, dynamic>> getMessage(
-      {required String groupId, int offset = 0}) async {
+  Future<Map<String, dynamic>> getMessage(int groupId, int count) async {
     return dio
-        .post("/sw3/message/get_message",
-            data: {"groupId": groupId, "limit": 20, "offset": offset},
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+        .post("/it5023e/get_conversation",
+            data: {
+              "token": await accessToken,
+              "index": 0,
+              "count": 20 * count,
+              "conversation_id": groupId,
+              "mark_as_read": "true"
+            })
         .then((value) => value.data);
   }
 
@@ -765,12 +769,10 @@ class SWApi {
         .then((value) => value.data);
   }
 
-  Future<Map<String, dynamic>> getListGroup({int offset = 0}) async {
+  Future<Map<String, dynamic>> getListGroup(int count) async {
     return dio
-        .post("/sw3/message/get_list_group",
-            data: {"limit": 10, "offset": offset},
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+        .post("/it5023e/get_list_conversation",
+            data: {"token": await accessToken, "index": 0, "count": 10 * count})
         .then((value) => value.data);
   }
 

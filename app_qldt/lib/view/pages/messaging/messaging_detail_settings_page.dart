@@ -4,15 +4,15 @@
 // import 'package:go_router/go_router.dart';
 // import 'package:app_qldt/core/extension/extension.dart';
 // import 'package:app_qldt/core/common/types.dart';
-// import 'package:app_qldt/data/model/message_model.dart';
-
+//
+// import '../../../model/entities/message_model.dart';
 // import '../../widgets/sw_settings_widget.dart';
-
+//
 // class MessagingDetailSettingsPage extends StatelessWidget {
 //   final MessageUserModel user;
-
+//
 //   const MessagingDetailSettingsPage({super.key, required this.user});
-
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -23,12 +23,12 @@
 //     );
 //   }
 // }
-
+//
 // class _BuildBody extends StatelessWidget {
 //   final MessageUserModel user;
-
+//
 //   const _BuildBody({super.key, required this.user});
-
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Column(

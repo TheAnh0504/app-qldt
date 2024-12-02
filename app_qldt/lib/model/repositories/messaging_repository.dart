@@ -17,18 +17,18 @@ class MessagingApiRepository {
 
   MessagingApiRepository(this.swapi);
 
-  Future<List<GroupChatModel>> getListGroup(int offset) {
-    return swapi.getListGroup(offset: offset).then((value) {
-      if (value["code"] == 1000) {
+  Future<List<GroupChatModel>> getListGroup(int count) {
+    return swapi.getListGroup(count).then((value) {
+      if (value["meta"]["code"] == "1000") {
         var listGroupChat = <GroupChatModel>[];
-        for (int i = 0;
-            i < (value["data"]["infoGroup"] as List<dynamic>).length;
-            i++) {
+        for (int i = 0; i < (value["data"]["conversations"] as List<dynamic>).length; i++) {
           listGroupChat.add(GroupChatModel(
               infoGroup: GroupChatInfoModel.fromJson(
-                  (value["data"]["infoGroup"] as List<dynamic>)[i]),
+                  (value["data"]["conversations"] as List<dynamic>)[i]),
               infoMessageNotRead: GroupChatInfoMessageNotRead.fromJson(
-                  (value["data"]["infoMessageNotRead"] as List<dynamic>)[i])));
+                  (value["data"]["conversations"] as List<dynamic>)[i]),
+              numNewMessage: int.parse(value["data"]["num_new_message"])
+          ));
         }
         return listGroupChat;
       }
@@ -36,29 +36,22 @@ class MessagingApiRepository {
     });
   }
 
-  Future<List<MessageModel>> getMessage(String groupId, int offset) {
-    return swapi.getMessage(groupId: groupId, offset: offset).then((value) {
-      if (value["code"] == 1000) {
+  Future<List<MessageModel>> getMessage(int groupId, int count) {
+    return swapi.getMessage(groupId, count).then((value) {
+      if (value["meta"]["code"] == "1000") {
         var listMessage = <MessageModel>[];
-        var listUsers = <MessageUserModel>[];
-        for (int i = 0;
-            i < (value["data"]["infoUsers"] as List<dynamic>).length;
-            i++) {
-          listUsers
-              .add(MessageUserModel.fromJson(value["data"]["infoUsers"][i]));
-        }
-        for (int i = 0;
-            i < (value["data"]["infoMessages"] as List<dynamic>).length;
-            i++) {
+        for (int i = 0; i < (value["data"]["conversation"] as List<dynamic>).length; i++) {
+          var user = MessageUserModel(
+            id: value["data"]["conversation"][i]["sender"]["id"],
+            name: value["data"]["conversation"][i]["sender"]["name"],
+            avatar: value["data"]["conversation"][i]["sender"]["avatar"],
+          );
           listMessage.add(MessageModel(
-              id: value["data"]["infoMessages"][i]["id"],
-              user: listUsers.firstWhere((e) =>
-                  e.userId == value["data"]["infoMessages"][i]["userId"]),
-              message: value["data"]["infoMessages"][i]["message"],
-              media: value["data"]["infoMessages"][i]["media"],
-              isRead: value["data"]["infoMessages"][i]["isRead"],
-              createdAt: value["data"]["infoMessages"][i]["createdAt"],
-              updatedAt: value["data"]["infoMessages"][i]["updatedAt"]));
+              messageId: value["data"]["conversation"][i]["message_id"],
+              user: user,
+              message: value["data"]["conversation"][i]["message"],
+              createdAt: value["data"]["conversation"][i]["created_at"],
+              unread: value["data"]["conversation"][i]["unread"]));
         }
         return listMessage;
       }

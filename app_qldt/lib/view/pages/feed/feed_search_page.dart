@@ -144,55 +144,55 @@ class _FeedSearchPageState extends ConsumerState<FeedSearchPage>
                                           ])),
                         ),
                       ),
-                      SingleChildScrollView(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                              children: ref
-                                  .watch(userSearchesProvider(controller.text))
-                                  .when(
-                                      skipLoadingOnRefresh: false,
-                                      data: (value) => value.isNotEmpty
-                                          ? value
-                                              .map((e) => ListTile(
-                                                  onTap: () {
-                                                    goToProfile(
-                                                        context, ref, e.userId);
-                                                  },
-                                                  leading: CircleAvatar(
-                                                      backgroundImage:
-                                                          ExtendedNetworkImageProvider(e
-                                                                  .avatar ??
-                                                              "https://picsum.photos/200")),
-                                                  title: Text(e.displayName)))
-                                              .toList()
-                                          : const [
-                                              Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: FaIcon(
-                                                    FaIcons.magnifyingGlass,
-                                                    size: 48),
-                                              ),
-                                              Text(
-                                                  "Không tìm thấy thông tin liên quan.",
-                                                  style: TypeStyle.body2)
-                                            ],
-                                      error: (_, __) => [
-                                            const Text(
-                                                "Đã có lỗi xảy ra, xin hãy thử lại sau."),
-                                            TextButton(
-                                                onPressed: () => ref.invalidate(
-                                                    userSearchesProvider(
-                                                        controller.text)),
-                                                child: const Text("Thử lại"))
-                                          ],
-                                      loading: () => [
-                                            const Center(
-                                                child:
-                                                    CircularProgressIndicator())
-                                          ])),
-                        ),
-                      ),
+                      // SingleChildScrollView(
+                      //   child: SizedBox(
+                      //     width: double.infinity,
+                      //     child: Column(
+                      //         children: ref
+                      //             .watch(userSearchesProvider(controller.text))
+                      //             .when(
+                      //                 skipLoadingOnRefresh: false,
+                      //                 data: (value) => value.isNotEmpty
+                      //                     ? value
+                      //                         .map((e) => ListTile(
+                      //                             onTap: () {
+                      //                               goToProfile(
+                      //                                   context, ref, e.userId);
+                      //                             },
+                      //                             leading: CircleAvatar(
+                      //                                 backgroundImage:
+                      //                                     ExtendedNetworkImageProvider(e
+                      //                                             .avatar ??
+                      //                                         "https://picsum.photos/200")),
+                      //                             title: Text(e.displayName)))
+                      //                         .toList()
+                      //                     : const [
+                      //                         Padding(
+                      //                           padding: EdgeInsets.all(8.0),
+                      //                           child: FaIcon(
+                      //                               FaIcons.magnifyingGlass,
+                      //                               size: 48),
+                      //                         ),
+                      //                         Text(
+                      //                             "Không tìm thấy thông tin liên quan.",
+                      //                             style: TypeStyle.body2)
+                      //                       ],
+                      //                 error: (_, __) => [
+                      //                       const Text(
+                      //                           "Đã có lỗi xảy ra, xin hãy thử lại sau."),
+                      //                       TextButton(
+                      //                           onPressed: () => ref.invalidate(
+                      //                               userSearchesProvider(
+                      //                                   controller.text)),
+                      //                           child: const Text("Thử lại"))
+                      //                     ],
+                      //                 loading: () => [
+                      //                       const Center(
+                      //                           child:
+                      //                               CircularProgressIndicator())
+                      //                     ])),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

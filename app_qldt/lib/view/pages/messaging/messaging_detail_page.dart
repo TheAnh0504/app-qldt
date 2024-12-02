@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:app_qldt/controller/account_provider.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class MessagingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -38,15 +40,17 @@ class MessagingDetailPage extends StatelessWidget {
               CircleAvatar(
                   radius: 20,
                   backgroundImage: ExtendedNetworkImageProvider(
-                      "https://picsum.photos/200",
+                      model.infoGroup.partnerAvatar == null
+                          ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
+                          : 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
                       cache: true)),
               const SizedBox(width: 10),
               Text.rich(
                   TextSpan(children: [
                     TextSpan(
-                        text: model.infoGroup.groupName.toString().length > 16
-                            ? "${model.infoGroup.groupName.toString().substring(0, 16)}..."
-                            : model.infoGroup.groupName.toString(),
+                        text: model.infoGroup.partnerName.toString().length > 16
+                            ? "${model.infoGroup.partnerName.toString().substring(0, 16)}..."
+                            : model.infoGroup.partnerName.toString(),
                         style: TypeStyle.title3),
                     TextSpan(
                         text: "\nĐang hoạt động",
@@ -84,7 +88,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
   final textController = TextEditingController();
-  final pagingController = PagingController<int, MessageModel>(firstPageKey: 0);
+  final pagingController = PagingController<int, MessageModel>(firstPageKey: 1);
 
   var currentMessages = [];
   Timer? timer;
@@ -92,7 +96,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 50000), (timer) {
       ref.invalidate(messagesProvider);
       pagingController.refresh();
     });
@@ -110,6 +114,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
   @override
   Widget build(BuildContext context) {
+    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return Column(
       children: [
         Expanded(
@@ -130,8 +135,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       const Text("Loading"),
                       ...currentMessages
                           .map((e) {
-                            final isMe = e.user.userId ==
-                                ref.watch(userProvider).value?.userId;
+                            final isMe = e.user.id.toString() ==
+                                ref.watch(accountProvider).value?.idAccount;
                             return isMe
                                 ? Align(
                                     alignment: Alignment.centerRight,
@@ -147,7 +152,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                 ),
                 itemBuilder: (context, item, index) {
                   final isMe =
-                      item.user.userId == ref.watch(userProvider).value?.userId;
+                      item.user.id.toString() == ref.watch(accountProvider).value!.idAccount;
                   return isMe
                       ? _MyMessageSection(message: item)
                       : _OtherMessageSection(message: item);
@@ -158,14 +163,16 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       CircleAvatar(
                           radius: 40,
                           backgroundImage: ExtendedNetworkImageProvider(
-                              "https://picsum.photos/200",
+                              widget.model.infoGroup.partnerAvatar == null
+                                  ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
+                                  : 'https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
                               cache: true)),
                       const SizedBox(width: 10),
                       Text(
-                          widget.model.infoGroup.groupName.toString().length >
+                          widget.model.infoGroup.partnerName.toString().length >
                                   16
-                              ? "${widget.model.infoGroup.groupName.toString().substring(0, 16)}..."
-                              : widget.model.infoGroup.groupName.toString(),
+                              ? "${widget.model.infoGroup.partnerName.toString().substring(0, 16)}..."
+                              : widget.model.infoGroup.partnerName.toString(),
                           style: TypeStyle.title3,
                           overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 40),
@@ -178,14 +185,16 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       CircleAvatar(
                           radius: 40,
                           backgroundImage: ExtendedNetworkImageProvider(
-                              "https://picsum.photos/200",
+                              widget.model.infoGroup.partnerAvatar == null
+                                  ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
+                                  : 'https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
                               cache: true)),
                       const SizedBox(width: 10),
                       Text(
-                          widget.model.infoGroup.groupName.toString().length >
+                          widget.model.infoGroup.partnerName.toString().length >
                                   16
-                              ? "${widget.model.infoGroup.groupName.toString().substring(0, 16)}..."
-                              : widget.model.infoGroup.groupName.toString(),
+                              ? "${widget.model.infoGroup.partnerName.toString().substring(0, 16)}..."
+                              : widget.model.infoGroup.partnerName.toString(),
                           style: TypeStyle.title3,
                           overflow: TextOverflow.ellipsis),
                       const SizedBox(height: 16),
@@ -203,29 +212,30 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             height: 64,
             child: Row(children: [
               const SizedBox(width: 8),
-              IconButton(
-                  onPressed: () {
-                    AssetPicker.pickAssets(context,
-                            pickerConfig: const AssetPickerConfig(
-                                maxAssets: 1, requestType: RequestType.image))
-                        .then((value) async {
-                      if (value?.isEmpty ?? true) return;
-                      ref
-                          .read(addMessageProvider((
-                        widget.model.infoGroup.groupId,
-                        "<media_link>",
-                        await ref
-                            .read(mediaRepositoryProvider)
-                            .api
-                            .addImage((await value!.first.file)!)
-                      )).future)
-                          .then((_) {
-                        ref.invalidate(messagesProvider);
-                        pagingController.refresh();
-                      });
-                    });
-                  },
-                  icon: const FaIcon(FaIcons.image)),
+              // IconButton(
+              //     onPressed: () {
+              //       AssetPicker.pickAssets(context,
+              //               pickerConfig: const AssetPickerConfig(
+              //                   maxAssets: 1, requestType: RequestType.image))
+              //           .then((value) async {
+              //         if (value?.isEmpty ?? true) return;
+              //         ref
+              //             .read(addMessageProvider((
+              //           widget.model.infoGroup.groupId,
+              //           "<media_link>",
+              //           await ref
+              //               .read(mediaRepositoryProvider)
+              //               .api
+              //               .addImage((await value!.first.file)!)
+              //         )).future)
+              //             .then((_) {
+              //           ref.invalidate(messagesProvider);
+              //           pagingController.refresh();
+              //         });
+              //       });
+              //     },
+              //     icon: const FaIcon(FaIcons.image)
+              // ),
               Expanded(
                 child: Container(
                   clipBehavior: Clip.antiAlias,
@@ -243,21 +253,22 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           fillColor: Palette.grey40)),
                 ),
               ),
-              IconButton(
-                  onPressed: () {
-                    ref
-                        .read(addMessageProvider((
-                      widget.model.infoGroup.groupId,
-                      textController.text,
-                      null
-                    )).future)
-                        .then((_) {
-                      textController.text = "";
-                      ref.invalidate(messagesProvider);
-                      pagingController.refresh();
-                    });
-                  },
-                  icon: const FaIcon(FaIcons.solidPaperPlane)),
+              // IconButton(
+              //     onPressed: () {
+              //       ref
+              //           .read(addMessageProvider((
+              //         widget.model.infoGroup.groupId,
+              //         textController.text,
+              //         null
+              //       )).future)
+              //           .then((_) {
+              //         textController.text = "";
+              //         ref.invalidate(messagesProvider);
+              //         pagingController.refresh();
+              //       });
+              //     },
+              //     icon: const FaIcon(FaIcons.solidPaperPlane)
+              // ),
               const SizedBox(width: 8),
             ]))
       ],
@@ -298,23 +309,24 @@ class _MyMessageSectionState extends State<_MyMessageSection> {
           if (showStatus)
             Center(
                 child: Text(
-                    formatMessageDate(DateTime.parse(widget.message.createdAt),
-                        Localizations.localeOf(context).languageCode),
-                    style: TypeStyle.body5)),
-          widget.message.message != "<media_link>"
-              ? _TextMessageBubble(
-                  msg: widget.message.message!,
-                  foreground: Palette.black,
-                  background: Color.lerp(Theme.of(context).colorScheme.primary,
-                      Palette.white, 0.5)!)
-              : _ImageMessageBubble(
-                  img: widget.message.media ?? Faker.instance.image.image()),
-          if (showStatus)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text("Đã xem",
-                  style: TypeStyle.body5.copyWith(fontWeight: FontWeight.bold)),
-            )
+                    formatMessageDate(DateTime.parse(widget.message.createdAt)),
+                    style: TypeStyle.body5)
+            ),
+            widget.message.message != "<media_link>"
+                ? _TextMessageBubble(
+                    msg: widget.message.message ?? "Tin nhắn đã bị xóa",
+                    foreground: Palette.black,
+                    background: Color.lerp(Theme.of(context).colorScheme.primary,
+                        Palette.white, 0.5)!,
+                    style: widget.message.message != null ? "" : "delete")
+                : _ImageMessageBubble(
+                    img: Faker.instance.image.image()),
+            if (showStatus)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text("Đã xem",
+                    style: TypeStyle.body5.copyWith(fontWeight: FontWeight.bold)),
+              )
         ],
       ),
     );
@@ -325,9 +337,10 @@ class _TextMessageBubble extends StatelessWidget {
   final String msg;
   final Color background;
   final Color foreground;
+  final String style;
 
   const _TextMessageBubble(
-      {required this.msg, required this.background, required this.foreground});
+      {required this.msg, required this.background, required this.foreground, required this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +359,7 @@ class _TextMessageBubble extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SWMarkdown(data: msg),
+                child: SWMarkdown(data: msg, style: style),
               ),
               AnyLinkPreview(
                   link: msg,
@@ -452,6 +465,7 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
 
   @override
   Widget build(BuildContext context) {
+    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -474,20 +488,22 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                 padding: const EdgeInsets.all(4),
                 child: CircleAvatar(
                     radius: 20,
-                    backgroundImage: (widget.message.user.avatar != null)
-                        ? ExtendedNetworkImageProvider(
-                            widget.message.user.avatar!,
+                    backgroundImage:  ExtendedNetworkImageProvider(
+                          widget.message.user.avatar == null
+                          ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
+                              : 'https://drive.google.com/uc?id=${widget.message.user.avatar?.split('/d/')[1].split('/')[0]}',
                             cache: true)
-                        : null),
+                        ),
               ),
               widget.message.message != "<media_link>"
                   ? _TextMessageBubble(
-                      msg: widget.message.message!,
-                      background: Palette.grey40,
-                      foreground: Palette.black)
+                    msg: widget.message.message ?? "Tin nhắn đã bị xóa",
+                    foreground: Palette.black,
+                    background: Color.lerp(Theme.of(context).colorScheme.primary,
+                    Palette.white, 0.5)!,
+                    style: widget.message.message != null ? "" : "delete")
                   : _ImageMessageBubble(
-                      img:
-                          widget.message.media ?? Faker.instance.image.image()),
+                      img: Faker.instance.image.image()),
             ],
           ),
           if (showStatus)

@@ -6,6 +6,10 @@ import "package:intl/intl.dart";
 
 // show time message
 String formatMessageDate(DateTime date, [String? locale]) {
+  locale ??= Intl.getCurrentLocale();
+  if (!DateFormat.localeExists(locale)) {
+    locale = 'en'; // Fallback sang ngôn ngữ mặc định
+  }
   final now = DateTime.now();
   // khoảng time chênh lệch giữa now và date
   final duration = now.difference(date);

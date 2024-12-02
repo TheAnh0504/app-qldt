@@ -23,6 +23,7 @@ mixin _$GroupChatModel {
   GroupChatInfoModel get infoGroup => throw _privateConstructorUsedError;
   GroupChatInfoMessageNotRead get infoMessageNotRead =>
       throw _privateConstructorUsedError;
+  int get numNewMessage => throw _privateConstructorUsedError;
 
   /// Serializes this GroupChatModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -42,7 +43,8 @@ abstract class $GroupChatModelCopyWith<$Res> {
   @useResult
   $Res call(
       {GroupChatInfoModel infoGroup,
-      GroupChatInfoMessageNotRead infoMessageNotRead});
+      GroupChatInfoMessageNotRead infoMessageNotRead,
+      int numNewMessage});
 
   $GroupChatInfoModelCopyWith<$Res> get infoGroup;
   $GroupChatInfoMessageNotReadCopyWith<$Res> get infoMessageNotRead;
@@ -65,6 +67,7 @@ class _$GroupChatModelCopyWithImpl<$Res, $Val extends GroupChatModel>
   $Res call({
     Object? infoGroup = null,
     Object? infoMessageNotRead = null,
+    Object? numNewMessage = null,
   }) {
     return _then(_value.copyWith(
       infoGroup: null == infoGroup
@@ -75,6 +78,10 @@ class _$GroupChatModelCopyWithImpl<$Res, $Val extends GroupChatModel>
           ? _value.infoMessageNotRead
           : infoMessageNotRead // ignore: cast_nullable_to_non_nullable
               as GroupChatInfoMessageNotRead,
+      numNewMessage: null == numNewMessage
+          ? _value.numNewMessage
+          : numNewMessage // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 
@@ -110,7 +117,8 @@ abstract class _$$GroupChatModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {GroupChatInfoModel infoGroup,
-      GroupChatInfoMessageNotRead infoMessageNotRead});
+      GroupChatInfoMessageNotRead infoMessageNotRead,
+      int numNewMessage});
 
   @override
   $GroupChatInfoModelCopyWith<$Res> get infoGroup;
@@ -133,6 +141,7 @@ class __$$GroupChatModelImplCopyWithImpl<$Res>
   $Res call({
     Object? infoGroup = null,
     Object? infoMessageNotRead = null,
+    Object? numNewMessage = null,
   }) {
     return _then(_$GroupChatModelImpl(
       infoGroup: null == infoGroup
@@ -143,6 +152,10 @@ class __$$GroupChatModelImplCopyWithImpl<$Res>
           ? _value.infoMessageNotRead
           : infoMessageNotRead // ignore: cast_nullable_to_non_nullable
               as GroupChatInfoMessageNotRead,
+      numNewMessage: null == numNewMessage
+          ? _value.numNewMessage
+          : numNewMessage // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -152,7 +165,9 @@ class __$$GroupChatModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$GroupChatModelImpl implements _GroupChatModel {
   const _$GroupChatModelImpl(
-      {required this.infoGroup, required this.infoMessageNotRead});
+      {required this.infoGroup,
+      required this.infoMessageNotRead,
+      required this.numNewMessage});
 
   factory _$GroupChatModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$GroupChatModelImplFromJson(json);
@@ -161,10 +176,12 @@ class _$GroupChatModelImpl implements _GroupChatModel {
   final GroupChatInfoModel infoGroup;
   @override
   final GroupChatInfoMessageNotRead infoMessageNotRead;
+  @override
+  final int numNewMessage;
 
   @override
   String toString() {
-    return 'GroupChatModel(infoGroup: $infoGroup, infoMessageNotRead: $infoMessageNotRead)';
+    return 'GroupChatModel(infoGroup: $infoGroup, infoMessageNotRead: $infoMessageNotRead, numNewMessage: $numNewMessage)';
   }
 
   @override
@@ -175,12 +192,15 @@ class _$GroupChatModelImpl implements _GroupChatModel {
             (identical(other.infoGroup, infoGroup) ||
                 other.infoGroup == infoGroup) &&
             (identical(other.infoMessageNotRead, infoMessageNotRead) ||
-                other.infoMessageNotRead == infoMessageNotRead));
+                other.infoMessageNotRead == infoMessageNotRead) &&
+            (identical(other.numNewMessage, numNewMessage) ||
+                other.numNewMessage == numNewMessage));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, infoGroup, infoMessageNotRead);
+  int get hashCode =>
+      Object.hash(runtimeType, infoGroup, infoMessageNotRead, numNewMessage);
 
   /// Create a copy of GroupChatModel
   /// with the given fields replaced by the non-null parameter values.
@@ -201,9 +221,9 @@ class _$GroupChatModelImpl implements _GroupChatModel {
 
 abstract class _GroupChatModel implements GroupChatModel {
   const factory _GroupChatModel(
-          {required final GroupChatInfoModel infoGroup,
-          required final GroupChatInfoMessageNotRead infoMessageNotRead}) =
-      _$GroupChatModelImpl;
+      {required final GroupChatInfoModel infoGroup,
+      required final GroupChatInfoMessageNotRead infoMessageNotRead,
+      required final int numNewMessage}) = _$GroupChatModelImpl;
 
   factory _GroupChatModel.fromJson(Map<String, dynamic> json) =
       _$GroupChatModelImpl.fromJson;
@@ -212,6 +232,8 @@ abstract class _GroupChatModel implements GroupChatModel {
   GroupChatInfoModel get infoGroup;
   @override
   GroupChatInfoMessageNotRead get infoMessageNotRead;
+  @override
+  int get numNewMessage;
 
   /// Create a copy of GroupChatModel
   /// with the given fields replaced by the non-null parameter values.
@@ -227,12 +249,18 @@ GroupChatInfoModel _$GroupChatInfoModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$GroupChatInfoModel {
-  String get groupId => throw _privateConstructorUsedError;
-  Object get groupName => throw _privateConstructorUsedError;
-  List<String> get listUserId => throw _privateConstructorUsedError;
-  List<String> get listAdmin => throw _privateConstructorUsedError;
-  String? get image => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
+  int get groupId => throw _privateConstructorUsedError; // id of chat
+  int get partnerId =>
+      throw _privateConstructorUsedError; // info of người chat vs mình: id, name, avatar
+  String get partnerName => throw _privateConstructorUsedError;
+  String? get partnerAvatar => throw _privateConstructorUsedError;
+  int get lastMessageSenderId =>
+      throw _privateConstructorUsedError; // last message: sender(id, name, avatar), message, created_at, unread
+  String get lastMessageSenderName => throw _privateConstructorUsedError;
+  String? get lastMessageSenderAvatar => throw _privateConstructorUsedError;
+  String? get lastMessageMessage => throw _privateConstructorUsedError;
+  String get lastMessageCreatedAt => throw _privateConstructorUsedError;
+  int get lastMessageUnRead => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
   String get updatedAt => throw _privateConstructorUsedError;
 
@@ -253,12 +281,16 @@ abstract class $GroupChatInfoModelCopyWith<$Res> {
       _$GroupChatInfoModelCopyWithImpl<$Res, GroupChatInfoModel>;
   @useResult
   $Res call(
-      {String groupId,
-      Object groupName,
-      List<String> listUserId,
-      List<String> listAdmin,
-      String? image,
-      String type,
+      {int groupId,
+      int partnerId,
+      String partnerName,
+      String? partnerAvatar,
+      int lastMessageSenderId,
+      String lastMessageSenderName,
+      String? lastMessageSenderAvatar,
+      String? lastMessageMessage,
+      String lastMessageCreatedAt,
+      int lastMessageUnRead,
       String createdAt,
       String updatedAt});
 }
@@ -279,11 +311,15 @@ class _$GroupChatInfoModelCopyWithImpl<$Res, $Val extends GroupChatInfoModel>
   @override
   $Res call({
     Object? groupId = null,
-    Object? groupName = null,
-    Object? listUserId = null,
-    Object? listAdmin = null,
-    Object? image = freezed,
-    Object? type = null,
+    Object? partnerId = null,
+    Object? partnerName = null,
+    Object? partnerAvatar = freezed,
+    Object? lastMessageSenderId = null,
+    Object? lastMessageSenderName = null,
+    Object? lastMessageSenderAvatar = freezed,
+    Object? lastMessageMessage = freezed,
+    Object? lastMessageCreatedAt = null,
+    Object? lastMessageUnRead = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -291,24 +327,43 @@ class _$GroupChatInfoModelCopyWithImpl<$Res, $Val extends GroupChatInfoModel>
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerName: null == partnerName
+          ? _value.partnerName
+          : partnerName // ignore: cast_nullable_to_non_nullable
               as String,
-      groupName: null == groupName ? _value.groupName : groupName,
-      listUserId: null == listUserId
-          ? _value.listUserId
-          : listUserId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      listAdmin: null == listAdmin
-          ? _value.listAdmin
-          : listAdmin // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      image: freezed == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
+      partnerAvatar: freezed == partnerAvatar
+          ? _value.partnerAvatar
+          : partnerAvatar // ignore: cast_nullable_to_non_nullable
               as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
+      lastMessageSenderId: null == lastMessageSenderId
+          ? _value.lastMessageSenderId
+          : lastMessageSenderId // ignore: cast_nullable_to_non_nullable
+              as int,
+      lastMessageSenderName: null == lastMessageSenderName
+          ? _value.lastMessageSenderName
+          : lastMessageSenderName // ignore: cast_nullable_to_non_nullable
               as String,
+      lastMessageSenderAvatar: freezed == lastMessageSenderAvatar
+          ? _value.lastMessageSenderAvatar
+          : lastMessageSenderAvatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageMessage: freezed == lastMessageMessage
+          ? _value.lastMessageMessage
+          : lastMessageMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageCreatedAt: null == lastMessageCreatedAt
+          ? _value.lastMessageCreatedAt
+          : lastMessageCreatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageUnRead: null == lastMessageUnRead
+          ? _value.lastMessageUnRead
+          : lastMessageUnRead // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -330,12 +385,16 @@ abstract class _$$GroupChatInfoModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String groupId,
-      Object groupName,
-      List<String> listUserId,
-      List<String> listAdmin,
-      String? image,
-      String type,
+      {int groupId,
+      int partnerId,
+      String partnerName,
+      String? partnerAvatar,
+      int lastMessageSenderId,
+      String lastMessageSenderName,
+      String? lastMessageSenderAvatar,
+      String? lastMessageMessage,
+      String lastMessageCreatedAt,
+      int lastMessageUnRead,
       String createdAt,
       String updatedAt});
 }
@@ -354,11 +413,15 @@ class __$$GroupChatInfoModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? groupId = null,
-    Object? groupName = null,
-    Object? listUserId = null,
-    Object? listAdmin = null,
-    Object? image = freezed,
-    Object? type = null,
+    Object? partnerId = null,
+    Object? partnerName = null,
+    Object? partnerAvatar = freezed,
+    Object? lastMessageSenderId = null,
+    Object? lastMessageSenderName = null,
+    Object? lastMessageSenderAvatar = freezed,
+    Object? lastMessageMessage = freezed,
+    Object? lastMessageCreatedAt = null,
+    Object? lastMessageUnRead = null,
     Object? createdAt = null,
     Object? updatedAt = null,
   }) {
@@ -366,24 +429,43 @@ class __$$GroupChatInfoModelImplCopyWithImpl<$Res>
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerName: null == partnerName
+          ? _value.partnerName
+          : partnerName // ignore: cast_nullable_to_non_nullable
               as String,
-      groupName: null == groupName ? _value.groupName : groupName,
-      listUserId: null == listUserId
-          ? _value._listUserId
-          : listUserId // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      listAdmin: null == listAdmin
-          ? _value._listAdmin
-          : listAdmin // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      image: freezed == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
+      partnerAvatar: freezed == partnerAvatar
+          ? _value.partnerAvatar
+          : partnerAvatar // ignore: cast_nullable_to_non_nullable
               as String?,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
+      lastMessageSenderId: null == lastMessageSenderId
+          ? _value.lastMessageSenderId
+          : lastMessageSenderId // ignore: cast_nullable_to_non_nullable
+              as int,
+      lastMessageSenderName: null == lastMessageSenderName
+          ? _value.lastMessageSenderName
+          : lastMessageSenderName // ignore: cast_nullable_to_non_nullable
               as String,
+      lastMessageSenderAvatar: freezed == lastMessageSenderAvatar
+          ? _value.lastMessageSenderAvatar
+          : lastMessageSenderAvatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageMessage: freezed == lastMessageMessage
+          ? _value.lastMessageMessage
+          : lastMessageMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageCreatedAt: null == lastMessageCreatedAt
+          ? _value.lastMessageCreatedAt
+          : lastMessageCreatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageUnRead: null == lastMessageUnRead
+          ? _value.lastMessageUnRead
+          : lastMessageUnRead // ignore: cast_nullable_to_non_nullable
+              as int,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -401,44 +483,44 @@ class __$$GroupChatInfoModelImplCopyWithImpl<$Res>
 class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
   const _$GroupChatInfoModelImpl(
       {required this.groupId,
-      required this.groupName,
-      required final List<String> listUserId,
-      final List<String> listAdmin = const [],
-      this.image,
-      required this.type,
+      required this.partnerId,
+      required this.partnerName,
+      this.partnerAvatar,
+      required this.lastMessageSenderId,
+      required this.lastMessageSenderName,
+      this.lastMessageSenderAvatar,
+      this.lastMessageMessage,
+      required this.lastMessageCreatedAt,
+      required this.lastMessageUnRead,
       required this.createdAt,
-      required this.updatedAt})
-      : _listUserId = listUserId,
-        _listAdmin = listAdmin;
+      required this.updatedAt});
 
   factory _$GroupChatInfoModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$GroupChatInfoModelImplFromJson(json);
 
   @override
-  final String groupId;
+  final int groupId;
+// id of chat
   @override
-  final Object groupName;
-  final List<String> _listUserId;
+  final int partnerId;
+// info of người chat vs mình: id, name, avatar
   @override
-  List<String> get listUserId {
-    if (_listUserId is EqualUnmodifiableListView) return _listUserId;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listUserId);
-  }
-
-  final List<String> _listAdmin;
+  final String partnerName;
   @override
-  @JsonKey()
-  List<String> get listAdmin {
-    if (_listAdmin is EqualUnmodifiableListView) return _listAdmin;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_listAdmin);
-  }
-
+  final String? partnerAvatar;
   @override
-  final String? image;
+  final int lastMessageSenderId;
+// last message: sender(id, name, avatar), message, created_at, unread
   @override
-  final String type;
+  final String lastMessageSenderName;
+  @override
+  final String? lastMessageSenderAvatar;
+  @override
+  final String? lastMessageMessage;
+  @override
+  final String lastMessageCreatedAt;
+  @override
+  final int lastMessageUnRead;
   @override
   final String createdAt;
   @override
@@ -446,7 +528,7 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
 
   @override
   String toString() {
-    return 'GroupChatInfoModel(groupId: $groupId, groupName: $groupName, listUserId: $listUserId, listAdmin: $listAdmin, image: $image, type: $type, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'GroupChatInfoModel(groupId: $groupId, partnerId: $partnerId, partnerName: $partnerName, partnerAvatar: $partnerAvatar, lastMessageSenderId: $lastMessageSenderId, lastMessageSenderName: $lastMessageSenderName, lastMessageSenderAvatar: $lastMessageSenderAvatar, lastMessageMessage: $lastMessageMessage, lastMessageCreatedAt: $lastMessageCreatedAt, lastMessageUnRead: $lastMessageUnRead, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -455,13 +537,25 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
         (other.runtimeType == runtimeType &&
             other is _$GroupChatInfoModelImpl &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
-            const DeepCollectionEquality().equals(other.groupName, groupName) &&
-            const DeepCollectionEquality()
-                .equals(other._listUserId, _listUserId) &&
-            const DeepCollectionEquality()
-                .equals(other._listAdmin, _listAdmin) &&
-            (identical(other.image, image) || other.image == image) &&
-            (identical(other.type, type) || other.type == type) &&
+            (identical(other.partnerId, partnerId) ||
+                other.partnerId == partnerId) &&
+            (identical(other.partnerName, partnerName) ||
+                other.partnerName == partnerName) &&
+            (identical(other.partnerAvatar, partnerAvatar) ||
+                other.partnerAvatar == partnerAvatar) &&
+            (identical(other.lastMessageSenderId, lastMessageSenderId) ||
+                other.lastMessageSenderId == lastMessageSenderId) &&
+            (identical(other.lastMessageSenderName, lastMessageSenderName) ||
+                other.lastMessageSenderName == lastMessageSenderName) &&
+            (identical(
+                    other.lastMessageSenderAvatar, lastMessageSenderAvatar) ||
+                other.lastMessageSenderAvatar == lastMessageSenderAvatar) &&
+            (identical(other.lastMessageMessage, lastMessageMessage) ||
+                other.lastMessageMessage == lastMessageMessage) &&
+            (identical(other.lastMessageCreatedAt, lastMessageCreatedAt) ||
+                other.lastMessageCreatedAt == lastMessageCreatedAt) &&
+            (identical(other.lastMessageUnRead, lastMessageUnRead) ||
+                other.lastMessageUnRead == lastMessageUnRead) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -473,11 +567,15 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
   int get hashCode => Object.hash(
       runtimeType,
       groupId,
-      const DeepCollectionEquality().hash(groupName),
-      const DeepCollectionEquality().hash(_listUserId),
-      const DeepCollectionEquality().hash(_listAdmin),
-      image,
-      type,
+      partnerId,
+      partnerName,
+      partnerAvatar,
+      lastMessageSenderId,
+      lastMessageSenderName,
+      lastMessageSenderAvatar,
+      lastMessageMessage,
+      lastMessageCreatedAt,
+      lastMessageUnRead,
       createdAt,
       updatedAt);
 
@@ -500,12 +598,16 @@ class _$GroupChatInfoModelImpl implements _GroupChatInfoModel {
 
 abstract class _GroupChatInfoModel implements GroupChatInfoModel {
   const factory _GroupChatInfoModel(
-      {required final String groupId,
-      required final Object groupName,
-      required final List<String> listUserId,
-      final List<String> listAdmin,
-      final String? image,
-      required final String type,
+      {required final int groupId,
+      required final int partnerId,
+      required final String partnerName,
+      final String? partnerAvatar,
+      required final int lastMessageSenderId,
+      required final String lastMessageSenderName,
+      final String? lastMessageSenderAvatar,
+      final String? lastMessageMessage,
+      required final String lastMessageCreatedAt,
+      required final int lastMessageUnRead,
       required final String createdAt,
       required final String updatedAt}) = _$GroupChatInfoModelImpl;
 
@@ -513,17 +615,25 @@ abstract class _GroupChatInfoModel implements GroupChatInfoModel {
       _$GroupChatInfoModelImpl.fromJson;
 
   @override
-  String get groupId;
+  int get groupId; // id of chat
   @override
-  Object get groupName;
+  int get partnerId; // info of người chat vs mình: id, name, avatar
   @override
-  List<String> get listUserId;
+  String get partnerName;
   @override
-  List<String> get listAdmin;
+  String? get partnerAvatar;
   @override
-  String? get image;
+  int get lastMessageSenderId; // last message: sender(id, name, avatar), message, created_at, unread
   @override
-  String get type;
+  String get lastMessageSenderName;
+  @override
+  String? get lastMessageSenderAvatar;
+  @override
+  String? get lastMessageMessage;
+  @override
+  String get lastMessageCreatedAt;
+  @override
+  int get lastMessageUnRead;
   @override
   String get createdAt;
   @override
@@ -544,9 +654,20 @@ GroupChatInfoMessageNotRead _$GroupChatInfoMessageNotReadFromJson(
 
 /// @nodoc
 mixin _$GroupChatInfoMessageNotRead {
-  int get countMessageNotRead => throw _privateConstructorUsedError;
-  String get groupId => throw _privateConstructorUsedError;
-  String? get avatar => throw _privateConstructorUsedError;
+  int get groupId => throw _privateConstructorUsedError; // id of chat
+  int get partnerId =>
+      throw _privateConstructorUsedError; // info of người chat vs mình: id, name, avatar
+  String get partnerName => throw _privateConstructorUsedError;
+  String? get partnerAvatar => throw _privateConstructorUsedError;
+  int get lastMessageSenderId =>
+      throw _privateConstructorUsedError; // last message: sender(id, name, avatar), message, created_at, unread
+  String get lastMessageSenderName => throw _privateConstructorUsedError;
+  String? get lastMessageSenderAvatar => throw _privateConstructorUsedError;
+  String? get lastMessageMessage => throw _privateConstructorUsedError;
+  String get lastMessageCreatedAt => throw _privateConstructorUsedError;
+  int get lastMessageUnRead => throw _privateConstructorUsedError;
+  String get createdAt => throw _privateConstructorUsedError;
+  String get updatedAt => throw _privateConstructorUsedError;
 
   /// Serializes this GroupChatInfoMessageNotRead to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -566,7 +687,19 @@ abstract class $GroupChatInfoMessageNotReadCopyWith<$Res> {
       _$GroupChatInfoMessageNotReadCopyWithImpl<$Res,
           GroupChatInfoMessageNotRead>;
   @useResult
-  $Res call({int countMessageNotRead, String groupId, String? avatar});
+  $Res call(
+      {int groupId,
+      int partnerId,
+      String partnerName,
+      String? partnerAvatar,
+      int lastMessageSenderId,
+      String lastMessageSenderName,
+      String? lastMessageSenderAvatar,
+      String? lastMessageMessage,
+      String lastMessageCreatedAt,
+      int lastMessageUnRead,
+      String createdAt,
+      String updatedAt});
 }
 
 /// @nodoc
@@ -585,23 +718,68 @@ class _$GroupChatInfoMessageNotReadCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? countMessageNotRead = null,
     Object? groupId = null,
-    Object? avatar = freezed,
+    Object? partnerId = null,
+    Object? partnerName = null,
+    Object? partnerAvatar = freezed,
+    Object? lastMessageSenderId = null,
+    Object? lastMessageSenderName = null,
+    Object? lastMessageSenderAvatar = freezed,
+    Object? lastMessageMessage = freezed,
+    Object? lastMessageCreatedAt = null,
+    Object? lastMessageUnRead = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
   }) {
     return _then(_value.copyWith(
-      countMessageNotRead: null == countMessageNotRead
-          ? _value.countMessageNotRead
-          : countMessageNotRead // ignore: cast_nullable_to_non_nullable
-              as int,
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerName: null == partnerName
+          ? _value.partnerName
+          : partnerName // ignore: cast_nullable_to_non_nullable
               as String,
-      avatar: freezed == avatar
-          ? _value.avatar
-          : avatar // ignore: cast_nullable_to_non_nullable
+      partnerAvatar: freezed == partnerAvatar
+          ? _value.partnerAvatar
+          : partnerAvatar // ignore: cast_nullable_to_non_nullable
               as String?,
+      lastMessageSenderId: null == lastMessageSenderId
+          ? _value.lastMessageSenderId
+          : lastMessageSenderId // ignore: cast_nullable_to_non_nullable
+              as int,
+      lastMessageSenderName: null == lastMessageSenderName
+          ? _value.lastMessageSenderName
+          : lastMessageSenderName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageSenderAvatar: freezed == lastMessageSenderAvatar
+          ? _value.lastMessageSenderAvatar
+          : lastMessageSenderAvatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageMessage: freezed == lastMessageMessage
+          ? _value.lastMessageMessage
+          : lastMessageMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageCreatedAt: null == lastMessageCreatedAt
+          ? _value.lastMessageCreatedAt
+          : lastMessageCreatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageUnRead: null == lastMessageUnRead
+          ? _value.lastMessageUnRead
+          : lastMessageUnRead // ignore: cast_nullable_to_non_nullable
+              as int,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -615,7 +793,19 @@ abstract class _$$GroupChatInfoMessageNotReadImplCopyWith<$Res>
       __$$GroupChatInfoMessageNotReadImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int countMessageNotRead, String groupId, String? avatar});
+  $Res call(
+      {int groupId,
+      int partnerId,
+      String partnerName,
+      String? partnerAvatar,
+      int lastMessageSenderId,
+      String lastMessageSenderName,
+      String? lastMessageSenderAvatar,
+      String? lastMessageMessage,
+      String lastMessageCreatedAt,
+      int lastMessageUnRead,
+      String createdAt,
+      String updatedAt});
 }
 
 /// @nodoc
@@ -633,23 +823,68 @@ class __$$GroupChatInfoMessageNotReadImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? countMessageNotRead = null,
     Object? groupId = null,
-    Object? avatar = freezed,
+    Object? partnerId = null,
+    Object? partnerName = null,
+    Object? partnerAvatar = freezed,
+    Object? lastMessageSenderId = null,
+    Object? lastMessageSenderName = null,
+    Object? lastMessageSenderAvatar = freezed,
+    Object? lastMessageMessage = freezed,
+    Object? lastMessageCreatedAt = null,
+    Object? lastMessageUnRead = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
   }) {
     return _then(_$GroupChatInfoMessageNotReadImpl(
-      countMessageNotRead: null == countMessageNotRead
-          ? _value.countMessageNotRead
-          : countMessageNotRead // ignore: cast_nullable_to_non_nullable
-              as int,
       groupId: null == groupId
           ? _value.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerId: null == partnerId
+          ? _value.partnerId
+          : partnerId // ignore: cast_nullable_to_non_nullable
+              as int,
+      partnerName: null == partnerName
+          ? _value.partnerName
+          : partnerName // ignore: cast_nullable_to_non_nullable
               as String,
-      avatar: freezed == avatar
-          ? _value.avatar
-          : avatar // ignore: cast_nullable_to_non_nullable
+      partnerAvatar: freezed == partnerAvatar
+          ? _value.partnerAvatar
+          : partnerAvatar // ignore: cast_nullable_to_non_nullable
               as String?,
+      lastMessageSenderId: null == lastMessageSenderId
+          ? _value.lastMessageSenderId
+          : lastMessageSenderId // ignore: cast_nullable_to_non_nullable
+              as int,
+      lastMessageSenderName: null == lastMessageSenderName
+          ? _value.lastMessageSenderName
+          : lastMessageSenderName // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageSenderAvatar: freezed == lastMessageSenderAvatar
+          ? _value.lastMessageSenderAvatar
+          : lastMessageSenderAvatar // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageMessage: freezed == lastMessageMessage
+          ? _value.lastMessageMessage
+          : lastMessageMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastMessageCreatedAt: null == lastMessageCreatedAt
+          ? _value.lastMessageCreatedAt
+          : lastMessageCreatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      lastMessageUnRead: null == lastMessageUnRead
+          ? _value.lastMessageUnRead
+          : lastMessageUnRead // ignore: cast_nullable_to_non_nullable
+              as int,
+      createdAt: null == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String,
+      updatedAt: null == updatedAt
+          ? _value.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -659,22 +894,54 @@ class __$$GroupChatInfoMessageNotReadImplCopyWithImpl<$Res>
 class _$GroupChatInfoMessageNotReadImpl
     implements _GroupChatInfoMessageNotRead {
   const _$GroupChatInfoMessageNotReadImpl(
-      {required this.countMessageNotRead, required this.groupId, this.avatar});
+      {required this.groupId,
+      required this.partnerId,
+      required this.partnerName,
+      this.partnerAvatar,
+      required this.lastMessageSenderId,
+      required this.lastMessageSenderName,
+      this.lastMessageSenderAvatar,
+      this.lastMessageMessage,
+      required this.lastMessageCreatedAt,
+      required this.lastMessageUnRead,
+      required this.createdAt,
+      required this.updatedAt});
 
   factory _$GroupChatInfoMessageNotReadImpl.fromJson(
           Map<String, dynamic> json) =>
       _$$GroupChatInfoMessageNotReadImplFromJson(json);
 
   @override
-  final int countMessageNotRead;
+  final int groupId;
+// id of chat
   @override
-  final String groupId;
+  final int partnerId;
+// info of người chat vs mình: id, name, avatar
   @override
-  final String? avatar;
+  final String partnerName;
+  @override
+  final String? partnerAvatar;
+  @override
+  final int lastMessageSenderId;
+// last message: sender(id, name, avatar), message, created_at, unread
+  @override
+  final String lastMessageSenderName;
+  @override
+  final String? lastMessageSenderAvatar;
+  @override
+  final String? lastMessageMessage;
+  @override
+  final String lastMessageCreatedAt;
+  @override
+  final int lastMessageUnRead;
+  @override
+  final String createdAt;
+  @override
+  final String updatedAt;
 
   @override
   String toString() {
-    return 'GroupChatInfoMessageNotRead(countMessageNotRead: $countMessageNotRead, groupId: $groupId, avatar: $avatar)';
+    return 'GroupChatInfoMessageNotRead(groupId: $groupId, partnerId: $partnerId, partnerName: $partnerName, partnerAvatar: $partnerAvatar, lastMessageSenderId: $lastMessageSenderId, lastMessageSenderName: $lastMessageSenderName, lastMessageSenderAvatar: $lastMessageSenderAvatar, lastMessageMessage: $lastMessageMessage, lastMessageCreatedAt: $lastMessageCreatedAt, lastMessageUnRead: $lastMessageUnRead, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -682,16 +949,48 @@ class _$GroupChatInfoMessageNotReadImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$GroupChatInfoMessageNotReadImpl &&
-            (identical(other.countMessageNotRead, countMessageNotRead) ||
-                other.countMessageNotRead == countMessageNotRead) &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
-            (identical(other.avatar, avatar) || other.avatar == avatar));
+            (identical(other.partnerId, partnerId) ||
+                other.partnerId == partnerId) &&
+            (identical(other.partnerName, partnerName) ||
+                other.partnerName == partnerName) &&
+            (identical(other.partnerAvatar, partnerAvatar) ||
+                other.partnerAvatar == partnerAvatar) &&
+            (identical(other.lastMessageSenderId, lastMessageSenderId) ||
+                other.lastMessageSenderId == lastMessageSenderId) &&
+            (identical(other.lastMessageSenderName, lastMessageSenderName) ||
+                other.lastMessageSenderName == lastMessageSenderName) &&
+            (identical(
+                    other.lastMessageSenderAvatar, lastMessageSenderAvatar) ||
+                other.lastMessageSenderAvatar == lastMessageSenderAvatar) &&
+            (identical(other.lastMessageMessage, lastMessageMessage) ||
+                other.lastMessageMessage == lastMessageMessage) &&
+            (identical(other.lastMessageCreatedAt, lastMessageCreatedAt) ||
+                other.lastMessageCreatedAt == lastMessageCreatedAt) &&
+            (identical(other.lastMessageUnRead, lastMessageUnRead) ||
+                other.lastMessageUnRead == lastMessageUnRead) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, countMessageNotRead, groupId, avatar);
+  int get hashCode => Object.hash(
+      runtimeType,
+      groupId,
+      partnerId,
+      partnerName,
+      partnerAvatar,
+      lastMessageSenderId,
+      lastMessageSenderName,
+      lastMessageSenderAvatar,
+      lastMessageMessage,
+      lastMessageCreatedAt,
+      lastMessageUnRead,
+      createdAt,
+      updatedAt);
 
   /// Create a copy of GroupChatInfoMessageNotRead
   /// with the given fields replaced by the non-null parameter values.
@@ -713,19 +1012,46 @@ class _$GroupChatInfoMessageNotReadImpl
 abstract class _GroupChatInfoMessageNotRead
     implements GroupChatInfoMessageNotRead {
   const factory _GroupChatInfoMessageNotRead(
-      {required final int countMessageNotRead,
-      required final String groupId,
-      final String? avatar}) = _$GroupChatInfoMessageNotReadImpl;
+      {required final int groupId,
+      required final int partnerId,
+      required final String partnerName,
+      final String? partnerAvatar,
+      required final int lastMessageSenderId,
+      required final String lastMessageSenderName,
+      final String? lastMessageSenderAvatar,
+      final String? lastMessageMessage,
+      required final String lastMessageCreatedAt,
+      required final int lastMessageUnRead,
+      required final String createdAt,
+      required final String updatedAt}) = _$GroupChatInfoMessageNotReadImpl;
 
   factory _GroupChatInfoMessageNotRead.fromJson(Map<String, dynamic> json) =
       _$GroupChatInfoMessageNotReadImpl.fromJson;
 
   @override
-  int get countMessageNotRead;
+  int get groupId; // id of chat
   @override
-  String get groupId;
+  int get partnerId; // info of người chat vs mình: id, name, avatar
   @override
-  String? get avatar;
+  String get partnerName;
+  @override
+  String? get partnerAvatar;
+  @override
+  int get lastMessageSenderId; // last message: sender(id, name, avatar), message, created_at, unread
+  @override
+  String get lastMessageSenderName;
+  @override
+  String? get lastMessageSenderAvatar;
+  @override
+  String? get lastMessageMessage;
+  @override
+  String get lastMessageCreatedAt;
+  @override
+  int get lastMessageUnRead;
+  @override
+  String get createdAt;
+  @override
+  String get updatedAt;
 
   /// Create a copy of GroupChatInfoMessageNotRead
   /// with the given fields replaced by the non-null parameter values.

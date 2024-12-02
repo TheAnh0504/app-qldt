@@ -6,17 +6,14 @@ import 'package:app_qldt/model/entities/message_model.dart';
 import 'package:app_qldt/model/repositories/messaging_repository.dart';
 
 final groupChatProvider =
-    FutureProvider.family<List<GroupChatModel>, int>((ref, offset) {
-  return ref.read(messagingRepositoryProvider).api.getListGroup(offset);
+    FutureProvider.family<List<GroupChatModel>, int>((ref, count) {
+  return ref.read(messagingRepositoryProvider).api.getListGroup(count);
 });
 
 final messagesProvider =
-    FutureProvider.family<List<MessageModel>, (String, int)>((ref, params) {
-  return ref
-      .read(messagingRepositoryProvider)
-      .api
-      .getMessage(params.$1, params.$2);
-});
+    FutureProvider.family<List<MessageModel>, (int, int)>((ref, params) {
+        return ref.read(messagingRepositoryProvider).api.getMessage(params.$1, params.$2);
+    });
 
 final addMessageProvider = AsyncNotifierProvider.autoDispose
     .family<AddMessageProvider, void, (String, String?, String?)>(

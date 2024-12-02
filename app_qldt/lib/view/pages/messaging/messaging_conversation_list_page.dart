@@ -18,6 +18,8 @@ import 'package:app_qldt/view/pages/messaging/messaging_detail_page.dart';
 import 'package:app_qldt/view/widgets/sw_popup.dart';
 import 'package:app_qldt/controller/messaging_provider.dart';
 
+import '../../../model/entities/account_model.dart';
+
 class MessagingConversationListPage extends StatelessWidget {
   const MessagingConversationListPage({super.key});
 
@@ -34,12 +36,93 @@ class MessagingConversationListPage extends StatelessWidget {
             child: Text("Tin nhắn", style: TypeStyle.title1White),
           ),
           actions: [
-            IconButton(
-                onPressed: () {}, icon: const FaIcon(FaIcons.penToSquare), color: Palette.white,)
+            // TODO: 1. Tạo tin nhắn mới
+            // IconButton(
+            //   onPressed: () => handleShowContactInfo(context),
+            //   icon: const FaIcon(FaIcons.penToSquare), color: Palette.white,)
           ],
         ),
         body: const _BuildBody());
   }
+
+  // Future<void> handleShowContactInfo(BuildContext context) async {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       backgroundColor: Palette.white,
+  //       showDragHandle: true,
+  //       builder: (context) => SingleChildScrollView(
+  //         child: Container(
+  //             width: MediaQuery.sizeOf(context).width,
+  //             height: MediaQuery.sizeOf(context).height,
+  //             padding: const EdgeInsets.symmetric(horizontal: 8),
+  //             decoration: const BoxDecoration(color: Palette.white),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Padding(
+  //                   padding: const EdgeInsets.symmetric(horizontal: 0), // Tùy chỉnh padding ngoài
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween, // Căn chỉnh đều
+  //                     children: [
+  //                       const Spacer(), // Tạo khoảng cách để "Tin nhắn mới" căn giữa
+  //                       const Center(
+  //                         child: Padding(
+  //                           padding: EdgeInsets.only(left: 55), // Dịch sang phải một chút
+  //                           child: Text(
+  //                             "Tin nhắn mới",
+  //                             style: TypeStyle.title1,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                       const Spacer(), // Tạo khoảng cách sau "Tin nhắn mới"
+  //                       TextButton(
+  //                         onPressed: () {
+  //                           Navigator.pop(context); // Đóng modal
+  //                         },
+  //                         child: const Text("Hủy"),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 // ListTile(
+  //                 //     title: Text('Đến'),
+  //                 //     subtitle: Text('Text2',
+  //                 //         style: TypeStyle.body3.copyWith(
+  //                 //             color:
+  //                 //             Theme.of(context).colorScheme.primary))
+  //                 // ),
+  //                 Text("Đến", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+  //                 SizedBox(height: 8),
+  //                 TextField(
+  //                   controller: _controller,
+  //                   decoration: InputDecoration(
+  //                     hintText: "Nhập email",
+  //                     border: OutlineInputBorder(),
+  //                     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 16),
+  //                 if (_results.isNotEmpty)
+  //                   Expanded(
+  //                     child: ListView.builder(
+  //                       itemCount: _results.length,
+  //                       itemBuilder: (context, index) {
+  //                         return ListTile(
+  //                           title: Text(_results[index]),
+  //                         );
+  //                       },
+  //                     ),
+  //                   )
+  //                 else
+  //                   Center(child: Text("Không có kết quả tìm kiếm")),
+  //
+  //               ],
+  //             )
+  //         ),
+  //       )
+  //   );
+  // }
 }
 
 class _BuildBody extends ConsumerStatefulWidget {
@@ -51,7 +134,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
   late final pagingController =
-      PagingController<int, GroupChatModel>(firstPageKey: 0);
+      PagingController<int, GroupChatModel>(firstPageKey: 1);
 
   @override
   void initState() {
@@ -93,6 +176,7 @@ class _MessagingConversationItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return Card(
       color: Palette.grey25,
       elevation: 0,
@@ -134,7 +218,9 @@ class _MessagingConversationItem extends ConsumerWidget {
                 CircleAvatar(
                     radius: 20,
                     backgroundImage: ExtendedNetworkImageProvider(
-                        model.infoGroup.image ?? Faker.instance.image.image(),
+                        model.infoGroup.partnerAvatar != null
+                            ? 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}'
+                            : 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}',
                         cache: true)),
                 const SizedBox(width: 14),
                 Expanded(
@@ -142,39 +228,31 @@ class _MessagingConversationItem extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            jsonDecode(model.infoGroup.groupName.toString())
-                                .entries
-                                .firstWhere((e) =>
-                                    e.key !=
-                                    ref.read(userProvider).value?.userId)
-                                .value,
+                            model.infoGroup.partnerName.toString(),
                             style: TypeStyle.title2),
                         Row(
                           children: [
                             FutureBuilder(
                                 future: ref.read(messagesProvider(
-                                    (model.infoGroup.groupId, 0)).future),
+                                    (model.infoGroup.groupId, 1)).future),
                                 builder: (context, snapshot) {
                                   return Text(
-                                      snapshot.data?.first.message ??
-                                          (snapshot.data?.first.media == null
-                                              ? "${jsonDecode(model.infoGroup.groupName.toString()).entries.firstWhere((e) => e.key != ref.read(userProvider).value?.userId).value} đã gửi một tin nhắn."
-                                              : ""),
+                                      snapshot.data?.first.message ?? "Tin nhắn đã bị xóa",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TypeStyle.body4);
+                                      style: snapshot.data?.first.message == null
+                                          ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
+                                          : TypeStyle.body4);
                                 }),
                             const Spacer(),
-                            if (model.infoMessageNotRead.countMessageNotRead >
-                                0)
+                            if (model.numNewMessage > 0)
                               Container(
                                   padding: const EdgeInsets.all(5),
                                   decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Palette.blue),
                                   child: Text(
-                                      model.infoMessageNotRead
-                                          .countMessageNotRead
+                                      model.numNewMessage
                                           .toString(),
                                       style: const TextStyle(
                                           color: Colors.white,
@@ -182,8 +260,7 @@ class _MessagingConversationItem extends ConsumerWidget {
                           ],
                         ),
                         Text(
-                            formatMessageDate(Faker.instance.date
-                                .past(DateTime.now(), rangeInYears: 1)),
+                            formatMessageDate(DateTime.parse(model.infoGroup.updatedAt)),
                             style: TypeStyle.body5)
                       ]),
                 )

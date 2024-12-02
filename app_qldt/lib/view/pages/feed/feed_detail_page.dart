@@ -178,7 +178,7 @@ class _FeedDetailPageState extends ConsumerState<FeedDetailPage> {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: SWMarkdown(data: description),
+                        child: SWMarkdown(data: description, style: "",),
                       ),
                     ),
                     if (medias.isNotEmpty)

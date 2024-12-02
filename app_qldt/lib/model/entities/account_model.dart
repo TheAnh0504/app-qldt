@@ -9,6 +9,28 @@ part "account_model.freezed.dart";
 part "account_model.g.dart";
 
 // flutter pub run build_runner build
+// chú ý group_chat_model - fromJson
+
+// _$GroupChatInfoModelImpl _$$GroupChatInfoModelImplFromJson(
+//     Map<String, dynamic> json) =>
+//     _$GroupChatInfoModelImpl(
+//       groupId: (json['id'] as num).toInt(),
+//       partner: json['partner'] as Object,
+//       lastMessage: json['last_message'] as Object,
+//       createdAt: json['created_at'] as String,
+//       updatedAt: json['updated_at'] as String,
+//     );
+
+// _$GroupChatInfoMessageNotReadImpl _$$GroupChatInfoMessageNotReadImplFromJson(
+//     Map<String, dynamic> json) =>
+//     _$GroupChatInfoMessageNotReadImpl(
+//       groupId: (json['id'] as num).toInt(),
+//       partner: json['partner'] as Object,
+//       lastMessage: json['last_message'] as Object,
+//       createdAt: json['created_at'] as String,
+//       updatedAt: json['updated_at'] as String,
+//     );
+
 @freezed
 class AccountModel with _$AccountModel {
   @JsonSerializable(explicitToJson: true)
@@ -26,7 +48,7 @@ class AccountModel with _$AccountModel {
         @Default("") String avatar,
         @Default("") String verifyCode,
         @Default([]) List<dynamic>? classList,
-        @Default(true) bool saved
+        @Default(false) bool saved
       }) = _AccountModel;
 
   factory AccountModel.fromJson(Map<String, dynamic> json) =>

@@ -111,7 +111,7 @@ class FeedPost extends ConsumerWidget {
                   )),
               Padding(
                   padding: const EdgeInsets.all(8),
-                  child: SWMarkdown(data: description)),
+                  child: SWMarkdown(data: description, style: "",)),
               if (medias.isNotEmpty) FeedMediaGrid(medias: medias.toList()),
               Row(
                 children: [
@@ -257,7 +257,7 @@ class FeedSearchPost extends ConsumerWidget {
                   )),
               Padding(
                   padding: const EdgeInsets.all(8),
-                  child: SWMarkdown(data: model.description)),
+                  child: SWMarkdown(data: model.description, style: "",)),
               if (medias.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.all(8.0),

@@ -16,13 +16,11 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MessageModel {
-  String get id => throw _privateConstructorUsedError;
+  String get messageId => throw _privateConstructorUsedError;
   MessageUserModel get user => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
-  String? get media => throw _privateConstructorUsedError;
-  List<dynamic>? get isRead => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
-  String get updatedAt => throw _privateConstructorUsedError;
+  int get unread => throw _privateConstructorUsedError;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -38,13 +36,11 @@ abstract class $MessageModelCopyWith<$Res> {
       _$MessageModelCopyWithImpl<$Res, MessageModel>;
   @useResult
   $Res call(
-      {String id,
+      {String messageId,
       MessageUserModel user,
       String? message,
-      String? media,
-      List<dynamic>? isRead,
       String createdAt,
-      String updatedAt});
+      int unread});
 
   $MessageUserModelCopyWith<$Res> get user;
 }
@@ -64,18 +60,16 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? messageId = null,
     Object? user = null,
     Object? message = freezed,
-    Object? media = freezed,
-    Object? isRead = freezed,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? unread = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      messageId: null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
               as String,
       user: null == user
           ? _value.user
@@ -85,22 +79,14 @@ class _$MessageModelCopyWithImpl<$Res, $Val extends MessageModel>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
-      media: freezed == media
-          ? _value.media
-          : media // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isRead: freezed == isRead
-          ? _value.isRead
-          : isRead // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+      unread: null == unread
+          ? _value.unread
+          : unread // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 
@@ -124,13 +110,11 @@ abstract class _$$MessageModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {String messageId,
       MessageUserModel user,
       String? message,
-      String? media,
-      List<dynamic>? isRead,
       String createdAt,
-      String updatedAt});
+      int unread});
 
   @override
   $MessageUserModelCopyWith<$Res> get user;
@@ -149,18 +133,16 @@ class __$$MessageModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? messageId = null,
     Object? user = null,
     Object? message = freezed,
-    Object? media = freezed,
-    Object? isRead = freezed,
     Object? createdAt = null,
-    Object? updatedAt = null,
+    Object? unread = null,
   }) {
     return _then(_$MessageModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      messageId: null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
               as String,
       user: null == user
           ? _value.user
@@ -170,22 +152,14 @@ class __$$MessageModelImplCopyWithImpl<$Res>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
-      media: freezed == media
-          ? _value.media
-          : media // ignore: cast_nullable_to_non_nullable
-              as String?,
-      isRead: freezed == isRead
-          ? _value._isRead
-          : isRead // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>?,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as String,
+      unread: null == unread
+          ? _value.unread
+          : unread // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -195,41 +169,26 @@ class __$$MessageModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$MessageModelImpl implements _MessageModel {
   const _$MessageModelImpl(
-      {required this.id,
+      {required this.messageId,
       required this.user,
       this.message,
-      this.media,
-      final List<dynamic>? isRead,
       required this.createdAt,
-      required this.updatedAt})
-      : _isRead = isRead;
+      required this.unread});
 
   @override
-  final String id;
+  final String messageId;
   @override
   final MessageUserModel user;
   @override
   final String? message;
   @override
-  final String? media;
-  final List<dynamic>? _isRead;
-  @override
-  List<dynamic>? get isRead {
-    final value = _isRead;
-    if (value == null) return null;
-    if (_isRead is EqualUnmodifiableListView) return _isRead;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
   final String createdAt;
   @override
-  final String updatedAt;
+  final int unread;
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, user: $user, message: $message, media: $media, isRead: $isRead, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'MessageModel(messageId: $messageId, user: $user, message: $message, createdAt: $createdAt, unread: $unread)';
   }
 
   @override
@@ -237,20 +196,18 @@ class _$MessageModelImpl implements _MessageModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MessageModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.messageId, messageId) ||
+                other.messageId == messageId) &&
             (identical(other.user, user) || other.user == user) &&
             (identical(other.message, message) || other.message == message) &&
-            (identical(other.media, media) || other.media == media) &&
-            const DeepCollectionEquality().equals(other._isRead, _isRead) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+            (identical(other.unread, unread) || other.unread == unread));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, user, message, media,
-      const DeepCollectionEquality().hash(_isRead), createdAt, updatedAt);
+  int get hashCode =>
+      Object.hash(runtimeType, messageId, user, message, createdAt, unread);
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -263,28 +220,22 @@ class _$MessageModelImpl implements _MessageModel {
 
 abstract class _MessageModel implements MessageModel {
   const factory _MessageModel(
-      {required final String id,
+      {required final String messageId,
       required final MessageUserModel user,
       final String? message,
-      final String? media,
-      final List<dynamic>? isRead,
       required final String createdAt,
-      required final String updatedAt}) = _$MessageModelImpl;
+      required final int unread}) = _$MessageModelImpl;
 
   @override
-  String get id;
+  String get messageId;
   @override
   MessageUserModel get user;
   @override
   String? get message;
   @override
-  String? get media;
-  @override
-  List<dynamic>? get isRead;
-  @override
   String get createdAt;
   @override
-  String get updatedAt;
+  int get unread;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -300,8 +251,8 @@ MessageUserModel _$MessageUserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$MessageUserModel {
-  String get userId => throw _privateConstructorUsedError;
-  String get displayName => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
 
   /// Serializes this MessageUserModel to a JSON map.
@@ -320,7 +271,7 @@ abstract class $MessageUserModelCopyWith<$Res> {
           MessageUserModel value, $Res Function(MessageUserModel) then) =
       _$MessageUserModelCopyWithImpl<$Res, MessageUserModel>;
   @useResult
-  $Res call({String userId, String displayName, String? avatar});
+  $Res call({int id, String name, String? avatar});
 }
 
 /// @nodoc
@@ -338,18 +289,18 @@ class _$MessageUserModelCopyWithImpl<$Res, $Val extends MessageUserModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? userId = null,
-    Object? displayName = null,
+    Object? id = null,
+    Object? name = null,
     Object? avatar = freezed,
   }) {
     return _then(_value.copyWith(
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       avatar: freezed == avatar
           ? _value.avatar
@@ -367,7 +318,7 @@ abstract class _$$MessageUserModelImplCopyWith<$Res>
       __$$MessageUserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String userId, String displayName, String? avatar});
+  $Res call({int id, String name, String? avatar});
 }
 
 /// @nodoc
@@ -383,18 +334,18 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? userId = null,
-    Object? displayName = null,
+    Object? id = null,
+    Object? name = null,
     Object? avatar = freezed,
   }) {
     return _then(_$MessageUserModelImpl(
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as String,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
       avatar: freezed == avatar
           ? _value.avatar
@@ -409,21 +360,21 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$MessageUserModelImpl implements _MessageUserModel {
   const _$MessageUserModelImpl(
-      {required this.userId, required this.displayName, this.avatar});
+      {required this.id, required this.name, this.avatar});
 
   factory _$MessageUserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$MessageUserModelImplFromJson(json);
 
   @override
-  final String userId;
+  final int id;
   @override
-  final String displayName;
+  final String name;
   @override
   final String? avatar;
 
   @override
   String toString() {
-    return 'MessageUserModel(userId: $userId, displayName: $displayName, avatar: $avatar)';
+    return 'MessageUserModel(id: $id, name: $name, avatar: $avatar)';
   }
 
   @override
@@ -431,15 +382,14 @@ class _$MessageUserModelImpl implements _MessageUserModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$MessageUserModelImpl &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.displayName, displayName) ||
-                other.displayName == displayName) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, userId, displayName, avatar);
+  int get hashCode => Object.hash(runtimeType, id, name, avatar);
 
   /// Create a copy of MessageUserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -460,17 +410,17 @@ class _$MessageUserModelImpl implements _MessageUserModel {
 
 abstract class _MessageUserModel implements MessageUserModel {
   const factory _MessageUserModel(
-      {required final String userId,
-      required final String displayName,
+      {required final int id,
+      required final String name,
       final String? avatar}) = _$MessageUserModelImpl;
 
   factory _MessageUserModel.fromJson(Map<String, dynamic> json) =
       _$MessageUserModelImpl.fromJson;
 
   @override
-  String get userId;
+  int get id;
   @override
-  String get displayName;
+  String get name;
   @override
   String? get avatar;
 

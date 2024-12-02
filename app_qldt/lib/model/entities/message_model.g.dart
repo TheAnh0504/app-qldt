@@ -8,38 +8,34 @@ part of 'message_model.dart';
 
 _$MessageModelImpl _$$MessageModelImplFromJson(Map<String, dynamic> json) =>
     _$MessageModelImpl(
-      id: json['id'] as String,
+      messageId: json['message_id'] as String,
       user: MessageUserModel.fromJson(json['user'] as Map<String, dynamic>),
       message: json['message'] as String?,
-      media: json['media'] as String?,
-      isRead: json['isRead'] as List<dynamic>?,
-      createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String,
+      createdAt: json['created_at'] as String,
+      unread: (json['unread'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$MessageModelImplToJson(_$MessageModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'messageId': instance.messageId,
       'user': instance.user.toJson(),
       'message': instance.message,
-      'media': instance.media,
-      'isRead': instance.isRead,
       'createdAt': instance.createdAt,
-      'updatedAt': instance.updatedAt,
+      'unread': instance.unread,
     };
 
 _$MessageUserModelImpl _$$MessageUserModelImplFromJson(
         Map<String, dynamic> json) =>
     _$MessageUserModelImpl(
-      userId: json['userId'] as String,
-      displayName: json['displayName'] as String,
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
       avatar: json['avatar'] as String?,
     );
 
 Map<String, dynamic> _$$MessageUserModelImplToJson(
         _$MessageUserModelImpl instance) =>
     <String, dynamic>{
-      'userId': instance.userId,
-      'displayName': instance.displayName,
+      'id': instance.id,
+      'name': instance.name,
       'avatar': instance.avatar,
     };

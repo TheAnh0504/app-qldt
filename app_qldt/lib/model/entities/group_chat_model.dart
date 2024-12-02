@@ -8,7 +8,8 @@ class GroupChatModel with _$GroupChatModel {
   @JsonSerializable(explicitToJson: true)
   const factory GroupChatModel(
           {required GroupChatInfoModel infoGroup,
-          required GroupChatInfoMessageNotRead infoMessageNotRead}) =
+          required GroupChatInfoMessageNotRead infoMessageNotRead,
+            required int numNewMessage}) =
       _GroupChatModel;
 
   factory GroupChatModel.fromJson(Map<String, dynamic> json) =>
@@ -18,12 +19,16 @@ class GroupChatModel with _$GroupChatModel {
 @freezed
 class GroupChatInfoModel with _$GroupChatInfoModel {
   const factory GroupChatInfoModel(
-      {required String groupId,
-      required Object groupName,
-      required List<String> listUserId,
-      @Default([]) List<String> listAdmin,
-      String? image,
-      required String type,
+      {required int groupId, // id of chat
+      required int partnerId, // info of người chat vs mình: id, name, avatar
+        required String partnerName,
+        String? partnerAvatar,
+      required int lastMessageSenderId, // last message: sender(id, name, avatar), message, created_at, unread
+        required String lastMessageSenderName,
+        String? lastMessageSenderAvatar,
+        String? lastMessageMessage,
+        required String lastMessageCreatedAt,
+        required int lastMessageUnRead,
       required String createdAt,
       required String updatedAt}) = _GroupChatInfoModel;
 
@@ -34,9 +39,18 @@ class GroupChatInfoModel with _$GroupChatInfoModel {
 @freezed
 class GroupChatInfoMessageNotRead with _$GroupChatInfoMessageNotRead {
   const factory GroupChatInfoMessageNotRead(
-      {required int countMessageNotRead,
-      required String groupId,
-      String? avatar}) = _GroupChatInfoMessageNotRead;
+      {required int groupId, // id of chat
+  required int partnerId, // info of người chat vs mình: id, name, avatar
+  required String partnerName,
+  String? partnerAvatar,
+  required int lastMessageSenderId, // last message: sender(id, name, avatar), message, created_at, unread
+  required String lastMessageSenderName,
+  String? lastMessageSenderAvatar,
+  String? lastMessageMessage,
+  required String lastMessageCreatedAt,
+  required int lastMessageUnRead,
+  required String createdAt,
+  required String updatedAt}) = _GroupChatInfoMessageNotRead;
 
   factory GroupChatInfoMessageNotRead.fromJson(Map<String, dynamic> json) =>
       _$GroupChatInfoMessageNotReadFromJson(json);

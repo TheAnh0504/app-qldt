@@ -214,91 +214,90 @@ class _BuildBody extends ConsumerWidget {
     await Share.shareUri(Uri.parse("https://picsum.photos/256"));
   }
 
-  Future<void> handleShowContactInfo(
-      BuildContext context, AccountModel account) async {
-        showModalBottomSheet(
-            context: context,
-            backgroundColor: Palette.white,
-            showDragHandle: true,
-            builder: (context) => SingleChildScrollView(
-                  child: Container(
-                      width: MediaQuery.sizeOf(context).width,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: const BoxDecoration(color: Palette.white),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15),
-                            child: Row(
-                              children: [
-                                 Text('Thông tin ${account.role == 'STUDENT' ? 'sinh viên' : 'giảng viên'}',
-                                    style: TypeStyle.title1),
-                                const Spacer(),
-                                TextButton(
-                                    onPressed: () {
-                                      rootNavigatorKey.currentContext
-                                          ?.go("$profileRoute/edit");
-                                    },
-                                    child: const Text("Chỉnh sửa"))
-                              ],
-                            ),
-                          ),
-                          ListTile(
-                              title: Text(account.role == 'STUDENT' ? 'Sinh viên' : 'Giảng viên', style: TypeStyle.body4),
-                              subtitle: Text(account.name,
-                                  style: TypeStyle.body3.copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary))),
-                          InkWell(
-                            splashFactory: InkRipple.splashFactory,
-                            onTap: () =>
-                                launchUrl(Uri.parse("mailto:${account.email}")),
-                            child: ListTile(
-                                title:
-                                    const Text("Email", style: TypeStyle.body4),
-                                subtitle: Text(account.email,
-                                    style: TypeStyle.body3.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary))),
-                          ),
-                          ListTile(
-                              title: const Text("Id", style: TypeStyle.body4),
-                              subtitle: Text(account.idAccount,
-                                  style: TypeStyle.body3.copyWith(
-                                      color:
+  Future<void> handleShowContactInfo(BuildContext context, AccountModel account) async {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Palette.white,
+        showDragHandle: true,
+        builder: (context) => SingleChildScrollView(
+              child: Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: const BoxDecoration(color: Palette.white),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Row(
+                          children: [
+                             Text('Thông tin ${account.role == 'STUDENT' ? 'sinh viên' : 'giảng viên'}',
+                                style: TypeStyle.title1),
+                            const Spacer(),
+                            TextButton(
+                                onPressed: () {
+                                  rootNavigatorKey.currentContext
+                                      ?.go("$profileRoute/edit");
+                                },
+                                child: const Text("Chỉnh sửa"))
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                          title: Text(account.role == 'STUDENT' ? 'Sinh viên' : 'Giảng viên', style: TypeStyle.body4),
+                          subtitle: Text(account.name,
+                              style: TypeStyle.body3.copyWith(
+                                  color:
                                       Theme.of(context).colorScheme.primary))),
-                          ListTile(
-                              title: const Text("Họ", style: TypeStyle.body4),
-                              subtitle: Text(account.ho,
-                                  style: TypeStyle.body3.copyWith(
-                                      color:
-                                          Theme.of(context).colorScheme.primary))),
-                          ListTile(
-                              title: const Text("Tên", style: TypeStyle.body4),
-                              subtitle: Text(account.ten,
-                                  style: TypeStyle.body3.copyWith(
-                                      color:
+                      InkWell(
+                        splashFactory: InkRipple.splashFactory,
+                        onTap: () =>
+                            launchUrl(Uri.parse("mailto:${account.email}")),
+                        child: ListTile(
+                            title:
+                                const Text("Email", style: TypeStyle.body4),
+                            subtitle: Text(account.email,
+                                style: TypeStyle.body3.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary))),
+                      ),
+                      ListTile(
+                          title: const Text("Id", style: TypeStyle.body4),
+                          subtitle: Text(account.idAccount,
+                              style: TypeStyle.body3.copyWith(
+                                  color:
+                                  Theme.of(context).colorScheme.primary))),
+                      ListTile(
+                          title: const Text("Họ", style: TypeStyle.body4),
+                          subtitle: Text(account.ho,
+                              style: TypeStyle.body3.copyWith(
+                                  color:
                                       Theme.of(context).colorScheme.primary))),
-                          // InkWell(
-                          //   splashFactory: InkRipple.splashFactory,
-                          //   onTap: () =>
-                          //       launchUrl(Uri.parse("tel:${account.idAccount}")),
-                          //   child: ListTile(
-                          //       title: const Text("Số điện thoại",
-                          //           style: TypeStyle.body4),
-                          //       subtitle: Text(account.idAccount,
-                          //           style: TypeStyle.body3.copyWith(
-                          //               color: Theme.of(context)
-                          //                   .colorScheme
-                          //                   .primary))),
-                          // ),
-                        ],
-                      )
-                  ),
-            )
-        );
-      }
+                      ListTile(
+                          title: const Text("Tên", style: TypeStyle.body4),
+                          subtitle: Text(account.ten,
+                              style: TypeStyle.body3.copyWith(
+                                  color:
+                                  Theme.of(context).colorScheme.primary))),
+                      // InkWell(
+                      //   splashFactory: InkRipple.splashFactory,
+                      //   onTap: () =>
+                      //       launchUrl(Uri.parse("tel:${account.idAccount}")),
+                      //   child: ListTile(
+                      //       title: const Text("Số điện thoại",
+                      //           style: TypeStyle.body4),
+                      //       subtitle: Text(account.idAccount,
+                      //           style: TypeStyle.body3.copyWith(
+                      //               color: Theme.of(context)
+                      //                   .colorScheme
+                      //                   .primary))),
+                      // ),
+                    ],
+                  )
+              ),
+        )
+    );
+  }
 }

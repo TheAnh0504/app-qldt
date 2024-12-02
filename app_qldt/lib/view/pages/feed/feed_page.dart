@@ -136,9 +136,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       )
                           : CircleAvatar(
                           backgroundImage: ExtendedNetworkImageProvider(
-                              avatar!.startsWith('https://drive.google.com/')
-                                  ? 'https://drive.google.com/uc?id=${avatar.split('/d/')[1].split('/')[0]}'
-                                  : "https://picsum.photos/1024"),
+                              'https://drive.google.com/uc?id=${avatar?.split('/d/')[1].split('/')[0]}'),
                           radius: 20)
                       ,
                     ),

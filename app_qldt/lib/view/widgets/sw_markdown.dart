@@ -9,16 +9,20 @@ import 'package:app_qldt/core/theme/typestyle.dart';
 import 'package:app_qldt/view/pages/profile/profile_other_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/theme/palette.dart';
+
 class SWMarkdown extends ConsumerWidget {
   final String data;
   final int? maxChildren;
   final double textScaleFactor;
+  final String style;
 
   const SWMarkdown(
       {super.key,
       required this.data,
       this.maxChildren,
-      this.textScaleFactor = 1});
+      this.textScaleFactor = 1,
+      required this.style});
 
   void goToProfile(BuildContext context, WidgetRef ref, String userId) {
     if (userId == ref.read(userProvider).value?.userId) {
@@ -44,7 +48,7 @@ class SWMarkdown extends ConsumerWidget {
       newData = newData.replaceAll("([$originText]($url))", "($url)");
     }
 
-    const bodyMedium = TypeStyle.body3;
+    var bodyMedium = style != "delete" ? TypeStyle.body3 : TypeStyle.body3.copyWith(fontStyle: FontStyle.italic, color: Palette.grey10);
     return _CustomMarkdownBody(
         key: UniqueKey(),
         data: newData,
@@ -59,9 +63,9 @@ class SWMarkdown extends ConsumerWidget {
         maxChildren: maxChildren,
         styleSheet: MarkdownStyleSheet(
           blockSpacing: 0,
-          h1: TypeStyle.heading,
-          h2: TypeStyle.title1,
-          h3: TypeStyle.title2,
+          h1: style != "delete" ? TypeStyle.heading : TypeStyle.heading.copyWith(fontStyle: FontStyle.italic, color: Palette.grey10),
+          h2: style != "delete" ?  TypeStyle.title1 : TypeStyle.title1.copyWith(fontStyle: FontStyle.italic, color: Palette.grey10),
+          h3: style != "delete" ?  TypeStyle.title2 : TypeStyle.title2.copyWith(fontStyle: FontStyle.italic, color: Palette.grey10),
           a: bodyMedium.copyWith(
               color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.bold),
