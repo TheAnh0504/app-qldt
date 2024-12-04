@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:app_qldt/controller/account_provider.dart';
+import 'package:app_qldt/view/pages/messaging/messaging_conversation_list_page.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:faker_dart/faker_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,7 +25,13 @@ import 'package:app_qldt/model/repositories/media_repository.dart';
 import 'package:app_qldt/view/widgets/sw_markdown.dart';
 import 'package:app_qldt/controller/messaging_provider.dart';
 import 'package:app_qldt/controller/user_provider.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
+import '../../widgets/sw_popup.dart';
+import 'messaging_detail_settings_page.dart';
 
 class MessagingDetailPage extends StatelessWidget {
   final GroupChatModel model;
@@ -31,19 +40,40 @@ class MessagingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
-    return Scaffold(
+
+    return WillPopScope(
+      onWillPop: () async {
+        // Thực hiện hành động tùy chỉnh trước khi quay lại
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const MessagingConversationListPage()));
+
+        // Trả về false để ngăn chặn hành động quay lại mặc định
+        return Future.value(false);
+      },
+      child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           leading: IconButton(
-              onPressed: context.pop, icon: const FaIcon(FaIcons.arrowLeft)),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MessagingConversationListPage()));
+            },
+            icon: const FaIcon(FaIcons.arrowLeft, color: Palette.white),
+          ),
           title: Row(
             children: [
               CircleAvatar(
-                  radius: 20,
-                  backgroundImage: ExtendedNetworkImageProvider(
-                      model.infoGroup.partnerAvatar == null
-                          ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
-                          : 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
-                      cache: true)),
+                radius: 20,
+                backgroundImage: ExtendedNetworkImageProvider(
+                    model.infoGroup.partnerAvatar == null
+                        ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
+                        : 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
+                    cache: true),
+              ),
               const SizedBox(width: 10),
               Text.rich(
                   TextSpan(children: [
@@ -51,10 +81,10 @@ class MessagingDetailPage extends StatelessWidget {
                         text: model.infoGroup.partnerName.toString().length > 16
                             ? "${model.infoGroup.partnerName.toString().substring(0, 16)}..."
                             : model.infoGroup.partnerName.toString(),
-                        style: TypeStyle.title3),
-                    TextSpan(
-                        text: "\nĐang hoạt động",
-                        style: TypeStyle.body5.copyWith(color: Palette.grey40))
+                        style: TypeStyle.title3.copyWith(color: Palette.white)),
+                    // TextSpan(
+                    //     text: "\nĐang hoạt động",
+                    //     style: TypeStyle.body5.copyWith(color: Palette.grey40))
                   ]),
                   overflow: TextOverflow.ellipsis)
             ],
@@ -62,21 +92,24 @@ class MessagingDetailPage extends StatelessWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (_) => const MessagingDetailSettingsPage(
-                  //             user: MessageUserModel(
-                  //                 userId: "0",
-                  //                 displayName: "Nguyễn Văn A",
-                  //                 avatar: "https://picsum.photos/200"))));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => MessagingDetailSettingsPage(
+                              user: MessageUserModel(
+                                  id: model.infoGroup.partnerId,
+                                  name: model.infoGroup.partnerName,
+                                  avatar: model.infoGroup.partnerAvatar))));
                 },
-                icon: const FaIcon(FaIcons.circleInfo))
+                icon: const FaIcon(FaIcons.circleInfo, color: Palette.white))
           ],
         ),
-        body: _BuildBody(model));
+        body: _BuildBody(model),
+      ),
+    );
   }
 }
+
 
 class _BuildBody extends ConsumerStatefulWidget {
   final GroupChatModel model;
@@ -87,29 +120,76 @@ class _BuildBody extends ConsumerStatefulWidget {
 }
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
-  final textController = TextEditingController();
-  final pagingController = PagingController<int, MessageModel>(firstPageKey: 1);
+  final String webSocketUrl = 'http://157.66.24.126:8080/ws';
+  late StompClient _client;
+  final _controller = TextEditingController();
+  final pagingController = PagingController<int, MessageModel>(firstPageKey: 0);
 
   var currentMessages = [];
-  Timer? timer;
+  bool checkUnRead = true;
 
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(const Duration(seconds: 50000), (timer) {
-      ref.invalidate(messagesProvider);
-      pagingController.refresh();
-    });
+    // connect to websocket
+    _client = StompClient(
+        config: StompConfig.sockJS(url: webSocketUrl, onConnect: onConnectCallback));
+    _client.activate();
     pagingController.addPageRequestListener((nextPage) async {
       var model = await ref.read(
-          messagesProvider((widget.model.infoGroup.groupId, nextPage)).future);
+          messagesProvider((widget.model.infoGroup.groupId, nextPage, "true")).future);
       if (model.length < 20) {
         pagingController.appendLastPage(model);
       } else {
-        pagingController.appendPage(model, nextPage + 20);
+        pagingController.appendPage(model, nextPage + 1);
       }
       currentMessages = pagingController.value.itemList ?? [];
     });
+  }
+
+  void _sendMessage() {
+    final message = _controller.text;
+    if (message.isNotEmpty) {
+      print('message1: $message');
+      print(_client.connected);
+      _client.send(
+        destination: '/chat/message', // Replace with your chat ID
+        body: json.encode({
+          'receiver': { 'id': widget.model.infoGroup.partnerId }, // id người nhân
+          'content': message, // nội dung message
+          'sender': ref.read(accountProvider).value?.email, // email người gửi
+          'token': ref.read(accountProvider).value?.accessToken, // accessToken của người gửi
+        }), // Format the message as needed
+      );
+      _controller.clear();
+    }
+  }
+
+  void onConnectCallback(StompFrame connectFrame) {
+    _client.subscribe(
+        destination: '/user/${ref.read(accountProvider).value?.idAccount}/inbox',
+        headers: {},
+        callback: (frame) {
+          print(frame.body);
+          // Received a frame for this subscription
+          Map<String, dynamic> message = jsonDecode(frame.body!);
+          MessageUserModel messageUserModel = MessageUserModel(
+              id: message['sender']['id'],
+              name: message['sender']['name'],
+              avatar: message['sender']['avatar']
+          );
+          MessageModel messageModel = MessageModel(
+              messageId: message['id'].toString(),
+              user: messageUserModel,
+              message: message['content'],
+              createdAt: message['created_at'],
+              unread: 0
+          );
+          setState(() {
+            currentMessages.insert(0, messageModel);  // Đồng bộ với PagingController  // Thêm tin nhắn mới vào danh sách hiện tại
+          });
+        }
+    );
   }
 
   @override
@@ -121,6 +201,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           child: RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(messagesProvider);
+              ref.invalidate(groupChatProvider);
               pagingController.refresh();
             },
             child: PagedListView<int, MessageModel>(
@@ -137,13 +218,15 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           .map((e) {
                             final isMe = e.user.id.toString() ==
                                 ref.watch(accountProvider).value?.idAccount;
+                            bool check = checkUnRead;
+                            if (e.unread == 1) checkUnRead = false;
                             return isMe
                                 ? Align(
                                     alignment: Alignment.centerRight,
-                                    child: _MyMessageSection(message: e))
+                                    child: _MyMessageSection(message: e, conversationId: widget.model.infoGroup.groupId, page: pagingController,))
                                 : Align(
                                     alignment: Alignment.centerLeft,
-                                    child: _OtherMessageSection(message: e));
+                                    child: _OtherMessageSection(message: e, checkUnRead: check));
                           })
                           .toList()
                           .reversed
@@ -154,8 +237,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   final isMe =
                       item.user.id.toString() == ref.watch(accountProvider).value!.idAccount;
                   return isMe
-                      ? _MyMessageSection(message: item)
-                      : _OtherMessageSection(message: item);
+                      ? _MyMessageSection(message: item, conversationId: widget.model.infoGroup.groupId, page: pagingController,)
+                      : _OtherMessageSection(message: item, checkUnRead: );
                 },
                 noMoreItemsIndicatorBuilder: (context) => Center(
                   child: Column(
@@ -212,30 +295,30 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             height: 64,
             child: Row(children: [
               const SizedBox(width: 8),
-              // IconButton(
-              //     onPressed: () {
-              //       AssetPicker.pickAssets(context,
-              //               pickerConfig: const AssetPickerConfig(
-              //                   maxAssets: 1, requestType: RequestType.image))
-              //           .then((value) async {
-              //         if (value?.isEmpty ?? true) return;
-              //         ref
-              //             .read(addMessageProvider((
-              //           widget.model.infoGroup.groupId,
-              //           "<media_link>",
-              //           await ref
-              //               .read(mediaRepositoryProvider)
-              //               .api
-              //               .addImage((await value!.first.file)!)
-              //         )).future)
-              //             .then((_) {
-              //           ref.invalidate(messagesProvider);
-              //           pagingController.refresh();
-              //         });
-              //       });
-              //     },
-              //     icon: const FaIcon(FaIcons.image)
-              // ),
+              IconButton(
+                  onPressed: () {
+                    AssetPicker.pickAssets(context,
+                            pickerConfig: const AssetPickerConfig(
+                                maxAssets: 1, requestType: RequestType.image))
+                        .then((value) async {
+                      if (value?.isEmpty ?? true) return;
+                      // ref
+                      //     .read(addMessageProvider((
+                      //   widget.model.infoGroup.groupId,
+                      //   "first_message",
+                      //   await ref
+                      //       .read(mediaRepositoryProvider)
+                      //       .api
+                      //       .addImage((await value!.first.file)!)
+                      // )).future)
+                      //     .then((_) {
+                      //   ref.invalidate(messagesProvider);
+                      //   pagingController.refresh();
+                      // });
+                    });
+                  },
+                  icon: const FaIcon(FaIcons.image)
+              ),
               Expanded(
                 child: Container(
                   clipBehavior: Clip.antiAlias,
@@ -243,7 +326,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(24)),
                   child: TextField(
-                      controller: textController,
+                      controller: _controller,
                       decoration: const InputDecoration(
                           hintText: "",
                           focusedBorder: InputBorder.none,
@@ -253,22 +336,12 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           fillColor: Palette.grey40)),
                 ),
               ),
-              // IconButton(
-              //     onPressed: () {
-              //       ref
-              //           .read(addMessageProvider((
-              //         widget.model.infoGroup.groupId,
-              //         textController.text,
-              //         null
-              //       )).future)
-              //           .then((_) {
-              //         textController.text = "";
-              //         ref.invalidate(messagesProvider);
-              //         pagingController.refresh();
-              //       });
-              //     },
-              //     icon: const FaIcon(FaIcons.solidPaperPlane)
-              // ),
+              IconButton(
+                  onPressed: () {
+                    _sendMessage();
+                  },
+                  icon: const FaIcon(FaIcons.solidPaperPlane)
+              ),
               const SizedBox(width: 8),
             ]))
       ],
@@ -277,15 +350,18 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    _client.deactivate();
+    _controller.dispose();
     super.dispose();
   }
 }
 
 class _MyMessageSection extends StatefulWidget {
   final MessageModel message;
+  final int conversationId;
+  final dynamic page;
 
-  const _MyMessageSection({required this.message});
+  const _MyMessageSection({required this.message, required this.conversationId, required this.page});
 
   @override
   State<_MyMessageSection> createState() => _MyMessageSectionState();
@@ -312,15 +388,17 @@ class _MyMessageSectionState extends State<_MyMessageSection> {
                     formatMessageDate(DateTime.parse(widget.message.createdAt)),
                     style: TypeStyle.body5)
             ),
-            widget.message.message != "<media_link>"
+            widget.message.message != "first_message"
                 ? _TextMessageBubble(
+                    page: widget.page,
+                    messageId: widget.message.messageId,
+                    conversationId: widget.conversationId,
                     msg: widget.message.message ?? "Tin nhắn đã bị xóa",
                     foreground: Palette.black,
                     background: Color.lerp(Theme.of(context).colorScheme.primary,
                         Palette.white, 0.5)!,
                     style: widget.message.message != null ? "" : "delete")
-                : _ImageMessageBubble(
-                    img: Faker.instance.image.image()),
+                : const SizedBox(),
             if (showStatus)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -333,24 +411,77 @@ class _MyMessageSectionState extends State<_MyMessageSection> {
   }
 }
 
-class _TextMessageBubble extends StatelessWidget {
+class _TextMessageBubble extends ConsumerStatefulWidget {
   final String msg;
   final Color background;
   final Color foreground;
   final String style;
+  final dynamic page;
+  final String messageId;
+  final int conversationId;
 
   const _TextMessageBubble(
-      {required this.msg, required this.background, required this.foreground, required this.style});
+      {required this.msg, required this.background, required this.foreground, required this.style, required this.page, required this.messageId, required this.conversationId});
 
+  @override
+  ConsumerState<_TextMessageBubble> createState() => _TextMessageBubbleState();
+}
+class _TextMessageBubbleState extends ConsumerState<_TextMessageBubble> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () => openBottomSheet(context),
+      onLongPress: () {
+        showOptionModal(context: context, blocks: [
+          [
+            BottomSheetListTile(
+              leading: FaIcons.solidCopy,
+              title: "Sao chép",
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: widget.msg)).then(
+                      (value) => {
+                        Navigator.pop(context),
+                        Fluttertoast.showToast(msg: "Đã sao chép.")
+                      },
+                );
+              },
+            ),
+            BottomSheetListTile(
+              leading: FaIcons.deleteLeft,
+              title: "Xóa tin nhắn",
+              onTap: () {
+                if (widget.conversationId != -1) {
+                  Map<String, dynamic> data = {
+                    'message_id': widget.messageId,
+                    'conversation_id': widget.conversationId
+                  };
+                  ref.read(deleteMessageProvider(data).future).then((value) {
+                    if (value) {
+                      setState(() {
+                        ref.invalidate(messagesProvider);
+                        ref.invalidate(groupChatProvider);
+                        widget.page.refresh();
+                        Navigator.pop(context);
+                        Fluttertoast.showToast(msg: "Xóa tin nhắn thành công");
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(msg: "Xóa tin nhắn thất bại");
+                    }
+                  });
+                } else {
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(msg: "Không thể xóa tin nhắn của người khác");
+                }
+              },
+            ),
+          ],
+        ]);
+      },
       child: Container(
           clipBehavior: Clip.antiAlias,
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-              color: background, borderRadius: BorderRadius.circular(5)),
+              color: widget.background, borderRadius: BorderRadius.circular(5)),
           constraints: BoxConstraints.loose(
               Size.fromWidth(MediaQuery.sizeOf(context).width / 3 * 2)),
           child: Column(
@@ -359,10 +490,10 @@ class _TextMessageBubble extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SWMarkdown(data: msg, style: style),
+                child: SWMarkdown(data: widget.msg, style: widget.style),
               ),
               AnyLinkPreview(
-                  link: msg,
+                  link: widget.msg,
                   errorWidget: const SizedBox(),
                   borderRadius: 0,
                   previewHeight: null,
@@ -392,7 +523,7 @@ class _TextMessageBubble extends StatelessWidget {
                       Expanded(
                           child: InkWell(
                         onTap: () {
-                          Clipboard.setData(ClipboardData(text: msg)).then(
+                          Clipboard.setData(ClipboardData(text: widget.msg)).then(
                               (value) =>
                                   Fluttertoast.showToast(msg: "Đã sao chép."));
                         },
@@ -453,8 +584,9 @@ class _ImageMessageBubble extends StatelessWidget {
 
 class _OtherMessageSection extends StatefulWidget {
   final MessageModel message;
+  final bool checkUnRead;
 
-  const _OtherMessageSection({required this.message});
+  const _OtherMessageSection({required this.message, required this.checkUnRead});
 
   @override
   State<_OtherMessageSection> createState() => _OtherMessageSectionState();
@@ -495,15 +627,23 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                             cache: true)
                         ),
               ),
-              widget.message.message != "<media_link>"
+              if (widget.message.unread == 1 && widget.checkUnRead) Padding(
+                  padding: const EdgeInsets.only(left: 56),
+                  child: Text("Chưa đọc",
+                      style:
+                      TypeStyle.body5.copyWith(fontWeight: FontWeight.bold))
+              ),
+              widget.message.message != "first_message"
                   ? _TextMessageBubble(
+                    messageId: widget.message.messageId,
+                    conversationId: -1,
+                    page: null,
                     msg: widget.message.message ?? "Tin nhắn đã bị xóa",
                     foreground: Palette.black,
                     background: Color.lerp(Theme.of(context).colorScheme.primary,
                     Palette.white, 0.5)!,
-                    style: widget.message.message != null ? "" : "delete")
-                  : _ImageMessageBubble(
-                      img: Faker.instance.image.image()),
+                    style: widget.message.message != null ? "" : "delete",)
+                  : const SizedBox(),
             ],
           ),
           if (showStatus)
@@ -511,7 +651,8 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                 padding: const EdgeInsets.only(left: 56),
                 child: Text("Đã xem",
                     style:
-                        TypeStyle.body5.copyWith(fontWeight: FontWeight.bold)))
+                        TypeStyle.body5.copyWith(fontWeight: FontWeight.bold))
+            )
         ],
       ),
     );

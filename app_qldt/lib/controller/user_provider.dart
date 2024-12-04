@@ -17,7 +17,7 @@ class AsyncUserProvider extends AutoDisposeAsyncNotifier<UserModel> {
   @override
   FutureOr<UserModel> build() async {
     ref.cacheFor(const Duration(seconds: 30));
-    return ref.watch(userRepositoryProvider).api.getUserInfo();
+    return ref.watch(userRepositoryProvider).api.getUserInfo("1");
   }
 
   Future<Map<String, dynamic>> setUserInfo(

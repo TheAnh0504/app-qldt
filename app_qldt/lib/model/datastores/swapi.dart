@@ -126,6 +126,25 @@ class SWApi {
     });
   }
 
+  Future<Map<String, dynamic>> getUserInfo(String userId) async {
+    return dio.post("/it4788/get_user_info", data: {
+      "token": await accessToken,
+      "user_id": userId,
+    }).then((value) {
+      return value.data;
+    });
+  }
+
+  Future<Map<String, dynamic>> deleteMessage(dynamic messageId, dynamic conversationId) async {
+    return dio.post("/it5023e/delete_message", data: {
+      "token": await accessToken,
+      "message_id": messageId,
+      "conversation_id": conversationId
+    }).then((value) {
+      return value.data;
+    });
+  }
+
   Future<Map<String, dynamic>> getVerifyCode(String email, String password) async {
       final res = await dio.post("/it4788/get_verify_code",
           data: {
@@ -305,14 +324,6 @@ class SWApi {
   Future<Map<String, dynamic>> deleteToken() async {
     return dio
         .get("/sw3/auth/delete_token",
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
-        .then((value) => value.data);
-  }
-
-  Future<Map<String, dynamic>> getUserInfo() async {
-    return dio
-        .get("/sw3/user/get_user_info",
             options: Options(
                 headers: {"Authorization": "Bearer ${await accessToken}"}))
         .then((value) => value.data);
@@ -728,15 +739,16 @@ class SWApi {
         .then((value) => value.data);
   }
 
-  Future<Map<String, dynamic>> getMessage(int groupId, int count) async {
+  Future<Map<String, dynamic>> getMessage(int groupId, int count, String read) async {
+    print('count:1 $count');
     return dio
         .post("/it5023e/get_conversation",
             data: {
               "token": await accessToken,
-              "index": 0,
-              "count": 20 * count,
+              "index": 20 * count,
+              "count": 20,
               "conversation_id": groupId,
-              "mark_as_read": "true"
+              "mark_as_read": read
             })
         .then((value) => value.data);
   }
@@ -751,21 +763,16 @@ class SWApi {
         .then((value) => value.data);
   }
 
-  Future<Map<String, dynamic>> addNewGroupChat(
-      {String? groupName,
-      required List<String> listUserId,
-      List<String> listAdmin = const [],
-      required String type}) async {
+  Future<Map<String, dynamic>> addNewGroupChat(String? search) async {
     return dio
-        .post("/sw3/message/add_group",
+        .post("/it5023e/search_account",
             data: {
-              "groupName": groupName,
-              "listUserId": listUserId,
-              "listAdmin": listAdmin,
-              "type": type
-            },
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
+              "search": search
+              // "pageable_request": {
+              //   "page": 1,
+              //   "page_size": 2
+              // }
+            })
         .then((value) => value.data);
   }
 

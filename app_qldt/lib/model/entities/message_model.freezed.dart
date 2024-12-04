@@ -254,6 +254,9 @@ mixin _$MessageUserModel {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
+  String? get firstName => throw _privateConstructorUsedError;
+  String? get lastName => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
 
   /// Serializes this MessageUserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -271,7 +274,13 @@ abstract class $MessageUserModelCopyWith<$Res> {
           MessageUserModel value, $Res Function(MessageUserModel) then) =
       _$MessageUserModelCopyWithImpl<$Res, MessageUserModel>;
   @useResult
-  $Res call({int id, String name, String? avatar});
+  $Res call(
+      {int id,
+      String name,
+      String? avatar,
+      String? firstName,
+      String? lastName,
+      String? email});
 }
 
 /// @nodoc
@@ -292,6 +301,9 @@ class _$MessageUserModelCopyWithImpl<$Res, $Val extends MessageUserModel>
     Object? id = null,
     Object? name = null,
     Object? avatar = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? email = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -306,6 +318,18 @@ class _$MessageUserModelCopyWithImpl<$Res, $Val extends MessageUserModel>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstName: freezed == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastName: freezed == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -318,7 +342,13 @@ abstract class _$$MessageUserModelImplCopyWith<$Res>
       __$$MessageUserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String name, String? avatar});
+  $Res call(
+      {int id,
+      String name,
+      String? avatar,
+      String? firstName,
+      String? lastName,
+      String? email});
 }
 
 /// @nodoc
@@ -337,6 +367,9 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? avatar = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? email = freezed,
   }) {
     return _then(_$MessageUserModelImpl(
       id: null == id
@@ -351,6 +384,18 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
           ? _value.avatar
           : avatar // ignore: cast_nullable_to_non_nullable
               as String?,
+      firstName: freezed == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastName: freezed == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -360,7 +405,12 @@ class __$$MessageUserModelImplCopyWithImpl<$Res>
 @JsonSerializable(explicitToJson: true)
 class _$MessageUserModelImpl implements _MessageUserModel {
   const _$MessageUserModelImpl(
-      {required this.id, required this.name, this.avatar});
+      {required this.id,
+      required this.name,
+      this.avatar,
+      this.firstName,
+      this.lastName,
+      this.email});
 
   factory _$MessageUserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$MessageUserModelImplFromJson(json);
@@ -371,10 +421,16 @@ class _$MessageUserModelImpl implements _MessageUserModel {
   final String name;
   @override
   final String? avatar;
+  @override
+  final String? firstName;
+  @override
+  final String? lastName;
+  @override
+  final String? email;
 
   @override
   String toString() {
-    return 'MessageUserModel(id: $id, name: $name, avatar: $avatar)';
+    return 'MessageUserModel(id: $id, name: $name, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email)';
   }
 
   @override
@@ -384,12 +440,18 @@ class _$MessageUserModelImpl implements _MessageUserModel {
             other is _$MessageUserModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.avatar, avatar) || other.avatar == avatar));
+            (identical(other.avatar, avatar) || other.avatar == avatar) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.email, email) || other.email == email));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, avatar);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, avatar, firstName, lastName, email);
 
   /// Create a copy of MessageUserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -412,7 +474,10 @@ abstract class _MessageUserModel implements MessageUserModel {
   const factory _MessageUserModel(
       {required final int id,
       required final String name,
-      final String? avatar}) = _$MessageUserModelImpl;
+      final String? avatar,
+      final String? firstName,
+      final String? lastName,
+      final String? email}) = _$MessageUserModelImpl;
 
   factory _MessageUserModel.fromJson(Map<String, dynamic> json) =
       _$MessageUserModelImpl.fromJson;
@@ -423,6 +488,12 @@ abstract class _MessageUserModel implements MessageUserModel {
   String get name;
   @override
   String? get avatar;
+  @override
+  String? get firstName;
+  @override
+  String? get lastName;
+  @override
+  String? get email;
 
   /// Create a copy of MessageUserModel
   /// with the given fields replaced by the non-null parameter values.

@@ -20,7 +20,10 @@ class MessageUserModel with _$MessageUserModel {
   const factory MessageUserModel(
       {required int id,
       required String name,
-      String? avatar}) = _MessageUserModel;
+      String? avatar,
+        String? firstName,
+        String? lastName,
+        String? email}) = _MessageUserModel;
 
   factory MessageUserModel.fromJson(Map<String, dynamic> json) =>
       _$MessageUserModelFromJson(json);

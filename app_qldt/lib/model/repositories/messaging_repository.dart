@@ -36,8 +36,8 @@ class MessagingApiRepository {
     });
   }
 
-  Future<List<MessageModel>> getMessage(int groupId, int count) {
-    return swapi.getMessage(groupId, count).then((value) {
+  Future<List<MessageModel>> getMessage(int groupId, int count, String read) {
+    return swapi.getMessage(groupId, count, read).then((value) {
       if (value["meta"]["code"] == "1000") {
         var listMessage = <MessageModel>[];
         for (int i = 0; i < (value["data"]["conversation"] as List<dynamic>).length; i++) {
@@ -69,19 +69,25 @@ class MessagingApiRepository {
     });
   }
 
-  Future<Map<String, dynamic>> addGroupChat(
-      {String? groupName,
-      required List<String> listUserId,
-      List<String> listAdmin = const [],
-      required String type}) {
+  Future<List<Map<String, dynamic>>> addGroupChat(String? search) {
     return swapi
-        .addNewGroupChat(
-            groupName: groupName,
-            listUserId: listUserId,
-            listAdmin: listAdmin,
-            type: type)
+        .addNewGroupChat(search)
         .then((value) {
-      if (value["code"] == 1000) return value;
+      if (value["meta"]["code"] == "1000") return List<Map<String, dynamic>>.from(value["data"]["page_content"]);
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getUserInfo(String userId) {
+    return swapi.getUserInfo(userId).then((value) async {
+      if (value["code"] == "1000") return value["data"];
+      throw value;
+    });
+  }
+
+  Future<bool> deleteMessage(dynamic messageId, dynamic conversationId) {
+    return swapi.deleteMessage(messageId, conversationId).then((value) async {
+      if (value["meta"]["code"] == "1000") return true;
       throw value;
     });
   }

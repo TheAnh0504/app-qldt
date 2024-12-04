@@ -99,7 +99,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
         );
         await repo.local.updateCurrentAccount(account);
         await repo.local.updateAccount(account);
-        await repo.local.updateToken(account.accessToken);
+        await repo.local.updateToken(value["data"]["token"]);
         state = AsyncValue.data(account);
       });
   }

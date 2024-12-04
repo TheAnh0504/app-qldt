@@ -30,6 +30,9 @@ _$MessageUserModelImpl _$$MessageUserModelImplFromJson(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       avatar: json['avatar'] as String?,
+      firstName: json['firstName'] as String?,
+      lastName: json['lastName'] as String?,
+      email: json['email'] as String?,
     );
 
 Map<String, dynamic> _$$MessageUserModelImplToJson(
@@ -38,4 +41,7 @@ Map<String, dynamic> _$$MessageUserModelImplToJson(
       'id': instance.id,
       'name': instance.name,
       'avatar': instance.avatar,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'email': instance.email,
     };

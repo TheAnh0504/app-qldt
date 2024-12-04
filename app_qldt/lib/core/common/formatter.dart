@@ -6,6 +6,7 @@ import "package:intl/intl.dart";
 
 // show time message
 String formatMessageDate(DateTime date, [String? locale]) {
+  date = date.add(DateTime.now().timeZoneOffset);
   locale ??= Intl.getCurrentLocale();
   if (!DateFormat.localeExists(locale)) {
     locale = 'en'; // Fallback sang ngôn ngữ mặc định

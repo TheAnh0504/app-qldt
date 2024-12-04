@@ -68,8 +68,8 @@ class UserApiRepository {
     });
   }
 
-  Future<UserModel> getUserInfo() {
-    return swapi.getUserInfo().then((value) {
+  Future<UserModel> getUserInfo(String userId) {
+    return swapi.getUserInfo(userId).then((value) {
       if (value["code"] == 1000) return UserModel.fromJson(value["data"]);
       throw value;
     });

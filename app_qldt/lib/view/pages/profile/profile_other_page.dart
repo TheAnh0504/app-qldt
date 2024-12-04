@@ -130,20 +130,20 @@ class _BuildBody extends ConsumerWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: FilledButton.tonal(
                                     onPressed: () {
-                                      ref
-                                          .read(addGroupChatProvider((
-                                        null,
-                                        [
-                                          ref.read(userProvider).value!.userId,
-                                          userId
-                                        ],
-                                        null,
-                                        "two_people"
-                                      )).future)
-                                          .then((_) {
-                                        rootNavigatorKey.currentContext
-                                            ?.push(messagingRoute);
-                                      });
+                                      // ref
+                                      //     .read(addGroupChatProvider((
+                                      //   null,
+                                      //   [
+                                      //     ref.read(userProvider).value!.userId,
+                                      //     userId
+                                      //   ],
+                                      //   null,
+                                      //   "two_people"
+                                      // )).future)
+                                      //     .then((_) {
+                                      //   rootNavigatorKey.currentContext
+                                      //       ?.push(messagingRoute);
+                                      // });
                                     },
                                     child: const Text("Nhắn tin")),
                               ),

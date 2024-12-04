@@ -115,8 +115,7 @@ class _BuildBody extends ConsumerWidget {
                                       radius: 45,
                                     ) : CircleAvatar(
                                         backgroundImage:
-                                            ExtendedNetworkImageProvider(avatar ??
-                                                "https://picsum.photos/1024"),
+                                            ExtendedNetworkImageProvider(avatar),
                                         radius: 45),
                                   ),
                                 ),
