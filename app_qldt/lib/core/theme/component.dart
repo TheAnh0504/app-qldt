@@ -219,6 +219,7 @@ class VerifyCodeInput extends StatelessWidget {
         UpperCaseTextFormatter(), // Formatter chuyển chữ thành in hoa
         FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')), // Chỉ cho phép chữ và số
       ],
+      keyboardType: TextInputType.text,
       defaultPinTheme: PinTheme(
         width: 56,
         height: 56,

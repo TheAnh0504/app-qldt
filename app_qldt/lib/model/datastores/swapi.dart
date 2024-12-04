@@ -474,7 +474,7 @@ class SWApi {
 
   Future<Map<String, dynamic>> addImage(File file) async {
     return dio
-        .post("it4788/change_info_after_signup",
+        .post("/it4788/change_info_after_signup",
             data: FormData.fromMap(
                 {"file": await MultipartFile.fromFile(file.path),
                 "token": await accessToken}))

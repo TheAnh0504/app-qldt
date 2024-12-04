@@ -1,3 +1,4 @@
+import "package:app_qldt/controller/messaging_provider.dart";
 import "package:flutter/material.dart";
 import "package:flutter/scheduler.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -9,6 +10,9 @@ import "package:app_qldt/model/datastores/sw_method_channel.dart";
 import "package:app_qldt/controller/account_provider.dart";
 import "package:app_qldt/controller/device_list_provider.dart";
 import "package:app_qldt/controller/security_provider.dart";
+import "package:stomp_dart_client/stomp.dart";
+import "package:stomp_dart_client/stomp_config.dart";
+import "package:stomp_dart_client/stomp_frame.dart";
 
 class HomeSkeleton extends ConsumerStatefulWidget {
   const HomeSkeleton({required this.child, super.key});
@@ -19,23 +23,54 @@ class HomeSkeleton extends ConsumerStatefulWidget {
   ConsumerState<HomeSkeleton> createState() => _HomeSkeletonState();
 }
 
+final countProvider = StateProvider<int>((ref) => 0);
+final checkCountProvider = StateProvider<int>((ref) => 0);
+
 class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
+  final String webSocketUrl = 'http://157.66.24.126:8080/ws';
+  late StompClient _client;
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
+    // connect to websocket
+    _client = StompClient(
+        config: StompConfig.sockJS(url: webSocketUrl, onConnect: onConnectCallback));
+    _client.activate();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
+        ref.read(checkCountProvider.notifier).state = ref.watch(checkCountProvider) + 1;
+        final listMess = await ref.read(groupChatProvider(0).future);
+        final newCount = listMess.first.numNewMessage;
+        // Update the count value using the provider
+        ref.read(countProvider.notifier).state = newCount;
         // TODO: 1. get info device and notify --> notify
-        ref
-          ..read(rootDeviceProvider.notifier)
-          ..read(accessDeviceProvider.notifier)
-          ..read(securityNotificationProvider.notifier);
+        // ref
+        //   ..read(rootDeviceProvider.notifier)
+        //   ..read(accessDeviceProvider.notifier)
+        //   ..read(securityNotificationProvider.notifier);
       }
     });
   }
 
+  void onConnectCallback(StompFrame connectFrame) {
+    _client.subscribe(
+        destination: '/user/${ref.read(accountProvider).value?.idAccount}/inbox',
+        headers: {},
+        callback: (frame) async {
+          ref.invalidate(groupChatProvider);
+          final listMess = await ref.read(groupChatProvider(0).future);
+          final newCount = listMess.first.numNewMessage;
+          // Update the count value using the provider
+          ref.read(countProvider.notifier).state = newCount;
+          ref.read(checkCountProvider.notifier).state = ref.watch(checkCountProvider) + 1;
+          print(frame.body);
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final count = ref.watch(countProvider);
     ref.listen(accountProvider, (prev, next) async {
       if (next is AsyncData && next.value == null && context.mounted) {
         await showDialog(
@@ -54,6 +89,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
         context.go(splashRoute);
       }
     });
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) => SWMethodChannel.services.moveTaskToBack(),
@@ -82,8 +118,18 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
             destinations: [
               const NavigationDestination(
                   icon: FaIcon(FaIcons.house), label: "Trang chủ"),
-              const NavigationDestination(
-                  icon: FaIcon(FaIcons.solidComments), label: "Tin nhắn"),
+              NavigationDestination(
+                icon: Badge(
+                  // Hiển thị số tin nhắn chưa đọc
+                  label: Text(
+                    count.toString(), // Giá trị số
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
+                  ),
+                  isLabelVisible: count > 0,
+                  child: const FaIcon(FaIcons.solidComments),
+                ),
+                label: "Tin nhắn",
+              ),
               const NavigationDestination(
                   icon: FaIcon(FaIcons.solidCircleUser), label: "Hồ sơ"),
               NavigationDestination(

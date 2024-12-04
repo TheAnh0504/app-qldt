@@ -113,7 +113,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                         side: BorderSide.none,
                       ),
                       onPressed: () async {
-                        if (await Permission.photos.request().isGranted) {
+                        if (await Permission.mediaLibrary.request().isGranted) {
                           final assets = await AssetPicker.pickAssets(context,
                               pickerConfig: AssetPickerConfig(
                                   maxAssets: 1,

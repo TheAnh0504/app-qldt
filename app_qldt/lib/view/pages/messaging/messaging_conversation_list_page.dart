@@ -24,6 +24,7 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 
 import '../../../model/entities/account_model.dart';
 import '../../../model/entities/message_model.dart';
+import '../home_skeleton.dart';
 
 class MessagingConversationListPage extends ConsumerWidget {
   const MessagingConversationListPage({super.key});
@@ -283,24 +284,28 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _refreshData(); // Tự động lấy lại dữ liệu khi trang này được hiển thị.
-  }
-
-  Future<void> _refreshData() async {
-    ref.invalidate(groupChatProvider);
-    ref.invalidate(messagesProvider);
-    pagingController.refresh();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _refreshData(); // Tự động lấy lại dữ liệu khi trang này được hiển thị.
+  // }
+  //
+  // Future<void> _refreshData() async {
+  //   ref.invalidate(groupChatProvider);
+  //   pagingController.refresh();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<int>(checkCountProvider, (previous, next) {
+      if (previous != next) {
+        ref.invalidate(groupChatProvider);
+        pagingController.refresh();
+      }
+    });
     return RefreshIndicator(
       onRefresh: () async {
         ref.invalidate(groupChatProvider);
-        ref.invalidate(messagesProvider);
         pagingController.refresh();
       },
       child: PagedListView<int, GroupChatModel>(
@@ -392,21 +397,28 @@ class _MessagingConversationItem extends ConsumerWidget {
                               style: TypeStyle.title2),
                           Row(
                             children: [
-                              FutureBuilder(
-                                  future: ref.read(messagesProvider(
-                                      (model.infoGroup.groupId, 0, "false")).future),
-                                  builder: (context, snapshot) {
-                                    return model.infoGroup.lastMessageMessage == 'first_message' ? const SizedBox() : Text(
-                                        snapshot.data?.first.message == null ? "Tin nhắn đã bị xóa" :
-                                        ref.read(accountProvider).value?.idAccount == model.infoGroup.lastMessageSenderId.toString()
-                                            ? 'Bạn: ${snapshot.data?.first.message}' : snapshot.data?.first.message ?? "",
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: snapshot.data?.first.message == null
-                                            ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
-                                            : TypeStyle.body4);
-                                  }
-                              ),
+                              model.infoGroup.lastMessageMessage == 'first_message' ? const SizedBox() : Text(
+                                  model.infoGroup.lastMessageMessage == null ? "Tin nhắn đã bị xóa" :
+                            ref.read(accountProvider).value?.idAccount == model.infoGroup.lastMessageSenderId.toString()
+                                ? 'Bạn: ${model.infoGroup.lastMessageMessage}' : model.infoGroup.lastMessageMessage ?? "",
+                                  style: model.infoGroup.lastMessageMessage == null
+                                      ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
+                                      : TypeStyle.body4),
+                              // FutureBuilder(
+                              //     future: ref.read(messagesProvider(
+                              //         (model.infoGroup.groupId, 0, "false")).future),
+                              //     builder: (context, snapshot) {
+                              //       return model.infoGroup.lastMessageMessage == 'first_message' ? const SizedBox() : Text(
+                              //           snapshot.data?.first.message == null ? "Tin nhắn đã bị xóa" :
+                              //           ref.read(accountProvider).value?.idAccount == model.infoGroup.lastMessageSenderId.toString()
+                              //               ? 'Bạn: ${snapshot.data?.first.message}' : snapshot.data?.first.message ?? "",
+                              //           maxLines: 1,
+                              //           overflow: TextOverflow.ellipsis,
+                              //           style: snapshot.data?.first.message == null
+                              //               ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
+                              //               : TypeStyle.body4);
+                              //     }
+                              // ),
                               const Spacer(),
                               if (model.infoGroup.lastMessageUnRead > 0 &&
                                   ref.read(accountProvider).value?.idAccount != model.infoGroup.lastMessageSenderId.toString())

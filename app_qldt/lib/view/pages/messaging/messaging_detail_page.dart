@@ -31,6 +31,7 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../widgets/sw_popup.dart';
+import '../home_skeleton.dart';
 import 'messaging_detail_settings_page.dart';
 
 class MessagingDetailPage extends StatelessWidget {
@@ -143,6 +144,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
         pagingController.appendPage(model, nextPage + 1);
       }
       currentMessages = pagingController.value.itemList ?? [];
+      if (widget.model.infoGroup.lastMessageUnRead == 1) ref.read(countProvider.notifier).state = widget.model.numNewMessage - 1;
     });
   }
 
@@ -172,7 +174,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           print(frame.body);
           setState(() {
               ref.invalidate(messagesProvider);
-              ref.invalidate(groupChatProvider);
+              // ref.invalidate(groupChatProvider);
               pagingController.refresh();  // Đồng bộ với PagingController  // Thêm tin nhắn mới vào danh sách hiện tại
           });
         }
