@@ -779,7 +779,7 @@ class SWApi {
   Future<Map<String, dynamic>> getListGroup(int count) async {
     return dio
         .post("/it5023e/get_list_conversation",
-            data: {"token": await accessToken, "index": 0, "count": 10 * count})
+            data: {"token": await accessToken, "index": 10 * count, "count": 10})
         .then((value) => value.data);
   }
 

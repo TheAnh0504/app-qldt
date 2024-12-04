@@ -268,7 +268,7 @@ class _BuildBody extends ConsumerStatefulWidget {
 
 class _BuildBodyState extends ConsumerState<_BuildBody> {
   late final pagingController =
-      PagingController<int, GroupChatModel>(firstPageKey: 1);
+      PagingController<int, GroupChatModel>(firstPageKey: 0);
 
   @override
   void initState() {
@@ -278,7 +278,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       if (model.length < 10) {
         pagingController.appendLastPage(model);
       } else {
-        pagingController.appendPage(model, nextPage + 10);
+        pagingController.appendPage(model, nextPage + 1);
       }
     });
   }
@@ -367,66 +367,70 @@ class _MessagingConversationItem extends ConsumerWidget {
             ]
           ]);
         },
-        child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                    radius: 30,
-                    backgroundImage: ExtendedNetworkImageProvider(
-                        model.infoGroup.partnerAvatar != null
-                            ? 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}'
-                            : 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}',
-                        cache: true)),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            model.infoGroup.partnerName.toString(),
-                            style: TypeStyle.title2),
-                        Row(
-                          children: [
-                            FutureBuilder(
-                                future: ref.read(messagesProvider(
-                                    (model.infoGroup.groupId, 0, "false")).future),
-                                builder: (context, snapshot) {
-                                  return model.infoGroup.lastMessageMessage == 'first_message' ? const Spacer() : Text(
-                                      snapshot.data?.first.message == null ? "Tin nhắn đã bị xóa" :
-                                      ref.read(accountProvider).value?.idAccount == model.infoGroup.lastMessageSenderId.toString()
-                                          ? 'Bạn: ${snapshot.data?.first.message}' : snapshot.data?.first.message ?? "",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: snapshot.data?.first.message == null
-                                          ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
-                                          : TypeStyle.body4);
-                                }
-                            ),
-                            const Spacer(),
-                            if (model.infoGroup.lastMessageUnRead > 0 &&
-                                ref.read(accountProvider).value?.idAccount != model.infoGroup.lastMessageSenderId.toString())
-                              Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Palette.blue),
-                                  child: Text(
-                                      model.numNewMessage
-                                          .toString(),
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)))
-                          ],
-                        ),
-                        if (model.infoGroup.lastMessageMessage != 'first_message') Text(
-                            formatMessageDate(DateTime.parse(model.infoGroup.updatedAt)),
-                            style: TypeStyle.body5)
-                      ]),
-                )
-              ],
-            )),
+        child: Container(
+          color: model.infoGroup.lastMessageUnRead > 0 ? Palette.red_ : Palette.grey10,
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                      radius: 30,
+                      backgroundImage: ExtendedNetworkImageProvider(
+                          model.infoGroup.partnerAvatar != null
+                              ? 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}'
+                              : 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}',
+                          cache: true)),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (model.infoGroup.lastMessageMessage == 'first_message') const SizedBox(height: 20),
+                          Text(
+                              model.infoGroup.partnerName.toString(),
+                              style: TypeStyle.title2),
+                          Row(
+                            children: [
+                              FutureBuilder(
+                                  future: ref.read(messagesProvider(
+                                      (model.infoGroup.groupId, 0, "false")).future),
+                                  builder: (context, snapshot) {
+                                    return model.infoGroup.lastMessageMessage == 'first_message' ? const SizedBox() : Text(
+                                        snapshot.data?.first.message == null ? "Tin nhắn đã bị xóa" :
+                                        ref.read(accountProvider).value?.idAccount == model.infoGroup.lastMessageSenderId.toString()
+                                            ? 'Bạn: ${snapshot.data?.first.message}' : snapshot.data?.first.message ?? "",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: snapshot.data?.first.message == null
+                                            ? TypeStyle.body4.copyWith(fontStyle: FontStyle.italic, color: Colors.grey)
+                                            : TypeStyle.body4);
+                                  }
+                              ),
+                              const Spacer(),
+                              if (model.infoGroup.lastMessageUnRead > 0 &&
+                                  ref.read(accountProvider).value?.idAccount != model.infoGroup.lastMessageSenderId.toString())
+                                Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Palette.blue,),
+                                    child: const Text(
+                                        "",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)))
+                            ],
+                          ),
+                          if (model.infoGroup.lastMessageMessage != 'first_message') Text(
+                              formatMessageDate(DateTime.parse(model.infoGroup.updatedAt)),
+                              style: TypeStyle.body5)
+                        ]),
+                  )
+                ],
+              )
+          ),
+        ),
       ),
     );
   }

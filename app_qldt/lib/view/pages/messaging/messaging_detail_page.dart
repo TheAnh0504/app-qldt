@@ -126,7 +126,6 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   final pagingController = PagingController<int, MessageModel>(firstPageKey: 0);
 
   var currentMessages = [];
-  bool checkUnRead = true;
 
   @override
   void initState() {
@@ -171,22 +170,10 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
         headers: {},
         callback: (frame) {
           print(frame.body);
-          // Received a frame for this subscription
-          Map<String, dynamic> message = jsonDecode(frame.body!);
-          MessageUserModel messageUserModel = MessageUserModel(
-              id: message['sender']['id'],
-              name: message['sender']['name'],
-              avatar: message['sender']['avatar']
-          );
-          MessageModel messageModel = MessageModel(
-              messageId: message['id'].toString(),
-              user: messageUserModel,
-              message: message['content'],
-              createdAt: message['created_at'],
-              unread: 0
-          );
           setState(() {
-            currentMessages.insert(0, messageModel);  // Đồng bộ với PagingController  // Thêm tin nhắn mới vào danh sách hiện tại
+              ref.invalidate(messagesProvider);
+              ref.invalidate(groupChatProvider);
+              pagingController.refresh();  // Đồng bộ với PagingController  // Thêm tin nhắn mới vào danh sách hiện tại
           });
         }
     );
@@ -209,36 +196,34 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
               builderDelegate: PagedChildBuilderDelegate(
                 firstPageProgressIndicatorBuilder: (context) =>
                     SingleChildScrollView(
-                  reverse: true,
-                  child: SizedBox(
-                    width: MediaQuery.sizeOf(context).width,
-                    child: Column(children: [
-                      const Text("Loading"),
-                      ...currentMessages
+                      reverse: true,
+                      child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width,
+                        child: Column(children: [
+                          const Text("Loading"),
+                          ...currentMessages
                           .map((e) {
                             final isMe = e.user.id.toString() ==
                                 ref.watch(accountProvider).value?.idAccount;
-                            bool check = checkUnRead;
-                            if (e.unread == 1) checkUnRead = false;
                             return isMe
                                 ? Align(
                                     alignment: Alignment.centerRight,
                                     child: _MyMessageSection(message: e, conversationId: widget.model.infoGroup.groupId, page: pagingController,))
                                 : Align(
                                     alignment: Alignment.centerLeft,
-                                    child: _OtherMessageSection(message: e, checkUnRead: check));
-                          })
-                          .toList()
-                          .reversed
-                    ]),
-                  ),
-                ),
-                itemBuilder: (context, item, index) {
+                                    child: _OtherMessageSection(message: e));
+                              })
+                              .toList()
+                              .reversed
+                        ]),
+                      ),
+                    ),
+                        itemBuilder: (context, item, index) {
                   final isMe =
                       item.user.id.toString() == ref.watch(accountProvider).value!.idAccount;
                   return isMe
                       ? _MyMessageSection(message: item, conversationId: widget.model.infoGroup.groupId, page: pagingController,)
-                      : _OtherMessageSection(message: item, checkUnRead: );
+                      : _OtherMessageSection(message: item);
                 },
                 noMoreItemsIndicatorBuilder: (context) => Center(
                   child: Column(
@@ -250,7 +235,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                                   ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
                                   : 'https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
                               cache: true)),
-                      const SizedBox(width: 10),
+                      const SizedBox(height: 10),
                       Text(
                           widget.model.infoGroup.partnerName.toString().length >
                                   16
@@ -437,19 +422,27 @@ class _TextMessageBubbleState extends ConsumerState<_TextMessageBubble> {
               leading: FaIcons.solidCopy,
               title: "Sao chép",
               onTap: () {
-                Clipboard.setData(ClipboardData(text: widget.msg)).then(
+                if (widget.msg == "Tin nhắn đã bị xóa" && widget.style == "delete") {
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(msg: "Không thể sao chép tin nhắn đã xóa");
+                } else {
+                  Clipboard.setData(ClipboardData(text: widget.msg)).then(
                       (value) => {
                         Navigator.pop(context),
                         Fluttertoast.showToast(msg: "Đã sao chép.")
                       },
                 );
+                }
               },
             ),
             BottomSheetListTile(
-              leading: FaIcons.deleteLeft,
+              leading: FaIcons.trash,
               title: "Xóa tin nhắn",
               onTap: () {
-                if (widget.conversationId != -1) {
+                if (widget.msg == "Tin nhắn đã bị xóa" && widget.style == "delete") {
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(msg: "Tin nhắn đã bị xóa");
+                } else if (widget.conversationId != -1) {
                   Map<String, dynamic> data = {
                     'message_id': widget.messageId,
                     'conversation_id': widget.conversationId
@@ -506,87 +499,86 @@ class _TextMessageBubbleState extends ConsumerState<_TextMessageBubble> {
     );
   }
 
-  void openBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        context: context,
-        builder: (context) => BottomSheet(
-            enableDrag: false,
-            backgroundColor: Palette.grey40,
-            onClosing: () {},
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            builder: (context) => SizedBox(
-                  height: MediaQuery.sizeOf(context).width / 4,
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: InkWell(
-                        onTap: () {
-                          Clipboard.setData(ClipboardData(text: widget.msg)).then(
-                              (value) =>
-                                  Fluttertoast.showToast(msg: "Đã sao chép."));
-                        },
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FaIcon(FaIcons.solidCopy),
-                            SizedBox(height: 8),
-                            Text("Sao chép")
-                          ],
-                        ),
-                      ))
-                    ],
-                  ),
-                )));
-  }
+  // void openBottomSheet(BuildContext context) {
+  //   showModalBottomSheet(
+  //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+  //       context: context,
+  //       builder: (context) => BottomSheet(
+  //           enableDrag: false,
+  //           backgroundColor: Palette.grey40,
+  //           onClosing: () {},
+  //           shape:
+  //               const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+  //           builder: (context) => SizedBox(
+  //                 height: MediaQuery.sizeOf(context).width / 4,
+  //                 child: Row(
+  //                   children: [
+  //                     Expanded(
+  //                         child: InkWell(
+  //                       onTap: () {
+  //                         Clipboard.setData(ClipboardData(text: widget.msg)).then(
+  //                             (value) =>
+  //                                 Fluttertoast.showToast(msg: "Đã sao chép."));
+  //                       },
+  //                       child: const Column(
+  //                         mainAxisAlignment: MainAxisAlignment.center,
+  //                         children: [
+  //                           FaIcon(FaIcons.solidCopy),
+  //                           SizedBox(height: 8),
+  //                           Text("Sao chép")
+  //                         ],
+  //                       ),
+  //                     ))
+  //                   ],
+  //                 ),
+  //               )));
+  // }
 }
 
-class _ImageMessageBubble extends StatelessWidget {
-  final String img;
-
-  const _ImageMessageBubble({required this.img});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.push("$imageRoute?url=$img");
-      },
-      child: Hero(
-        tag: img,
-        child: Container(
-            clipBehavior: Clip.antiAlias,
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-            constraints: BoxConstraints.loose(
-                Size.fromWidth(MediaQuery.sizeOf(context).width / 3 * 2)),
-            child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: ExtendedImage(
-                  image: ExtendedNetworkImageProvider(img, cache: true),
-                  fit: BoxFit.cover,
-                  gaplessPlayback: true,
-                  loadStateChanged: (state) =>
-                      switch (state.extendedImageLoadState) {
-                    LoadState.failed => Container(
-                        alignment: Alignment.center,
-                        color: Palette.grey40,
-                        child: const FaIcon(FaIcons.circleExclamation,
-                            color: Palette.white)),
-                    _ => null
-                  },
-                ))),
-      ),
-    );
-  }
-}
+// class _ImageMessageBubble extends StatelessWidget {
+//   final String img;
+//
+//   const _ImageMessageBubble({required this.img});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: () {
+//         context.push("$imageRoute?url=$img");
+//       },
+//       child: Hero(
+//         tag: img,
+//         child: Container(
+//             clipBehavior: Clip.antiAlias,
+//             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+//             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+//             constraints: BoxConstraints.loose(
+//                 Size.fromWidth(MediaQuery.sizeOf(context).width / 3 * 2)),
+//             child: AspectRatio(
+//                 aspectRatio: 16 / 9,
+//                 child: ExtendedImage(
+//                   image: ExtendedNetworkImageProvider(img, cache: true),
+//                   fit: BoxFit.cover,
+//                   gaplessPlayback: true,
+//                   loadStateChanged: (state) =>
+//                       switch (state.extendedImageLoadState) {
+//                     LoadState.failed => Container(
+//                         alignment: Alignment.center,
+//                         color: Palette.grey40,
+//                         child: const FaIcon(FaIcons.circleExclamation,
+//                             color: Palette.white)),
+//                     _ => null
+//                   },
+//                 ))),
+//       ),
+//     );
+//   }
+// }
 
 class _OtherMessageSection extends StatefulWidget {
   final MessageModel message;
-  final bool checkUnRead;
 
-  const _OtherMessageSection({required this.message, required this.checkUnRead});
+  const _OtherMessageSection({required this.message});
 
   @override
   State<_OtherMessageSection> createState() => _OtherMessageSectionState();
@@ -613,6 +605,11 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                 child: Text(
                     formatMessageDate(DateTime.parse(widget.message.createdAt)),
                     style: TypeStyle.body5)),
+          // if (widget.message.unread == 1) Center(
+          //   child: Text("Chưa đọc",
+          //     style:
+          //     TypeStyle.body5.copyWith(fontWeight: FontWeight.bold))
+          //     ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -626,12 +623,6 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                               : 'https://drive.google.com/uc?id=${widget.message.user.avatar?.split('/d/')[1].split('/')[0]}',
                             cache: true)
                         ),
-              ),
-              if (widget.message.unread == 1 && widget.checkUnRead) Padding(
-                  padding: const EdgeInsets.only(left: 56),
-                  child: Text("Chưa đọc",
-                      style:
-                      TypeStyle.body5.copyWith(fontWeight: FontWeight.bold))
               ),
               widget.message.message != "first_message"
                   ? _TextMessageBubble(
