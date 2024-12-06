@@ -1,5 +1,6 @@
 import "dart:async";
 // provider sử dụng Riverpod - gói quản lý trạng thái trong Flutter
+import "package:app_qldt/controller/messaging_provider.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:app_qldt/controller/user_provider.dart";
 import "package:app_qldt/core/error/error.dart";
@@ -117,6 +118,9 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
       // Tạo một tác vụ không đồng bộ để làm mới thông tin người dùng và tự hủy (invalidate) provider hiện tại:
       Future(() {
         ref.invalidate(userProvider);
+        ref.invalidate(accountProvider);
+        ref.invalidate(groupChatProvider);
+        ref.invalidate(messagesProvider);
         ref.invalidateSelf();
       });
     }

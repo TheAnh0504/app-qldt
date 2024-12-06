@@ -32,7 +32,7 @@ class MessagingApiRepository {
         }
         return listGroupChat;
       }
-      throw value;
+      return [];
     });
   }
 
@@ -55,7 +55,7 @@ class MessagingApiRepository {
         }
         return listMessage;
       }
-      throw value;
+      return [];
     });
   }
 

@@ -1,5 +1,5 @@
 class Regex {
-  static final email = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+  static final email = RegExp(r"^[\w-\.]+@hust\.edu\.vn$");
   static final password = RegExp(r"^.{6,10}$");
 }
 
@@ -9,7 +9,7 @@ class Validator {
           return "Email không được để trống";
         }
         if (!Regex.email.hasMatch(str!)) {
-          return "Email không hợp lệ";
+          return "Định dạng Email không hợp lệ (@hust.edu.vn)";
         }
 
         return null;
