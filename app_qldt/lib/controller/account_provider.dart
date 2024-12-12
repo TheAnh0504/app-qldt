@@ -118,7 +118,6 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
       // Tạo một tác vụ không đồng bộ để làm mới thông tin người dùng và tự hủy (invalidate) provider hiện tại:
       Future(() {
         ref.invalidate(userProvider);
-        ref.invalidate(accountProvider);
         ref.invalidate(groupChatProvider);
         ref.invalidate(messagesProvider);
         ref.invalidateSelf();

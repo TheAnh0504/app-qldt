@@ -100,15 +100,6 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Thông báo khi ứng dụng chạy ngầm: ${message.notification?.title}");
   print("Thông báo khi ứng dụng chạy ngầm: ${message.data}");
-  // Lấy URL hình ảnh từ dữ liệu thông báo
-  String? imageUrl = message.data['imageUrl'];
-
-  // Kiểm tra và sửa URL nếu cần
-  if (imageUrl != null && imageUrl.contains('drive.google.com')) {
-    // Sửa URL Google Drive thành link tải xuống trực tiếp
-    imageUrl = convertDriveUrlToDirectDownload(imageUrl);
-    print("Sửa URL hình ảnh: $imageUrl");
-  }
 
 }
 
@@ -135,49 +126,41 @@ class app_qldt extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scaffoldMessengerKey = useMemoized(() => GlobalKey<ScaffoldMessengerState>());
+
     useEffect(() {
-      // final subscription = FirebaseMessaging.onMessage.listen((message) {
-      //   print("Thông báo khi ứng dụng ở foreground: ${message.notification?.title}");
-      // });
       // Lắng nghe thông báo khi ứng dụng ở foreground
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print("Thông báo khi ứng dụng ở foreground: ${message.notification?.title}");
-        print("1: ${message.notification?.body}");
-        print("2: ${message.notification?.android}");
-        print("3: ${message.notification?.apple}");
-        print("4: ${message.notification?.bodyLocKey}");
-        print("5: ${message.notification?.bodyLocArgs}");
-        print("6: ${message.notification?.titleLocKey}");
-        print("7: ${message.notification?.titleLocArgs}");
-        print("8: ${message.notification?.web}");
-        print("Thông báo khi ứng dụng chạy ngầm: ${message.data}");
-        // Điều hướng tới HomeSkeleton khi nhận thông báo
-        // Navigator.of(context).push(MaterialPageRoute(
-        //   builder: (context) => const HomeSkeleton(
-        //     child: Center(
-        //       child: Text('Chuyển đến HomeSkeleton sau thông báo'),
-        //     ),
-        //   ),
-        // ));
-      });
+        final title = message.notification?.title ?? "Thông báo";
+        final body = message.notification?.body ?? "Không có nội dung";
 
-      // Xử lý khi người dùng nhấn vào thông báo
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        print("Người dùng nhấn vào thông báo: ${message.notification}");
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const HomeSkeleton(
-            child: Center(
-              child: Text('Chuyển đến HomeSkeleton khi nhấn thông báo'),
+        // Hiển thị SnackBar
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(body),
+              ],
             ),
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(10),
           ),
-        ));
+        );
       });
 
       return null;
-      // return subscription.cancel;
     }, []);
+
     return Portal(
       child: MaterialApp.router(
+          scaffoldMessengerKey: scaffoldMessengerKey,
           theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                   seedColor: Palette.redBackground, error: Palette.red),
