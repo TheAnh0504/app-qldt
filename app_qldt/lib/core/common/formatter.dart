@@ -6,12 +6,16 @@ import "package:intl/intl.dart";
 
 // show time message
 String formatMessageDate(DateTime date, [String? locale]) {
-  date = date.add(DateTime.now().timeZoneOffset);
+  // 17/12 backend add múi giờ vào date, app ko add múi giờ nữa
+  // date = date.add(DateTime.now().timeZoneOffset);
   locale ??= Intl.getCurrentLocale();
   if (!DateFormat.localeExists(locale)) {
     locale = 'en'; // Fallback sang ngôn ngữ mặc định
   }
   final now = DateTime.now();
+  // final now = DateTime.now().add(DateTime.now().timeZoneOffset);
+  print(date);
+  print(now);
   // khoảng time chênh lệch giữa now và date
   final duration = now.difference(date);
   if (duration.inDays > 365) {

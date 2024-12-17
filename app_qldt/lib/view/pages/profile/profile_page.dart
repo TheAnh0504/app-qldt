@@ -82,11 +82,10 @@ class _BuildBody extends ConsumerWidget {
                                           MediaQuery.sizeOf(context).width / 2,
                                           MediaQuery.sizeOf(context).width /
                                               15)),
-                                  image: DecorationImage(
-                                      colorFilter: const ColorFilter.mode(
+                                  image: const DecorationImage(
+                                      colorFilter: ColorFilter.mode(
                                           Colors.black54, BlendMode.darken),
-                                      image: ExtendedNetworkImageProvider(
-                                          avatarHust),
+                                      image: AssetImage('images/hust.png'),
                                       fit: BoxFit.cover),
                                 ),
                               ),

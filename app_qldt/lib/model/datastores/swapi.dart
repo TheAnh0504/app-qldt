@@ -494,13 +494,25 @@ class SWApi {
         .then((value) => value.data);
   }
 
-  Future<Map<String, dynamic>> getListNotification(int offset) async {
+  Future<Map<String, dynamic>> getListNotification(int count) async {
     return dio
-        .post("/sw3/user/get_list_notification",
-            data: {"limit": 15, "offset": offset},
-            options: Options(
-                headers: {"Authorization": "Bearer ${await accessToken}"}))
-        .then((value) => value.data);
+        .post("/it5023e/get_notifications",
+            data: {"index": 20 * count, "count": 20, "token": await accessToken}
+        ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getCountNotification() async {
+    return dio
+        .post("/it5023e/get_unread_notification_count",
+        data: {"token": await accessToken}
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> readCountNotification(int id) async {
+    return dio
+        .post("/it5023e/mark_notification_as_read",
+        data: {"token": await accessToken, "notification_id": id}
+    ).then((value) => value.data);
   }
 
   Future<Map<String, dynamic>> setReadNotification(

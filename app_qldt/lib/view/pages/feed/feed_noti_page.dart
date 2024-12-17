@@ -1,6 +1,7 @@
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:go_router/go_router.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
@@ -9,6 +10,9 @@ import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/core/theme/typestyle.dart";
 import "package:app_qldt/model/entities/push_noti.dart";
 import "package:app_qldt/core/theme/palette.dart";
+
+import "../../../controller/messaging_provider.dart";
+import "../../../core/common/formatter.dart";
 
 class FeedNotiPage extends ConsumerStatefulWidget {
   const FeedNotiPage({super.key});
@@ -20,15 +24,25 @@ class FeedNotiPage extends ConsumerStatefulWidget {
 class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
   final pagingController = PagingController<int, PushNoti>(firstPageKey: 0);
 
+  // Trạng thái click của thông báo - chưa đọc là true
+  final List<bool> clickedNotifications = [];
+  final List<Map<String, dynamic>> listSender = [];
+
   @override
   void initState() {
     super.initState();
     pagingController.addPageRequestListener((nextPage) async {
       final pushNotis = await ref.read(notificationProvider(nextPage).future);
-      if (pushNotis.length < 15) {
+      // Khởi tạo trạng thái `false` cho mỗi thông báo mới
+      clickedNotifications.addAll(List.generate(pushNotis.length, (index) => pushNotis[index].status == 'UNREAD'));
+      for (var i = 0; i < pushNotis.length; i++) {
+        final userInfo = await ref.read(getUserInfoProvider(pushNotis[i].fromUser.toString()).future);
+        listSender.add(userInfo);
+      }
+      if (pushNotis.length < 20) {
         pagingController.appendLastPage(pushNotis);
       } else {
-        pagingController.appendPage(pushNotis, 15);
+        pagingController.appendPage(pushNotis, nextPage + 1);
       }
     });
   }
@@ -51,26 +65,100 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
             pagingController: pagingController,
             builderDelegate: PagedChildBuilderDelegate(
               itemBuilder: (context, item, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    radius: 20,
-                    backgroundImage: ExtendedNetworkImageProvider(
-                        item.user["avatar"] ?? "https://picsum.photos/200"),
+                return GestureDetector(
+                  onTap: () async {
+                    if (clickedNotifications[index]) {
+                      final notify = await ref.read(readNotificationProvider(item.id).future);
+                      setState(() {
+                        clickedNotifications[index] = false; // Đánh dấu là đã click
+                        Fluttertoast.showToast(msg: notify);
+                      });
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 12), // Khoảng cách giữa các thông báo
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: clickedNotifications[index]
+                          ? Palette.red_1 // chưa đọc
+                          : Palette.red_, // đã đọc
+                      border: Border.all(color: Colors.black45, width: 1), // Viền của thông báo
+                      borderRadius: BorderRadius.circular(8), // Góc bo tròn
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        item.imageUrl == null ? const CircleAvatar(
+                          backgroundImage: AssetImage('images/avatar-trang.jpg'),
+                          radius: 20,
+                        ) : CircleAvatar(
+                            backgroundImage: ExtendedNetworkImageProvider(
+                                'https://drive.google.com/uc?id=${item.imageUrl?.split('/d/')[1].split('/')[0]}'),
+                            radius: 20
+                        ),
+                        const SizedBox(width: 12), // Khoảng cách giữa avatar và nội dung
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: item.titlePushNotification,
+                                      style: TypeStyle.body3
+                                          .copyWith(fontWeight: FontWeight.bold, color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Người gửi: ",
+                                      style: TypeStyle.body4.copyWith(color: Colors.black),
+                                    ),
+                                    TextSpan(
+                                      text: listSender[index]['name'],
+                                      style: TypeStyle.body4.copyWith(color: Colors.blue),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                        text: "Nội dung: ",
+                                        style: TypeStyle.body4.copyWith(color: Colors.black),
+                                    ),
+                                    TextSpan(
+                                      text: item.message,
+                                      style: TypeStyle.body4.copyWith(color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12), // Khoảng cách giữa nội dung và ngày
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                                formatMessageDate(DateTime.parse(item.sentTime)), // Định dạng ngày tháng
+                                // style: TypeStyle.caption.copyWith(color: Colors.grey),
+                                style: TypeStyle.body5
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  title: Text.rich(TextSpan(children: [
-                    TextSpan(
-                        text: item.user["displayName"],
-                        style: TypeStyle.body3
-                            .copyWith(fontWeight: FontWeight.bold)),
-                    TextSpan(
-                        text: " đã ${switch (item.notification["action"]) {
-                          "add_post" => "thêm bài viết mới.",
-                          "like" => "thích bài viết của bạn.",
-                          "comment" => "bình luận bài viết của bạn.",
-                          _ => ""
-                        }}",
-                        style: TypeStyle.body3),
-                  ])),
                 );
               },
               noItemsFoundIndicatorBuilder: (context) => const Column(
@@ -78,8 +166,7 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Chưa có thông báo nào\n", style: TypeStyle.title3),
-                    Text(
-                        "Hãy thử quan tâm tới bài viết nào đó của giáo viên khác.")
+                    Text("Hãy thử quan tâm tới bài viết nào đó của giáo viên khác.")
                   ]),
               noMoreItemsIndicatorBuilder: (context) =>
                   const Center(child: Text("Đã tải hết thông báo")),

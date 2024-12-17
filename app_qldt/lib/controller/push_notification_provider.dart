@@ -56,3 +56,13 @@ final notificationProvider =
     FutureProvider.autoDispose.family<List<PushNoti>, int>((ref, params) {
   return ref.read(pushNotiRepositoryProvider).getListNotification(params);
 });
+
+final countGetNotificationProvider =
+FutureProvider.autoDispose<int>((ref) {
+  return ref.read(pushNotiRepositoryProvider).getCountNotification();
+});
+
+final readNotificationProvider =
+FutureProvider.autoDispose.family<String, int>((ref, params) {
+  return ref.read(pushNotiRepositoryProvider).readCountNotification(params);
+});

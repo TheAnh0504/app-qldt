@@ -11,12 +11,30 @@ class PushNotiRepository {
 
   PushNotiRepository(this.swapi);
 
-  Future<List<PushNoti>> getListNotification(int offset) async {
-    return swapi.getListNotification(offset).then((value) {
-      if (value["code"] == 1000) {
+  Future<List<PushNoti>> getListNotification(int count) async {
+    return swapi.getListNotification(count).then((value) {
+      if (value["meta"]["code"] == "1000") {
         return (value["data"] as List<dynamic>)
             .map((e) => PushNoti.fromJson(e))
             .toList();
+      }
+      throw value;
+    });
+  }
+
+  Future<int> getCountNotification() async {
+    return swapi.getCountNotification().then((value) {
+      if (value["meta"]["code"] == "1000") {
+        return (value["data"]);
+      }
+      throw value;
+    });
+  }
+
+  Future<String> readCountNotification(int id) async {
+    return swapi.readCountNotification(id).then((value) {
+      if (value["meta"]["code"] == "1000") {
+        return 'Đánh dấu thông báo là đã đọc thành công';
       }
       throw value;
     });

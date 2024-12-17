@@ -48,17 +48,21 @@ class _BuildBody extends ConsumerWidget {
           //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
           // ]),
           // const SizedBox(height: 16),
-          ListTileSection(title: "Thông báo", tiles: [
-            ListTile(
-                onTap: () => Navigator.push(
-                    rootNavigatorKey.currentContext!,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsNotiPage())),
-                leading: const FaIcon(FaIcons.solidBell),
-                title: const Text("Thông báo"),
-                trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
-          ]),
-          const SizedBox(height: 16),
+
+
+          // ListTileSection(title: "Thông báo", tiles: [
+          //   ListTile(
+          //       onTap: () => Navigator.push(
+          //           rootNavigatorKey.currentContext!,
+          //           MaterialPageRoute(
+          //               builder: (context) => const SettingsNotiPage())),
+          //       leading: const FaIcon(FaIcons.solidBell),
+          //       title: const Text("Thông báo"),
+          //       trailing: const FaIcon(FaIcons.chevronRight, size: 20)),
+          // ]),
+          // const SizedBox(height: 16),
+
+
           // ListTileSection(title: "Hỗ trợ", tiles: [
           //   ListTile(
           //       onTap: () => Navigator.push(

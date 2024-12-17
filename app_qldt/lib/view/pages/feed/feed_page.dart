@@ -17,11 +17,14 @@ import "package:app_qldt/controller/user_provider.dart";
 import "package:app_qldt/core/theme/palette.dart";
 import "package:intl/intl.dart";
 
+import "../home_skeleton.dart";
+
 class FeedPage extends ConsumerWidget {
   const FeedPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final countNotification = ref.watch(countNotificationProvider);
     return Scaffold(
       appBar: AppBar(
         // leadingWidth: 50,
@@ -61,7 +64,16 @@ class FeedPage extends ConsumerWidget {
                     MaterialPageRoute(
                         builder: (context) => const FeedNotiPage()));
               },
-              icon: const FaIcon(FaIcons.bell, color: Palette.white,),
+              // icon: const FaIcon(FaIcons.bell, color: Palette.white,),
+            icon: Badge(
+              // Hiển thị số tin nhắn chưa đọc
+              label: Text(
+                countNotification.toString(), // Giá trị số
+                style: const TextStyle(color: Colors.white, fontSize: 10),
+              ),
+              isLabelVisible: countNotification > 0,
+              child: const FaIcon(FaIcons.bell, color: Palette.white,),
+            )
           ),
           // IconButton(
           //     onPressed: () {

@@ -1,4 +1,5 @@
 import "package:app_qldt/controller/messaging_provider.dart";
+import "package:app_qldt/controller/push_notification_provider.dart";
 import "package:flutter/material.dart";
 import "package:flutter/scheduler.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -25,13 +26,15 @@ class HomeSkeleton extends ConsumerStatefulWidget {
 
 final countProvider = StateProvider<int>((ref) => 0);
 final checkCountProvider = StateProvider<int>((ref) => 0);
+final countNotificationProvider = StateProvider<int>((ref) => 0);
 
-class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
+class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBindingObserver {
   final String webSocketUrl = 'http://157.66.24.126:8080/ws';
   late StompClient _client;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // connect to websocket
     _client = StompClient(
         config: StompConfig.sockJS(url: webSocketUrl, onConnect: onConnectCallback));
@@ -43,6 +46,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
         final newCount = listMess.first.numNewMessage;
         // Update the count value using the provider
         ref.read(countProvider.notifier).state = newCount;
+        ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
         // TODO: 1. get info device and notify --> notify
         // ref
         //   ..read(rootDeviceProvider.notifier)
@@ -69,8 +73,26 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> {
   }
 
   @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      // Ứng dụng quay trở lại foreground
+      print("Ứng dụng đã quay lại foreground");
+      // Thực thi lệnh mong muốn
+      ref.invalidate(countGetNotificationProvider);
+      ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final count = ref.watch(countProvider);
+    final countNotification = ref.watch(countNotificationProvider);
     ref.listen(accountProvider, (prev, next) async {
       if (next is AsyncData && next.value == null && context.mounted) {
         await showDialog(

@@ -42,8 +42,7 @@ class _BuildBody extends ConsumerWidget {
     return Consumer(
         builder: (context, ref, _)
     {
-      final future = ref.read(
-          getUserInfoProvider(user.id.toString()).future); // Lấy Future
+      final future = ref.read(getUserInfoProvider(user.id.toString()).future); // Lấy Future
       return FutureBuilder<Map<String, dynamic>>(
         future: future,
         builder: (context, snapshot) {

@@ -100,7 +100,6 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Thông báo khi ứng dụng chạy ngầm: ${message.notification?.title}");
   print("Thông báo khi ứng dụng chạy ngầm: ${message.data}");
-
 }
 
 String convertDriveUrlToDirectDownload(String url) {
@@ -133,6 +132,7 @@ class app_qldt extends HookConsumerWidget {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         final title = message.notification?.title ?? "Thông báo";
         final body = message.notification?.body ?? "Không có nội dung";
+        ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) + 1;
 
         // Hiển thị SnackBar
         scaffoldMessengerKey.currentState?.showSnackBar(
@@ -153,6 +153,12 @@ class app_qldt extends HookConsumerWidget {
             margin: const EdgeInsets.all(10),
           ),
         );
+      });
+
+      // Lắng nghe thông báo khi ứng dụng ở background
+      FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+        print("Thông báo khi ứng dụng chạy ngầm: 12345");
+        ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) + 1;
       });
 
       return null;

@@ -20,9 +20,17 @@ PushNoti _$PushNotiFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PushNoti {
-  Map<String, dynamic> get notification => throw _privateConstructorUsedError;
-  Map<String, dynamic> get author => throw _privateConstructorUsedError;
-  Map<String, dynamic> get user => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  String? get message => throw _privateConstructorUsedError;
+  String? get status => throw _privateConstructorUsedError;
+  int? get fromUser => throw _privateConstructorUsedError;
+  int? get toUser => throw _privateConstructorUsedError;
+  String? get type => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
+  String get sentTime => throw _privateConstructorUsedError;
+  String? get titlePushNotification => throw _privateConstructorUsedError;
+  String? get dataType => throw _privateConstructorUsedError;
+  String? get dataId => throw _privateConstructorUsedError;
 
   /// Serializes this PushNoti to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,9 +48,17 @@ abstract class $PushNotiCopyWith<$Res> {
       _$PushNotiCopyWithImpl<$Res, PushNoti>;
   @useResult
   $Res call(
-      {Map<String, dynamic> notification,
-      Map<String, dynamic> author,
-      Map<String, dynamic> user});
+      {int id,
+      String? message,
+      String? status,
+      int? fromUser,
+      int? toUser,
+      String? type,
+      String? imageUrl,
+      String sentTime,
+      String? titlePushNotification,
+      String? dataType,
+      String? dataId});
 }
 
 /// @nodoc
@@ -60,23 +76,63 @@ class _$PushNotiCopyWithImpl<$Res, $Val extends PushNoti>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? notification = null,
-    Object? author = null,
-    Object? user = null,
+    Object? id = null,
+    Object? message = freezed,
+    Object? status = freezed,
+    Object? fromUser = freezed,
+    Object? toUser = freezed,
+    Object? type = freezed,
+    Object? imageUrl = freezed,
+    Object? sentTime = null,
+    Object? titlePushNotification = freezed,
+    Object? dataType = freezed,
+    Object? dataId = freezed,
   }) {
     return _then(_value.copyWith(
-      notification: null == notification
-          ? _value.notification
-          : notification // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      author: null == author
-          ? _value.author
-          : author // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      user: null == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      message: freezed == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      fromUser: freezed == fromUser
+          ? _value.fromUser
+          : fromUser // ignore: cast_nullable_to_non_nullable
+              as int?,
+      toUser: freezed == toUser
+          ? _value.toUser
+          : toUser // ignore: cast_nullable_to_non_nullable
+              as int?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sentTime: null == sentTime
+          ? _value.sentTime
+          : sentTime // ignore: cast_nullable_to_non_nullable
+              as String,
+      titlePushNotification: freezed == titlePushNotification
+          ? _value.titlePushNotification
+          : titlePushNotification // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dataType: freezed == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dataId: freezed == dataId
+          ? _value.dataId
+          : dataId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -90,9 +146,17 @@ abstract class _$$PushNotiImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {Map<String, dynamic> notification,
-      Map<String, dynamic> author,
-      Map<String, dynamic> user});
+      {int id,
+      String? message,
+      String? status,
+      int? fromUser,
+      int? toUser,
+      String? type,
+      String? imageUrl,
+      String sentTime,
+      String? titlePushNotification,
+      String? dataType,
+      String? dataId});
 }
 
 /// @nodoc
@@ -108,23 +172,63 @@ class __$$PushNotiImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? notification = null,
-    Object? author = null,
-    Object? user = null,
+    Object? id = null,
+    Object? message = freezed,
+    Object? status = freezed,
+    Object? fromUser = freezed,
+    Object? toUser = freezed,
+    Object? type = freezed,
+    Object? imageUrl = freezed,
+    Object? sentTime = null,
+    Object? titlePushNotification = freezed,
+    Object? dataType = freezed,
+    Object? dataId = freezed,
   }) {
     return _then(_$PushNotiImpl(
-      notification: null == notification
-          ? _value._notification
-          : notification // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      author: null == author
-          ? _value._author
-          : author // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      user: null == user
-          ? _value._user
-          : user // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      message: freezed == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      fromUser: freezed == fromUser
+          ? _value.fromUser
+          : fromUser // ignore: cast_nullable_to_non_nullable
+              as int?,
+      toUser: freezed == toUser
+          ? _value.toUser
+          : toUser // ignore: cast_nullable_to_non_nullable
+              as int?,
+      type: freezed == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      sentTime: null == sentTime
+          ? _value.sentTime
+          : sentTime // ignore: cast_nullable_to_non_nullable
+              as String,
+      titlePushNotification: freezed == titlePushNotification
+          ? _value.titlePushNotification
+          : titlePushNotification // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dataType: freezed == dataType
+          ? _value.dataType
+          : dataType // ignore: cast_nullable_to_non_nullable
+              as String?,
+      dataId: freezed == dataId
+          ? _value.dataId
+          : dataId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -133,43 +237,47 @@ class __$$PushNotiImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PushNotiImpl implements _PushNoti {
   const _$PushNotiImpl(
-      {required final Map<String, dynamic> notification,
-      required final Map<String, dynamic> author,
-      required final Map<String, dynamic> user})
-      : _notification = notification,
-        _author = author,
-        _user = user;
+      {required this.id,
+      this.message,
+      this.status,
+      this.fromUser,
+      this.toUser,
+      this.type,
+      this.imageUrl,
+      required this.sentTime,
+      this.titlePushNotification,
+      this.dataType,
+      this.dataId});
 
   factory _$PushNotiImpl.fromJson(Map<String, dynamic> json) =>
       _$$PushNotiImplFromJson(json);
 
-  final Map<String, dynamic> _notification;
   @override
-  Map<String, dynamic> get notification {
-    if (_notification is EqualUnmodifiableMapView) return _notification;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_notification);
-  }
-
-  final Map<String, dynamic> _author;
+  final int id;
   @override
-  Map<String, dynamic> get author {
-    if (_author is EqualUnmodifiableMapView) return _author;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_author);
-  }
-
-  final Map<String, dynamic> _user;
+  final String? message;
   @override
-  Map<String, dynamic> get user {
-    if (_user is EqualUnmodifiableMapView) return _user;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_user);
-  }
+  final String? status;
+  @override
+  final int? fromUser;
+  @override
+  final int? toUser;
+  @override
+  final String? type;
+  @override
+  final String? imageUrl;
+  @override
+  final String sentTime;
+  @override
+  final String? titlePushNotification;
+  @override
+  final String? dataType;
+  @override
+  final String? dataId;
 
   @override
   String toString() {
-    return 'PushNoti(notification: $notification, author: $author, user: $user)';
+    return 'PushNoti(id: $id, message: $message, status: $status, fromUser: $fromUser, toUser: $toUser, type: $type, imageUrl: $imageUrl, sentTime: $sentTime, titlePushNotification: $titlePushNotification, dataType: $dataType, dataId: $dataId)';
   }
 
   @override
@@ -177,19 +285,39 @@ class _$PushNotiImpl implements _PushNoti {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PushNotiImpl &&
-            const DeepCollectionEquality()
-                .equals(other._notification, _notification) &&
-            const DeepCollectionEquality().equals(other._author, _author) &&
-            const DeepCollectionEquality().equals(other._user, _user));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.fromUser, fromUser) ||
+                other.fromUser == fromUser) &&
+            (identical(other.toUser, toUser) || other.toUser == toUser) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl) &&
+            (identical(other.sentTime, sentTime) ||
+                other.sentTime == sentTime) &&
+            (identical(other.titlePushNotification, titlePushNotification) ||
+                other.titlePushNotification == titlePushNotification) &&
+            (identical(other.dataType, dataType) ||
+                other.dataType == dataType) &&
+            (identical(other.dataId, dataId) || other.dataId == dataId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(_notification),
-      const DeepCollectionEquality().hash(_author),
-      const DeepCollectionEquality().hash(_user));
+      id,
+      message,
+      status,
+      fromUser,
+      toUser,
+      type,
+      imageUrl,
+      sentTime,
+      titlePushNotification,
+      dataType,
+      dataId);
 
   /// Create a copy of PushNoti
   /// with the given fields replaced by the non-null parameter values.
@@ -209,19 +337,43 @@ class _$PushNotiImpl implements _PushNoti {
 
 abstract class _PushNoti implements PushNoti {
   const factory _PushNoti(
-      {required final Map<String, dynamic> notification,
-      required final Map<String, dynamic> author,
-      required final Map<String, dynamic> user}) = _$PushNotiImpl;
+      {required final int id,
+      final String? message,
+      final String? status,
+      final int? fromUser,
+      final int? toUser,
+      final String? type,
+      final String? imageUrl,
+      required final String sentTime,
+      final String? titlePushNotification,
+      final String? dataType,
+      final String? dataId}) = _$PushNotiImpl;
 
   factory _PushNoti.fromJson(Map<String, dynamic> json) =
       _$PushNotiImpl.fromJson;
 
   @override
-  Map<String, dynamic> get notification;
+  int get id;
   @override
-  Map<String, dynamic> get author;
+  String? get message;
   @override
-  Map<String, dynamic> get user;
+  String? get status;
+  @override
+  int? get fromUser;
+  @override
+  int? get toUser;
+  @override
+  String? get type;
+  @override
+  String? get imageUrl;
+  @override
+  String get sentTime;
+  @override
+  String? get titlePushNotification;
+  @override
+  String? get dataType;
+  @override
+  String? get dataId;
 
   /// Create a copy of PushNoti
   /// with the given fields replaced by the non-null parameter values.
