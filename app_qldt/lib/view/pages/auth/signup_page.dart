@@ -209,7 +209,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     }),
                   ),
                 ]),
-          )),
+          )
+      ),
     );
   }
 }

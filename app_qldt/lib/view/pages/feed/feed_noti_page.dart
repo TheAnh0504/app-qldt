@@ -13,6 +13,7 @@ import "package:app_qldt/core/theme/palette.dart";
 
 import "../../../controller/messaging_provider.dart";
 import "../../../core/common/formatter.dart";
+import "../home_skeleton.dart";
 
 class FeedNotiPage extends ConsumerStatefulWidget {
   const FeedNotiPage({super.key});
@@ -72,6 +73,7 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                       setState(() {
                         clickedNotifications[index] = false; // Đánh dấu là đã click
                         Fluttertoast.showToast(msg: notify);
+                        ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) - 1;
                       });
                     }
                   },
@@ -166,7 +168,6 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Chưa có thông báo nào\n", style: TypeStyle.title3),
-                    Text("Hãy thử quan tâm tới bài viết nào đó của giáo viên khác.")
                   ]),
               noMoreItemsIndicatorBuilder: (context) =>
                   const Center(child: Text("Đã tải hết thông báo")),

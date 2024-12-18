@@ -27,8 +27,14 @@ String formatMessageDate(DateTime date, [String? locale]) {
   if (duration.inHours > 24) {
     return DateFormat("EEE HH:mm", locale).format(date);
   }
+  if (date.day != now.day || date.month != now.month || date.year != now.year) {
+    return DateFormat("EEE HH:mm", locale).format(date);
+  }
   if (duration.inMinutes > 1) return DateFormat("HH:mm", locale).format(date);
   return "Vừa xong";
+}
+bool isDifferentDate(DateTime date, DateTime now) {
+  return date.day != now.day || date.month != now.month || date.year != now.year;
 }
 // convert to text datetime: 12/03/2024 (auto add / when select number)
 class DateTextFormatter extends TextInputFormatter {

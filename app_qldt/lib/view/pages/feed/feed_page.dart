@@ -1,4 +1,5 @@
 import "package:app_qldt/controller/account_provider.dart";
+import "package:app_qldt/view/pages/register_class/register_class_page_home.dart";
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -62,7 +63,8 @@ class FeedPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).push(
                     MaterialPageRoute(
-                        builder: (context) => const FeedNotiPage()));
+                        builder: (context) => const FeedNotiPage())
+                );
               },
               // icon: const FaIcon(FaIcons.bell, color: Palette.white,),
             icon: Badge(
@@ -180,7 +182,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   ),
                 ),
 
-                // button phải
+                // button day phải
                 IconButton(
                   icon: const Icon(Icons.calendar_month, color: Palette.red100,),
                   onPressed: () {
@@ -193,6 +195,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             ),
           ),
 
+          // thời khóa biểu ẩn / hiện
           Container(
             margin: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -278,6 +281,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             )
                 : const SizedBox(),
           ),
+          // link tới page khác
           // TODO: 1. go to other page
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
@@ -285,13 +289,17 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
               mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
               children: [
                 // Ô vuông 1
-                Expanded(
+                if (ref.read(accountProvider).value?.role == "STUDENT") Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
                     children: [
                       GestureDetector(
                         onTap: () {
                           // Xử lý khi click vào ô vuông 1
+                          Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const RegisterClassPageHome())
+                          );
                           print("Ô vuông 1 được nhấn!");
                         },
                         child: Container(
@@ -310,7 +318,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           ),
                           child: const Center(
                             child: Icon(
-                              Icons.thumb_up,
+                              Icons.add_card,
                               size: 40.0, // Kích thước icon
                               color: Palette.red100,
                             ),
@@ -319,7 +327,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       ),
                       const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
                       const Text(
-                        "Thời khóa biểu",
+                        "Đăng ký lớp học",
                         style: TextStyle(fontSize: 14.0),
                         overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
                         maxLines: 1,

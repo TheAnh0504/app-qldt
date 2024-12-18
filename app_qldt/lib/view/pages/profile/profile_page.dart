@@ -126,7 +126,8 @@ class _BuildBody extends ConsumerWidget {
                                   IconButton(
                                       onPressed: () =>
                                           handleShowContactInfo(context, data!),
-                                      icon: const FaIcon(FaIcons.addressCard)),
+                                      icon: const FaIcon(FaIcons.addressCard)
+                                  ),
                                   // IconButton(
                                   //     onPressed: handleShare,
                                   //     icon: const FaIcon(FaIcons.share))

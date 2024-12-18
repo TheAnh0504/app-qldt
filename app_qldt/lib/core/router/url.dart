@@ -13,3 +13,4 @@ const verifyRoute = "/verify";
 const changePasswordRoute = "/change_password";
 const imageRoute = "/image";
 const searchRoute = "/search";
+const registerClassHome = "/register_class";

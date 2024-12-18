@@ -1,3 +1,4 @@
+import "package:app_qldt/view/pages/register_class/register_class_page_home.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:app_qldt/core/router/url.dart";
@@ -80,6 +81,23 @@ final router = GoRouter(
                     key: state.pageKey, child: const VerifyForgetPasPage())),
           ]),
       // login page --> k có account nào đc lưu, và đang login (feedRoute)
+      // GoRoute(
+      //     parentNavigatorKey: rootNavigatorKey,
+      //     path: registerClassHome,
+      //     pageBuilder: (context, state) {
+      //       return MaterialPage(key: state.pageKey, child: const RegisterClassPageHome());
+      //     },
+      //     // routes: [
+      //     //   // nếu có listAccount được save
+      //     //   GoRoute(
+      //     //       parentNavigatorKey: rootNavigatorKey,
+      //     //       path: "saved",
+      //     //       pageBuilder: (context, state) {
+      //     //         return MaterialPage(
+      //     //             key: state.pageKey, child: const SavedLoginPage());
+      //     //       }),
+      //     // ]
+      // ),
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: loginRoute,
@@ -95,7 +113,8 @@ final router = GoRouter(
                   return MaterialPage(
                       key: state.pageKey, child: const SavedLoginPage());
                 }),
-          ]),
+          ]
+      ),
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: imageRoute,
