@@ -7,6 +7,8 @@ import "package:app_qldt/model/entities/account_model.dart";
 import "package:app_qldt/model/entities/device_model.dart";
 import "package:app_qldt/model/entities/security_notification_model.dart";
 
+import "../entities/class_info_model.dart";
+
 final authRepositoryProvider = FutureProvider((ref) async {
   return AuthRepository(
       swapi: ref.watch(swapiProvider),
@@ -186,6 +188,34 @@ class AuthApiRepository {
             .map<DeviceModel>((e) => DeviceModel.fromJson(e))
             .toList();
       }
+      throw value;
+    });
+  }
+
+  Future<List<ClassInfoModel>> getListClassInfo() {
+    return api.getListClassInfo().then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        var listClass = <ClassInfoModel>[];
+        for (int i = 0; i < (value["data"]["page_content"] as List<dynamic>).length; i++) {
+          listClass.add(ClassInfoModel.fromJson((value["data"]["page_content"] as List<dynamic>)[i]),);
+        }
+        return listClass;
+      }
+
+      throw value;
+    });
+  }
+
+  Future<List<ClassInfoModel>> getListClassInfoBy(String? classId, String? className, String? status, String? classType) {
+    return api.getListClassInfoBy(classId, className, status, classType).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        var listClass = <ClassInfoModel>[];
+        for (int i = 0; i < (value["data"]["page_content"] as List<dynamic>).length; i++) {
+          listClass.add(ClassInfoModel.fromJson((value["data"]["page_content"] as List<dynamic>)[i]),);
+        }
+        return listClass;
+      }
+
       throw value;
     });
   }

@@ -803,4 +803,34 @@ class SWApi {
                 headers: {"Authorization": "Bearer ${await accessToken}"}))
         .then((value) => value.data);
   }
-}
+
+  Future<Map<String, dynamic>> getListClassInfo() async {
+    return dio.post("/it5023e/get_open_classes",
+      data: {
+          "token": await accessToken,
+          "pageable_request": {
+            "page": "0",
+            "page_size": "2000"
+          }
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getListClassInfoBy(String? classId, String? className, String? status, String? classType) async {
+    if (classId == "") classId = null;
+    if (className == "") className = null;
+    if (status == "") status = null;
+    if (classType == "") classType = null;
+    return dio.post("/it5023e/get_classes_by_filter",
+      data: {
+        "token": await accessToken,
+        "status": status,
+        "class_name": className,
+        "class_type": classType,
+        "pageable_request": {
+          "page": "0",
+          "page_size": "2000"
+        }
+      },
+    ).then((value) => value.data);
+  }}

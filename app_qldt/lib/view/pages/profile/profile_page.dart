@@ -218,7 +218,10 @@ class _BuildBody extends ConsumerWidget {
         context: context,
         backgroundColor: Palette.white,
         showDragHandle: true,
-        builder: (context) => SingleChildScrollView(
+        isScrollControlled: true, // Cho phép tùy chỉnh chiều cao
+        builder: (context) => FractionallySizedBox(
+        heightFactor: 6/10, // Chiều cao bằng 2/3 màn hình
+        child: SingleChildScrollView(
               child: Container(
                   width: MediaQuery.sizeOf(context).width,
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -295,7 +298,7 @@ class _BuildBody extends ConsumerWidget {
                       // ),
                     ],
                   )
-              ),
+              ),)
         )
     );
   }

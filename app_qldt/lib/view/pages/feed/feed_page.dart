@@ -18,6 +18,7 @@ import "package:app_qldt/controller/user_provider.dart";
 import "package:app_qldt/core/theme/palette.dart";
 import "package:intl/intl.dart";
 
+import "../../../controller/list_class_provider.dart";
 import "../home_skeleton.dart";
 
 class FeedPage extends ConsumerWidget {
@@ -294,7 +295,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
                     children: [
                       GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          await ref.read(listClassProvider.notifier).getListClassInfo();
                           // Xử lý khi click vào ô vuông 1
                           Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(
