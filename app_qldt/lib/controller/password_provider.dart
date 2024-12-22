@@ -53,6 +53,8 @@ class AsyncResetPasswordNotifier extends AutoDisposeAsyncNotifier<void> {
             email: email,
             accessToken: value["data"]["token"]);
         await repo.local.updateCurrentAccount(account);
+        await repo.local.updateCheckTokenExpired(true);
+        ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
         ref.read(accountProvider.notifier).forward(AsyncData(account));
         await repo.local.updateToken(value["data"]["token"]);
 

@@ -78,6 +78,7 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
   final classCode = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  // checked rows - selected class in register-form (Xóa lớp)
   List<DataGridRow> selectRegister = [];
 
   final classId = TextEditingController();
@@ -86,6 +87,7 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
   String? classType;
 
   RegisterClassDataSource _listRegisterClassDataSource = RegisterClassDataSource(listRegisterClass: []);
+  // all class in register-form (Gửi đăng ký)
   List<ClassInfoModel> _listRegisterClass = <ClassInfoModel>[];
   DataGridController _dataGridRegisterClassController = DataGridController();
 
@@ -101,23 +103,24 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
 
   @override
   Widget build(BuildContext context) {
+    _listAllOpenClass = ref.read(listClassAllProvider).value!;
+
     _listOpenClass = ref.read(listClassProvider).value!;
-    _listAllOpenClass = ref.read(listClassProvider).value!;
     _listOpenClassDataSource = RegisterClassDataSource(
       listRegisterClass: _listOpenClass,
+    );
+
+    _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
+    // for (var classInfo in listClass) {
+    //   _listRegisterClass.add(classInfo.copyWith(status_register: "SUCCESS"));
+    // }
+    _listRegisterClassDataSource = RegisterClassDataSource(
+      listRegisterClass: _listRegisterClass,
     );
 
     ref.listen(listClassProvider, (prev, next) {
       if (next is AsyncError) {
         Fluttertoast.showToast(msg: next.error.toString());
-        // if ("Đã yêu cầu mở khóa tài khoản thành công." ==
-        //     next.error.toString()) {
-        //   context.go("$verifyRoute/unlock_acc");
-        // }
-        // if (next.error.toString() ==
-        //     "Đã yêu cầu đăng nhập lần đầu thành công. Hãy đợi phê duyệt.") {
-        //   return;
-        // }
       }
       if (next is AsyncData) {
         _listOpenClassDataSource = RegisterClassDataSource(
@@ -126,6 +129,18 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
         context.go(feedRoute);
       }
     });
+
+    // ref.listen(listClassFilterProvider, (prev, next) {
+    //   if (next is AsyncError) {
+    //     Fluttertoast.showToast(msg: next.error.toString());
+    //   }
+    //   if (next is AsyncData) {
+    //     _listRegisterClassDataSource = RegisterClassDataSource(
+    //       listRegisterClass: next.value ?? [],
+    //     );
+    //     context.go(feedRoute);
+    //   }
+    // });
 
     return Scaffold(
       appBar: AppBar(
@@ -172,11 +187,13 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                         child: FilledButton(
                           onPressed: () {
                             if (formKey.currentState?.validate() ?? false) {
+                              print(_listAllOpenClass.length);
                               try {
                                 if (!_listRegisterClass.any((value) => value.class_id == classCode.text)) {
                                   _listRegisterClass.add(
                                     _listAllOpenClass.firstWhere((value) => value.class_id == classCode.text)
                                   );
+                                  Fluttertoast.showToast(msg: 'Bạn đã thêm lớp với mã lớp: ${classCode.text} vào danh sách đăng ký lớp!');
                                 } else {
                                   Fluttertoast.showToast(msg: 'Bạn đã đăng ký lớp này rồi!');
                                 }
@@ -352,11 +369,22 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                       Expanded(
                         child: Center(
                           child: FilledButton(
-                            onPressed: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                print("đăng ký lơớp");
-                                // ref.read(signupProvider.notifier).signup(
-                                //     ho.text, ten.text, email.text, password.text, selectedRole);
+                            onPressed: () async {
+                              if (_listRegisterClass.isNotEmpty) {
+                                print("Đăng ký lớp");
+                                List<String> classIds = [];
+                                for (var classInfo in _listRegisterClass) {
+                                  classIds.add(classInfo.class_id);
+                                }
+                                _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
+                                setState(() {
+                                  _listRegisterClassDataSource = RegisterClassDataSource(
+                                    listRegisterClass: _listRegisterClass,
+                                  );
+                                });
+                                Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
+                              } else {
+                                Fluttertoast.showToast(msg: "Danh sách lớp trống. Vui lòng đăng ký lớp trước khi gửi đăng ký!");
                               }
                             },
                             child: const Center(child: Text("Gửi đăng ký")),
@@ -368,11 +396,15 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                         child: Center(
                           child: FilledButton(
                             onPressed: () {
-                              if (formKey.currentState?.validate() ?? false) {
-                                print("đăng ký lơớp");
-                                // ref.read(signupProvider.notifier).signup(
-                                //     ho.text, ten.text, email.text, password.text, selectedRole);
+                              print("Xóa lớp");
+                              String message = "";
+                              for (int i = 0; i < selectRegister.length; i++) {
+                                if (i != 0) {
+                                  message = "$message, ";
+                                }
+                                message = message + selectRegister[i].getCells().first.value;
                               }
+                              Fluttertoast.showToast(msg: "Chưa có api xóa lớp, danh sách lớp xóa: $message");
                             },
                             child: const Center(child: Text("Xóa lớp")),
                           ),

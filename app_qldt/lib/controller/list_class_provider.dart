@@ -50,7 +50,7 @@ class AsyncClassInfoNotifier extends AsyncNotifier<List<ClassInfoModel>?> {
   }
 }
 
-final listClassFilterProvider =
+final listClassRegisterNowProvider =
 AsyncNotifierProvider<AsyncClassInfoFilterNotifier, List<ClassInfoModel>?>(
     AsyncClassInfoFilterNotifier.new);
 // chơi ko đồng bộ: call api, get data from database
@@ -62,6 +62,72 @@ class AsyncClassInfoFilterNotifier extends AsyncNotifier<List<ClassInfoModel>?> 
     return null;
   }
 
+  Future<void> getRegisterClassNow() async {
+    state = const AsyncValue.loading();
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      state = await authRepository.api.getRegisterClassNow()
+          .then((value) async {
+        // 1 data success from async
+        return AsyncData(value);
+      });
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
+    }
+  }
+
+  Future<List<ClassInfoModel>?> registerClass(List<String> classId, List<ClassInfoModel> allClass) async {
+    state = const AsyncValue.loading();
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      List<ClassInfoModel> response = [];
+      state = await authRepository.api.registerClass(classId, allClass)
+          .then((value) async {
+            response = value;
+            print('giá trị $value');
+        // 1 data success from async
+        return AsyncData(value);
+      });
+      return response;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
+      return [];
+    }
+  }
+
   // update state với AccountModel mới
   void forward(AsyncValue<List<ClassInfoModel>?> value) => state = value;
+}
+
+final listClassAllProvider =
+AsyncNotifierProvider<AsyncClassInfoAllNotifier, List<ClassInfoModel>?>(
+    AsyncClassInfoAllNotifier.new);
+// chơi ko đồng bộ: call api, get data from database
+class AsyncClassInfoAllNotifier extends AsyncNotifier<List<ClassInfoModel>?> {
+  // hàm khởi tạo cho AsyncNotifier, đc gọi khi provider được khởi tạo
+  @override
+  Future<List<ClassInfoModel>?> build() async {
+    // khởi tạo null cho AccountModel khi ứng dụng run
+    return null;
+  }
+
+  // update state với AccountModel mới
+  void forward(AsyncValue<List<ClassInfoModel>?> value) => state = value;
+
+  Future<void> getListClassInfo() async {
+    state = const AsyncValue.loading();
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      state = await authRepository.api.getListClassInfo()
+          .then((value) async {
+        // 1 data success from async
+        return AsyncData(value);
+      });
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
+    }
+  }
 }

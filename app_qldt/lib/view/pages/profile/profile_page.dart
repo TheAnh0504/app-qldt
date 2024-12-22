@@ -15,6 +15,9 @@ import "package:app_qldt/model/entities/user_model.dart";
 import "package:app_qldt/controller/user_provider.dart";
 import "package:url_launcher/url_launcher.dart";
 
+import "../../../controller/list_class_provider.dart";
+import "../../../model/entities/class_info_model.dart";
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -44,12 +47,11 @@ class _BuildBody extends ConsumerWidget {
               : null;
           var linkAvatarHust = 'https://drive.google.com/file/d/1RD5P0nSyYtL8DcSbaUDb7iBWUgK7MBEC/view?usp=sharing';
           var avatarHust = 'https://drive.google.com/uc?id=${linkAvatarHust.split('/d/')[1].split('/')[0]}';
-          final classList = data?.classList;
+          final List<ClassInfoModel>? classList = ref.read(listClassRegisterNowProvider).value!;
+          print("list class: $classList");
           return RefreshIndicator(
             onRefresh: () async {
-              ref.invalidate(accountProvider);
-                // ..invalidate(userFollowerProvider)
-                // ..invalidate(userFollowingProvider);
+              await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
             },
             child: CustomScrollView(
               slivers: [
@@ -93,7 +95,7 @@ class _BuildBody extends ConsumerWidget {
                           ),
                         ),
                         Positioned(
-                          bottom: 0,
+                          bottom: 40,
                           left: MediaQuery.sizeOf(context).width / 20,
                           right: MediaQuery.sizeOf(context).width / 20,
                           child: Column(
@@ -133,74 +135,22 @@ class _BuildBody extends ConsumerWidget {
                                   //     icon: const FaIcon(FaIcons.share))
                                 ],
                               ),
-                              Card(
-                                color: Palette.grey25,
-                                elevation: 0,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      InkWell(
-                                          onTap: () {},
-                                          child: Text.rich(TextSpan(children: [
-                                            // TextSpan(
-                                            //     text: ref
-                                            //             .watch(
-                                            //                 userFollowingProvider)
-                                            //             .value
-                                            //             ?.length
-                                            //             .toString() ??
-                                            //         "0",
-                                            //     style: TypeStyle.body4.copyWith(
-                                            //         fontWeight:
-                                            //             FontWeight.bold)),
-                                            // TextSpan(
-                                            //     text: " Đang theo dõi",
-                                            //     style: TypeStyle.body4.copyWith(
-                                            //         color: Palette.grey70,
-                                            //         fontWeight:
-                                            //             FontWeight.w400))
-                                          ]))),
-                                      InkWell(
-                                          onTap: () {},
-                                          child: Text.rich(TextSpan(children: [
-                                            // TextSpan(
-                                            //     text: ref
-                                            //             .watch(
-                                            //                 userFollowerProvider)
-                                            //             .value
-                                            //             ?.length
-                                            //             .toString() ??
-                                            //         "0",
-                                            //     style: TypeStyle.body4.copyWith(
-                                            //         fontWeight:
-                                            //             FontWeight.bold)),
-                                            // TextSpan(
-                                            //     text: " Người theo dõi",
-                                            //     style: TypeStyle.body4.copyWith(
-                                            //         color: Palette.grey70,
-                                            //         fontWeight:
-                                            //             FontWeight.w400))
-                                          ]))),
-                                    ],
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
-                const SliverFillRemaining(
+                SliverFillRemaining(
                     child: Center(
-                  child: Text(
-                      "Những bài viết trên tường nhà sẽ được hiển thị ở đây"),
-                ))
+                  child: Column(
+                    children: [
+                       // Text("Tìm kiếm gần đây", style: TypeStyle.title3)
+                      //TODO: table- list class: click -> info class
+                    ],
+                  )
+                )),
               ],
             ),
           );

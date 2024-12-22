@@ -8,6 +8,25 @@ import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/model/entities/account_model.dart";
 import "package:app_qldt/model/repositories/auth_repository.dart";
 import "package:app_qldt/controller/verify_code_provider.dart";
+
+import "../model/repositories/messaging_repository.dart";
+import "../view/pages/home_skeleton.dart";
+
+final checkExpiredToken =
+AsyncNotifierProvider<CheckExpiredTokenNotifier, bool?>(
+    CheckExpiredTokenNotifier.new);
+// chơi ko đồng bộ: call api, get data from database
+class CheckExpiredTokenNotifier extends AsyncNotifier<bool?> {
+  // hàm khởi tạo cho AsyncNotifier, đc gọi khi provider được khởi tạo
+  @override
+  Future<bool?> build() async {
+    // khởi tạo null cho AccountModel khi ứng dụng run
+    return null;
+  }
+  // update state với AccountModel mới
+  void forward(AsyncValue<bool?> value) => state = value;
+}
+
 // là 1 provider ko đồng bộ (asynchronous provider) cung cấp trạng thái của 1 AccountModel và update khi cần
 // accountProvider lắng nghe sự thay đổi của AccountModel, từ đó cập nhật UI hoặc làm cái khác
 final accountProvider =
@@ -47,7 +66,9 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
             );
             authRepository.local.updateAccount(account);
             authRepository.local.updateCurrentAccount(account);
+            authRepository.local.updateCheckTokenExpired(true);
             authRepository.local.updateToken(value["data"]["token"]);
+            ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
             // 1 data success from async
             return AsyncData(account);
           });
@@ -77,6 +98,34 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
     }
   }
 
+  Future<AccountModel?> getUserInfo(String id) async {
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      AccountModel response = const AccountModel();
+      await authRepository.api
+          .getUserInfo(id)
+          .then<AsyncValue<AccountModel?>>((value) async {
+        final account = AccountModel(
+            email: value["data"]["email"],
+            idAccount: value["data"]["id"],
+            ho: value["data"]["ho"],
+            ten: value["data"]["ten"],
+            name: value["data"]["name"],
+            role: value["data"]["role"],
+            status: value["data"]["status"],
+            avatar: value["data"]["avatar"] ?? "",
+        );
+        response = account;
+        return AsyncData(account);
+      });
+      return response;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
+      return null;
+    }
+  }
+
   // update state với AccountModel mới
   void forward(AsyncValue<AccountModel?> value) => state = value;
 
@@ -99,8 +148,10 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
             classList: value["data"]["class_list"]
         );
         await repo.local.updateCurrentAccount(account);
+        await repo.local.updateCheckTokenExpired(true);
         await repo.local.updateAccount(account);
         await repo.local.updateToken(value["data"]["token"]);
+        ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
         state = AsyncValue.data(account);
       });
   }
@@ -117,9 +168,16 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
       deleteCurrentInfo();
       // Tạo một tác vụ không đồng bộ để làm mới thông tin người dùng và tự hủy (invalidate) provider hiện tại:
       Future(() {
+        ref.invalidate(checkExpiredToken);
         ref.invalidate(userProvider);
         ref.invalidate(groupChatProvider);
         ref.invalidate(messagesProvider);
+        ref.invalidate(countNotificationProvider);
+        ref.invalidate(checkCountProvider);
+        ref.invalidate(countProvider);
+        ref.invalidate(searchGroupChatProvider);
+        ref.invalidate(listAccountProvider);
+        ref.invalidate(messagingRepositoryProvider);
         ref.invalidateSelf();
       });
     }
@@ -127,7 +185,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
 
   Future<void> deleteCurrentInfo() async {
     var repo = (await ref.read(authRepositoryProvider.future));
-    repo..local.deleteCurrentAccount()..local.deleteToken();
+    repo..local.deleteCurrentAccount()..local.deleteToken()..local.deleteCheckTokenExpired();
   }
 }
 

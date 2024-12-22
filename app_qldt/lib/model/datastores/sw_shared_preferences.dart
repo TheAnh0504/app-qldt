@@ -1,4 +1,5 @@
 import "dart:convert";
+import "dart:ffi";
 
 import "package:shared_preferences/shared_preferences.dart";
 import "package:app_qldt/model/entities/account_model.dart";
@@ -9,6 +10,7 @@ const spRefreshToken = "refreshToken";
 const spAccounts = "accounts";
 const spTheme = "theme";
 const spOldSearches = "oldSearches";
+const checkExpiredTokenSave = "checkExpiredTokenSave";
 
 extension SWSPExtension on SharedPreferences {
   AccountModel? getCurrentAccount() {
@@ -51,4 +53,9 @@ extension SWSPExtension on SharedPreferences {
 
   Future<bool> setOldSearches(List<String> value) =>
       setString(spOldSearches, jsonEncode(value));
+
+  String? getCheckTokenExpired() => getString(checkExpiredTokenSave);
+
+  Future<bool> setCheckTokenExpired(bool? value) =>
+      value == null ? remove(checkExpiredTokenSave) : setString(checkExpiredTokenSave, value.toString());
 }

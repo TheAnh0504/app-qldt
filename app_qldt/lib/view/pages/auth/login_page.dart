@@ -1,3 +1,4 @@
+import "package:app_qldt/view/pages/auth/signup_page.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:fluttertoast/fluttertoast.dart";
@@ -98,7 +99,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
           color: Palette.white,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(0), topRight: Radius.circular(0))),
-      margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
+      // margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 10),
       padding: const EdgeInsets.all(32),
       child: Form(
         key: formKey,
@@ -139,17 +140,18 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                 const Text("Bạn chưa có tài khoản?", style: TypeStyle.body3),
                 TextButton(
                     child: const Text("Đăng ký ngay"),
-                    onPressed: () {
-                      context.go(signupRoute);
-                    })
+                    onPressed: () => Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(
+                            builder: (context) => const SignupPage()))
+                )
               ],
             ),
             const Spacer(),
-            TextButton(
-                onPressed:  () {
-                  context.go(forgetRoute);
-                },
-                child: const Text("Quên mật khẩu"))
+            // TextButton(
+            //     onPressed:  () {
+            //       context.go(forgetRoute);
+            //     },
+            //     child: const Text("Quên mật khẩu"))
           ],
         ),
       ),

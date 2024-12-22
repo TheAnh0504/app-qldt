@@ -12,6 +12,8 @@ import "package:app_qldt/model/datastores/sw_shared_preferences.dart";
 import "package:app_qldt/model/entities/account_model.dart";
 import "package:app_qldt/controller/account_provider.dart";
 
+import "../repositories/auth_repository.dart";
+
 final swapiProvider = Provider<SWApi>((ref) => SWApi(ref));
 
 class SWApi {
@@ -30,38 +32,20 @@ class SWApi {
       }, onResponse: (res, handler) async {
         Logger.httpResponse(res);
 
-        if (res.data is String) {
-          res.data = {"code": "0", "message": "Lỗi không xác định"};
-          return handler.resolve(res);
-        }
-
         // bắt error access-token expired
-        if (res.data == null) {
-          ref.read(accountProvider.notifier).logout(isSaved: false);
-          return handler.next(res);
+        try {
+          if (res.data["data"] == null) {
+            print("check 345");
+            ref.read(checkExpiredToken.notifier).forward(const AsyncValue.data(null));
+            var repo = (await ref.read(authRepositoryProvider.future));
+            await repo.local.deleteCheckTokenExpired();
+            return handler.next(res);
+          }
+        } catch(_) {
+          print("try-catch");
         }
-
-        // if (res.data["code"] == 1007 || res.data["code"] == 1004) {
-        //   if (await accessToken.then((value) => value.toString()) ==
-        //           res.requestOptions.headers["Authorization"].split(" ")[1] &&
-        //       await refreshToken != null) {
-        //     try {
-        //       var data = await refreshTokenDio.post("/sw3/auth/refresh", data: {
-        //         "refreshToken": await refreshToken
-        //       }).then((value) => value.data);
-        //       await setToken(
-        //           data["data"]["accessToken"], data["data"]["refreshToken"]);
-        //     } catch (e) {
-        //       ref
-        //           .read(accountProvider.notifier)
-        //           .forward(const AsyncValue.data(null));
-        //       return handler.next(res);
-        //     }
-        //   }
-        //   res.requestOptions.headers["Authorization"] =
-        //       "Bearer ${await accessToken}";
-        //   return handler.resolve(await _retry(res.requestOptions));
-        // }
+        print("check 456");
+        ref.read(checkExpiredToken.notifier).forward(const AsyncValue.data(true));
         return handler.next(res);
       }));
   }
@@ -121,6 +105,15 @@ class SWApi {
       "password": password,
       "device_id": await FirebaseMessaging.instance.getToken(),
       "fcm_token": await FirebaseMessaging.instance.getToken()
+    }).then((value) {
+      return value.data;
+    });
+  }
+
+  Future<Map<String, dynamic>> getUserInfo1(String userId) async {
+    return dio.post("/it4788/get_user_info", data: {
+      "token": await accessToken,
+      "user_id": userId,
     }).then((value) {
       return value.data;
     });
@@ -816,6 +809,18 @@ class SWApi {
     ).then((value) => value.data);
   }
 
+  Future<Map<String, dynamic>> getRegisterClassNow() async {
+    return dio.post("/it5023e/get_class_list",
+      data: {
+        "token": await accessToken,
+        "pageable_request": {
+          "page": "0",
+          "page_size": "2000"
+        }
+      },
+    ).then((value) => value.data);
+  }
+
   Future<Map<String, dynamic>> getListClassInfoBy(String? classId, String? className, String? status, String? classType) async {
     if (classId == "") classId = null;
     if (className == "") className = null;
@@ -833,4 +838,14 @@ class SWApi {
         }
       },
     ).then((value) => value.data);
-  }}
+  }
+
+  Future<Map<String, dynamic>> registerClass(List<String> classId) async {
+    return dio.post("/it5023e/register_class",
+      data: {
+        "token": await accessToken,
+        "class_ids": classId
+      },
+    ).then((value) => value.data);
+  }
+}

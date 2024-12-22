@@ -32,6 +32,8 @@ class AsyncVerifyCodeNotifier
         print("code: $value");
         var account = authRepository.local.readCurrentAccount()?.copyWith(verifyCode: value["verify_code"]);
         authRepository.local.updateCurrentAccount(account!);
+        authRepository.local.updateCheckTokenExpired(true);
+        ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
         state = const AsyncData(VerifyCodeState.sent);
       });
     } on Map<String, dynamic> catch (map) {

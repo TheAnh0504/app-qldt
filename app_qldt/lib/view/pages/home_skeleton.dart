@@ -1,5 +1,6 @@
 import "package:app_qldt/controller/messaging_provider.dart";
 import "package:app_qldt/controller/push_notification_provider.dart";
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/material.dart";
 import "package:flutter/scheduler.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -31,6 +32,7 @@ final countNotificationProvider = StateProvider<int>((ref) => 0);
 class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBindingObserver {
   final String webSocketUrl = 'http://157.66.24.126:8080/ws';
   late StompClient _client;
+  bool _isDialogShowing = false;
   @override
   void initState() {
     super.initState();
@@ -40,18 +42,18 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
         config: StompConfig.sockJS(url: webSocketUrl, onConnect: onConnectCallback));
     _client.activate();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      if (mounted) {
+      if (mounted && ref.read(accountProvider).value != null
+        && ref.read(checkExpiredToken).value != null
+      ) {
+        print("111111111");
         ref.read(checkCountProvider.notifier).state = ref.watch(checkCountProvider) + 1;
         final listMess = await ref.read(groupChatProvider(0).future);
         final newCount = listMess.first.numNewMessage;
         // Update the count value using the provider
         ref.read(countProvider.notifier).state = newCount;
         ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
-        // TODO: 1. get info device and notify --> notify
-        // ref
-        //   ..read(rootDeviceProvider.notifier)
-        //   ..read(accessDeviceProvider.notifier)
-        //   ..read(securityNotificationProvider.notifier);
+        // check account
+        // await ref.read(accountProvider.notifier).getUserInfo(ref.read(accountProvider).value!.idAccount);
       }
     });
   }
@@ -83,6 +85,30 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
     if (state == AppLifecycleState.resumed) {
       // Ứng dụng quay trở lại foreground
       print("Ứng dụng đã quay lại foreground");
+      final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+      print('That thu vi: $connectivityResult');
+// This condition is for demo purposes only to explain every connection type.
+// Use conditions which work for your requirements.
+      if (connectivityResult.contains(ConnectivityResult.mobile)) {
+        // Mobile network available.
+      } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+        // Wi-fi is available.
+        // Note for Android:
+        // When both mobile and Wi-Fi are turned on system will return Wi-Fi only as active network type
+      } else if (connectivityResult.contains(ConnectivityResult.ethernet)) {
+        // Ethernet connection available.
+      } else if (connectivityResult.contains(ConnectivityResult.vpn)) {
+        // Vpn connection active.
+        // Note for iOS and macOS:
+        // There is no separate network interface type for [vpn].
+        // It returns [other] on any device (also simulator)
+      } else if (connectivityResult.contains(ConnectivityResult.bluetooth)) {
+        // Bluetooth connection available.
+      } else if (connectivityResult.contains(ConnectivityResult.other)) {
+        // Connected to a network which is not in the above mentioned networks.
+      } else if (connectivityResult.contains(ConnectivityResult.none)) {
+        // No available network types
+      }
       // Thực thi lệnh mong muốn
       ref.invalidate(countGetNotificationProvider);
       ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
@@ -93,8 +119,13 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
   Widget build(BuildContext context) {
     final count = ref.watch(countProvider);
     final countNotification = ref.watch(countNotificationProvider);
-    ref.listen(accountProvider, (prev, next) async {
+    ref.listen(checkExpiredToken, (prev, next) async {
       if (next is AsyncData && next.value == null && context.mounted) {
+        // Nếu hộp thoại đang hiển thị, không làm gì cả
+        if (_isDialogShowing) return;
+
+        // Đặt cờ hiển thị
+        _isDialogShowing = true;
         await showDialog(
             context: context,
             builder: (_) => AlertDialog(
@@ -103,12 +134,14 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
                       "Token hết hạn. Vui lòng đăng nhập lại"),
                   actions: [
                     TextButton(
-                        onPressed: () => _.pop(), child: const Text("OK"))
+                        onPressed: () => context.go(splashRoute)
+                        , child: const Text("OK"))
                   ],
                 ));
-        await ref.read(accountProvider.notifier).deleteCurrentInfo();
-        if (!context.mounted) return;
-        context.go(splashRoute);
+        // await ref.read(accountProvider.notifier).deleteCurrentInfo();
+        // ref.read(accountProvider.notifier).logout(isSaved: false);
+        // if (!context.mounted) return;
+        // context.go(splashRoute);
       }
     });
 
@@ -154,11 +187,10 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
               ),
               const NavigationDestination(
                   icon: FaIcon(FaIcons.solidCircleUser), label: "Hồ sơ"),
-              NavigationDestination(
+              const NavigationDestination(
                   icon: Badge(
-                      isLabelVisible:
-                          ref.watch(securityNotificationProvider).value != null,
-                      child: const FaIcon(FaIcons.gear)),
+                      isLabelVisible: true,
+                      child: FaIcon(FaIcons.gear)),
                   label: "Cài đặt")
             ],
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected),

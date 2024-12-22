@@ -1,3 +1,5 @@
+import "package:app_qldt/model/entities/account_model.dart";
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:go_router/go_router.dart";
@@ -7,6 +9,13 @@ import "package:app_qldt/core/router/url.dart";
 import "package:app_qldt/model/datastores/sw_shared_preferences.dart";
 import "package:app_qldt/controller/account_provider.dart";
 import "package:app_qldt/controller/saved_account_provider.dart";
+import "package:url_launcher/url_launcher.dart";
+
+import "../../controller/list_class_provider.dart";
+import "../../controller/messaging_provider.dart";
+import "../../controller/user_provider.dart";
+import "../../model/repositories/messaging_repository.dart";
+import "home_skeleton.dart";
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -30,18 +39,40 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   Future<void> _navigate() async {
     final pref = await SharedPreferences.getInstance();
-    if (pref.getCurrentAccount() != null && mounted) {
+    if (pref.getCurrentAccount() != null && mounted
+        && pref.getCheckTokenExpired() != null) {
+      ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
+      print("111");
       if (pref.getCurrentAccount()?.status == "Kích hoạt") {
         ref.read(accountProvider);
         Future.microtask(() => ref
             .read(accountProvider.notifier)
             .forward(AsyncData(pref.getCurrentAccount())));
+        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         return context.go(feedRoute);
       } else {
+        print("222");
         ref.read(accountProvider.notifier).deleteCurrentInfo();
       }
+    } else {
+      print("333");
+      // ref.read(accountProvider.notifier).logout(isSaved: false);
     }
 
+    print("444");
+    Future(() async {
+      await ref.read(accountProvider.notifier).deleteCurrentInfo();
+      ref.invalidate(checkExpiredToken);
+      ref.invalidate(userProvider);
+      ref.invalidate(groupChatProvider);
+      ref.invalidate(messagesProvider);
+      ref.invalidate(countNotificationProvider);
+      ref.invalidate(checkCountProvider);
+      ref.invalidate(countProvider);
+      ref.invalidate(searchGroupChatProvider);
+      ref.invalidate(listAccountProvider);
+      ref.invalidate(messagingRepositoryProvider);
+    });
     var accounts = await ref.read(savedAccountProvider.future);
     if (accounts.isEmpty && mounted) return context.go(loginRoute);
     if (accounts.isNotEmpty && mounted) {

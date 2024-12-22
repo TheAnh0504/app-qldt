@@ -284,16 +284,16 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
     });
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   _refreshData(); // Tự động lấy lại dữ liệu khi trang này được hiển thị.
-  // }
-  //
-  // Future<void> _refreshData() async {
-  //   ref.invalidate(groupChatProvider);
-  //   pagingController.refresh();
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _refreshData(); // Tự động lấy lại dữ liệu khi trang này được hiển thị.
+  }
+
+  Future<void> _refreshData() async {
+    ref.invalidate(groupChatProvider);
+    pagingController.refresh();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -33,10 +33,12 @@ class AsyncSignupNotifier extends AutoDisposeAsyncNotifier<void> {
             verifyCode: value["verify_code"]
         );
         await repo.local.updateCurrentAccount(account);
+        await repo.local.updateCheckTokenExpired(true);
         Future(() {
           // ref
           //     .read(verifyCodeProvider(VerifyCodeType.add_user).notifier)
           //     .getVerifyCode();
+          ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
           ref.read(accountProvider.notifier).forward(AsyncData(account));
         });
       });
@@ -56,21 +58,22 @@ class AsyncChangeInfoAfterSignupNotifier
   @override
   void build() {}
 
-  Future<void> changeInfoAfterSignup(
-      {
-      File? avatar}) async {
+  Future<void> changeInfoAfterSignup({File? avatar}) async {
     state = const AsyncValue.loading();
     try {
       var repo = (await ref.read(authRepositoryProvider.future));
+      ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
       if (avatar == null) {
         final account = repo.local.readCurrentAccount()?.copyWith(avatar: "");
         repo.local.updateCurrentAccount(account!);
+        repo.local.updateCheckTokenExpired(true);
         repo.local.updateAccount(account);
         ref.read(accountProvider.notifier).forward(AsyncData(account));
       } else {
         var avatarUpload =  await ref.read(mediaRepositoryProvider).api.addImage(avatar);
         final account = repo.local.readCurrentAccount()?.copyWith(avatar: avatarUpload);
         repo.local.updateCurrentAccount(account!);
+        repo.local.updateCheckTokenExpired(true);
         repo.local.updateAccount(account);
         ref.read(accountProvider.notifier).forward(AsyncData(account));
       }

@@ -20,6 +20,7 @@ import "package:intl/intl.dart";
 
 import "../../../controller/list_class_provider.dart";
 import "../home_skeleton.dart";
+import "../register_class/class_manager_lecturer.dart";
 
 class FeedPage extends ConsumerWidget {
   const FeedPage({super.key});
@@ -289,7 +290,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
               children: [
-                // Ô vuông 1
+                // Ô vuông 1 sinh viên
                 if (ref.read(accountProvider).value?.role == "STUDENT") Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
@@ -297,11 +298,15 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       GestureDetector(
                         onTap: () async {
                           await ref.read(listClassProvider.notifier).getListClassInfo();
+                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           // Xử lý khi click vào ô vuông 1
-                          Navigator.of(context, rootNavigator: true).push(
+                          if (ref.read(checkExpiredToken).value != null) {
+                            Navigator.of(context, rootNavigator: true).push(
                               MaterialPageRoute(
                                   builder: (context) => const RegisterClassPageHome())
-                          );
+                            );
+                          }
                           print("Ô vuông 1 được nhấn!");
                         },
                         child: Container(
@@ -337,65 +342,24 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     ],
                   ),
                 ),
-                // Ô vuông 2
-                Expanded(
+                // ô vuông 1 giảng viên
+                if (ref.read(accountProvider).value?.role != "STUDENT") Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 2
-                          print("Ô vuông 2 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 8.0,
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.comment,
-                              size: 40.0,
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Nhận xét",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
-              children: [
-                // Ô vuông 1
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          await ref.read(listClassProvider.notifier).getListClassInfo();
+                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           // Xử lý khi click vào ô vuông 1
+                          if (ref.read(checkExpiredToken).value != null) {
+                            Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                    builder: (
+                                        context) => const ClassManagerLecturer())
+                            );
+                          }
                           print("Ô vuông 1 được nhấn!");
                         },
                         child: Container(
@@ -414,7 +378,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           ),
                           child: const Center(
                             child: Icon(
-                              Icons.thumb_up,
+                              Icons.add_card,
                               size: 40.0, // Kích thước icon
                               color: Palette.red100,
                             ),
@@ -423,7 +387,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       ),
                       const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
                       const Text(
-                        "Thời khóa biểu",
+                        "Quản lý lớp học",
                         style: TextStyle(fontSize: 14.0),
                         overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
                         maxLines: 1,
@@ -477,288 +441,382 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
-              children: [
-                // Ô vuông 1
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 1
-                          print("Ô vuông 1 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80, // Chiều rộng ô vuông
-                          height: 80, // Chiều cao ô vuông
-                          decoration: BoxDecoration(
-                            color: Colors.white, // Màu nền của ô
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26, // Màu đổ bóng
-                                blurRadius: 8.0, // Bán kính làm mờ bóng
-                                offset: Offset(2, 2), // Vị trí bóng
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.thumb_up,
-                              size: 40.0, // Kích thước icon
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
-                      const Text(
-                        "Thời khóa biểu",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-                // Ô vuông 2
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 2
-                          print("Ô vuông 2 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 8.0,
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.comment,
-                              size: 40.0,
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Nhận xét",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
-              children: [
-                // Ô vuông 1
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 1
-                          print("Ô vuông 1 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80, // Chiều rộng ô vuông
-                          height: 80, // Chiều cao ô vuông
-                          decoration: BoxDecoration(
-                            color: Colors.white, // Màu nền của ô
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26, // Màu đổ bóng
-                                blurRadius: 8.0, // Bán kính làm mờ bóng
-                                offset: Offset(2, 2), // Vị trí bóng
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.thumb_up,
-                              size: 40.0, // Kích thước icon
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
-                      const Text(
-                        "Thời khóa biểu",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-                // Ô vuông 2
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 2
-                          print("Ô vuông 2 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 8.0,
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.comment,
-                              size: 40.0,
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Nhận xét",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
-              children: [
-                // Ô vuông 1
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 1
-                          print("Ô vuông 1 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80, // Chiều rộng ô vuông
-                          height: 80, // Chiều cao ô vuông
-                          decoration: BoxDecoration(
-                            color: Colors.white, // Màu nền của ô
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26, // Màu đổ bóng
-                                blurRadius: 8.0, // Bán kính làm mờ bóng
-                                offset: Offset(2, 2), // Vị trí bóng
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0), // Bo góc ô
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.thumb_up,
-                              size: 40.0, // Kích thước icon
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
-                      const Text(
-                        "Thời khóa biểu",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-                // Ô vuông 2
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // Xử lý khi click vào ô vuông 2
-                          print("Ô vuông 2 được nhấn!");
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 8.0,
-                                offset: Offset(2, 2),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.comment,
-                              size: 40.0,
-                              color: Palette.red100,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        "Nhận xét",
-                        style: TextStyle(fontSize: 14.0),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+          //     children: [
+          //       // Ô vuông 1
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 1
+          //                 print("Ô vuông 1 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80, // Chiều rộng ô vuông
+          //                 height: 80, // Chiều cao ô vuông
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white, // Màu nền của ô
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26, // Màu đổ bóng
+          //                       blurRadius: 8.0, // Bán kính làm mờ bóng
+          //                       offset: Offset(2, 2), // Vị trí bóng
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.thumb_up,
+          //                     size: 40.0, // Kích thước icon
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+          //             const Text(
+          //               "Thời khóa biểu",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       // Ô vuông 2
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 2
+          //                 print("Ô vuông 2 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80,
+          //                 height: 80,
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white,
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26,
+          //                       blurRadius: 8.0,
+          //                       offset: Offset(2, 2),
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0),
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.comment,
+          //                     size: 40.0,
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             const Text(
+          //               "Nhận xét",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis,
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+          //     children: [
+          //       // Ô vuông 1
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 1
+          //                 print("Ô vuông 1 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80, // Chiều rộng ô vuông
+          //                 height: 80, // Chiều cao ô vuông
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white, // Màu nền của ô
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26, // Màu đổ bóng
+          //                       blurRadius: 8.0, // Bán kính làm mờ bóng
+          //                       offset: Offset(2, 2), // Vị trí bóng
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.thumb_up,
+          //                     size: 40.0, // Kích thước icon
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+          //             const Text(
+          //               "Thời khóa biểu",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       // Ô vuông 2
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 2
+          //                 print("Ô vuông 2 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80,
+          //                 height: 80,
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white,
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26,
+          //                       blurRadius: 8.0,
+          //                       offset: Offset(2, 2),
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0),
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.comment,
+          //                     size: 40.0,
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             const Text(
+          //               "Nhận xét",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis,
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+          //     children: [
+          //       // Ô vuông 1
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 1
+          //                 print("Ô vuông 1 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80, // Chiều rộng ô vuông
+          //                 height: 80, // Chiều cao ô vuông
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white, // Màu nền của ô
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26, // Màu đổ bóng
+          //                       blurRadius: 8.0, // Bán kính làm mờ bóng
+          //                       offset: Offset(2, 2), // Vị trí bóng
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.thumb_up,
+          //                     size: 40.0, // Kích thước icon
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+          //             const Text(
+          //               "Thời khóa biểu",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       // Ô vuông 2
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 2
+          //                 print("Ô vuông 2 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80,
+          //                 height: 80,
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white,
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26,
+          //                       blurRadius: 8.0,
+          //                       offset: Offset(2, 2),
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0),
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.comment,
+          //                     size: 40.0,
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             const Text(
+          //               "Nhận xét",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis,
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center, // Căn giữa cả Row
+          //     children: [
+          //       // Ô vuông 1
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 1
+          //                 print("Ô vuông 1 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80, // Chiều rộng ô vuông
+          //                 height: 80, // Chiều cao ô vuông
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white, // Màu nền của ô
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26, // Màu đổ bóng
+          //                       blurRadius: 8.0, // Bán kính làm mờ bóng
+          //                       offset: Offset(2, 2), // Vị trí bóng
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0), // Bo góc ô
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.thumb_up,
+          //                     size: 40.0, // Kích thước icon
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8), // Khoảng cách giữa ô vuông và text
+          //             const Text(
+          //               "Thời khóa biểu",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis, // Cắt nội dung nếu quá dài
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //       // Ô vuông 2
+          //       Expanded(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.center, // Căn giữa trong Column
+          //           children: [
+          //             GestureDetector(
+          //               onTap: () {
+          //                 // Xử lý khi click vào ô vuông 2
+          //                 print("Ô vuông 2 được nhấn!");
+          //               },
+          //               child: Container(
+          //                 width: 80,
+          //                 height: 80,
+          //                 decoration: BoxDecoration(
+          //                   color: Colors.white,
+          //                   boxShadow: const [
+          //                     BoxShadow(
+          //                       color: Colors.black26,
+          //                       blurRadius: 8.0,
+          //                       offset: Offset(2, 2),
+          //                     ),
+          //                   ],
+          //                   borderRadius: BorderRadius.circular(8.0),
+          //                 ),
+          //                 child: const Center(
+          //                   child: Icon(
+          //                     Icons.comment,
+          //                     size: 40.0,
+          //                     color: Palette.red100,
+          //                   ),
+          //                 ),
+          //               ),
+          //             ),
+          //             const SizedBox(height: 8),
+          //             const Text(
+          //               "Nhận xét",
+          //               style: TextStyle(fontSize: 14.0),
+          //               overflow: TextOverflow.ellipsis,
+          //               maxLines: 1,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
 
 

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:fluttertoast/fluttertoast.dart";
+import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:go_router/go_router.dart";
 import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/core/router/url.dart";
@@ -17,13 +18,24 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) => context.go(loginRoute),
-      child: Scaffold(
+    return Scaffold(
+      appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          body: const _BuildBody()),
-    );
+          title: const Align(
+            alignment: Alignment(-0.25, 0), // Căn phải một chút
+            child: Text("Đăng ký tài khoản", style: TypeStyle.title1White),
+          ),
+          leading: IconButton(
+              onPressed: () => context.go(loginRoute),
+              icon: const FaIcon(FaIcons.arrowLeft, color: Palette.white,))),
+      body: const _BuildBody());
+    // return PopScope(
+    //   canPop: false,
+    //   onPopInvoked: (didPop) => context.go(loginRoute),
+    //   child: Scaffold(
+    //       backgroundColor: Theme.of(context).colorScheme.primary,
+    //       body: const _BuildBody()),
+    // );
   }
 }
 
@@ -61,20 +73,20 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
       key: formKey,
       child: Container(
           clipBehavior: Clip.antiAlias,
-          height: MediaQuery.sizeOf(context).height -
-              MediaQuery.sizeOf(context).width / 5,
+          // height: MediaQuery.sizeOf(context).height -
+          //     MediaQuery.sizeOf(context).width / 5,
           decoration: const BoxDecoration(
               color: Palette.white,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(0), topRight: Radius.circular(0))),
-          margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
+          // margin: EdgeInsets.only(top: MediaQuery.sizeOf(context).width / 5),
           padding: const EdgeInsets.all(32),
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(child: Text("Đăng ký tài khoản eHust", style: TypeStyle.heading),),
+                  // const Center(child: Text("Đăng ký tài khoản eHust", style: TypeStyle.heading),),
                   // Text.rich(TextSpan(children: [
                   //   const TextSpan(text: "("),
                   //   TextSpan(
@@ -199,15 +211,14 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                             ? null
                             : () {
                                 if (formKey.currentState?.validate() ?? false) {
-                                  ref
-                                      .read(signupProvider.notifier)
-                                      .signup(ho.text, ten.text, email.text, password.text, selectedRole);
+                                  ref.read(signupProvider.notifier).signup(ho.text, ten.text, email.text, password.text, selectedRole);
                                 }
                               },
                         child: const Center(child: Text("Đăng ký")),
                       );
                     }),
                   ),
+                  const SizedBox(height: 50),
                 ]),
           )
       ),

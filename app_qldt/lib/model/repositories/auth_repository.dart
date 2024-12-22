@@ -58,6 +58,13 @@ class AuthApiRepository {
     });
   }
 
+  Future<Map<String, dynamic>> getUserInfo(String id) {
+    return api.getUserInfo1(id).then((value) async {
+      if (value["code"] == "1000") return value;
+      throw value;
+    });
+  }
+
   Future<Map<String, dynamic>> changePassword(
       String oldPassword, String newPassword) {
     return api.changePassword(oldPassword, newPassword).then((value) async {
@@ -219,6 +226,36 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<List<ClassInfoModel>> getRegisterClassNow() {
+    return api.getRegisterClassNow().then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        var listClass = <ClassInfoModel>[];
+        for (int i = 0; i < (value["data"]["page_content"] as List<dynamic>).length; i++) {
+          listClass.add(ClassInfoModel.fromJson((value["data"]["page_content"] as List<dynamic>)[i]),);
+          listClass[i] = listClass[i].copyWith(status_register: "SUCCESS");
+        }
+        return listClass;
+      }
+
+      throw value;
+    });
+  }
+
+  Future<List<ClassInfoModel>> registerClass(List<String> classId, List<ClassInfoModel> allClass) {
+    return api.registerClass(classId).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        var listClass = <ClassInfoModel>[];
+        for (int i = 0; i < (value["data"] as List<dynamic>).length; i++) {
+          int index = allClass.indexWhere((classInfo) => classInfo.class_id == (value["data"] as List<dynamic>)[i]["class_id"]);
+          listClass.add(allClass[index].copyWith(status_register: (value["data"] as List<dynamic>)[i]["status"]));
+        }
+        return listClass;
+      }
+
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {
@@ -241,9 +278,14 @@ class AuthLocalRepository {
   Future<bool> updateCurrentAccount(AccountModel account) =>
       pref.setCurrentAccount(account);
 
+  Future<bool> updateCheckTokenExpired(bool check) =>
+      pref.setCheckTokenExpired(check);
+
   AccountModel? readCurrentAccount() => pref.getCurrentAccount();
 
   Future<bool> deleteCurrentAccount() => pref.setCurrentAccount(null);
+
+  Future<bool> deleteCheckTokenExpired() => pref.setCheckTokenExpired(null);
 
   Future<bool> updateAccount(AccountModel account) async {
     final currentAccounts = pref.getAccounts();

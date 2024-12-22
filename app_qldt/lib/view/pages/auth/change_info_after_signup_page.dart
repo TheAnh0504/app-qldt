@@ -19,6 +19,7 @@ import "package:path_provider/path_provider.dart";
 import "package:permission_handler/permission_handler.dart";
 import "package:wechat_assets_picker/wechat_assets_picker.dart";
 
+import "../../../controller/list_class_provider.dart";
 import "../../../model/repositories/auth_repository.dart";
 import "../../../model/repositories/media_repository.dart";
 
@@ -189,10 +190,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       });
                       return FilledButton(
                         onPressed: () async {
-                          ref
-                              .read(changeInfoAfterSignupProvider.notifier)
-                              .changeInfoAfterSignup(
-                                  avatar: await avatar?.file);
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          await ref.read(changeInfoAfterSignupProvider.notifier)
+                              .changeInfoAfterSignup(avatar: await avatar?.file);
                         },
                         child: const Center(child: Text("Xác nhận")),
                       );
