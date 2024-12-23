@@ -216,7 +216,7 @@ class _BuildBody extends ConsumerWidget {
                                         .primary))),
                       ),
                       ListTile(
-                          title: const Text("Id", style: TypeStyle.body4),
+                          title: const Text("MSSV", style: TypeStyle.body4),
                           subtitle: Text(account.idAccount,
                               style: TypeStyle.body3.copyWith(
                                   color:

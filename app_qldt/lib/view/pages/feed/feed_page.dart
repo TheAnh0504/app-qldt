@@ -1,4 +1,5 @@
 import "package:app_qldt/controller/account_provider.dart";
+import "package:app_qldt/model/entities/class_info_model.dart";
 import "package:app_qldt/view/pages/register_class/register_class_page_home.dart";
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
@@ -104,7 +105,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   // Danh sách trạng thái màu
   List<Color> listColor = List.generate(7, (index) => Colors.grey[300]!);
   int selectedDayIndex = -1;
-  bool schedule = false;
+  bool schedule = true;
   @override
   Widget build(BuildContext context) {
     var avatar = ref.watch(accountProvider).value?.avatar;
@@ -297,9 +298,17 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          await ref.read(listClassProvider.notifier).getListClassInfo();
-                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          // if (ref.read(listClassAllProvider).value == null) {
+                            await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          // }
+                          // if (ref.read(listClassProvider).value == null) {
+                            await ref.read(listClassProvider.notifier).getListClassInfo();
+                          // } else {
+                          //   ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
+                          // }
+                          // if (ref.read(listClassRegisterNowProvider).value == null) {
+                            await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          // }
                           // Xử lý khi click vào ô vuông 1
                           if (ref.read(checkExpiredToken).value != null) {
                             Navigator.of(context, rootNavigator: true).push(
@@ -349,9 +358,17 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          await ref.read(listClassProvider.notifier).getListClassInfo();
-                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          // if (ref.read(listClassAllProvider).value == null) {
+                            await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          // }
+                          // if (ref.read(listClassProvider).value == null) {
+                            await ref.read(listClassProvider.notifier).getListClassInfo();
+                          // } else {
+                          //   ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
+                          // }
+                          // if (ref.read(listClassRegisterNowProvider).value == null) {
+                            await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          // }
                           // Xử lý khi click vào ô vuông 1
                           if (ref.read(checkExpiredToken).value != null) {
                             Navigator.of(context, rootNavigator: true).push(
@@ -421,7 +438,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                           ),
                           child: const Center(
                             child: Icon(
-                              Icons.comment,
+                              Icons.account_circle_outlined,
                               size: 40.0,
                               color: Palette.red100,
                             ),
@@ -430,7 +447,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        "Nhận xét",
+                        "Tra cứu thông tin",
                         style: TextStyle(fontSize: 14.0),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,

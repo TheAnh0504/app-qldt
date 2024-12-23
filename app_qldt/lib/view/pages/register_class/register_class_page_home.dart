@@ -103,13 +103,16 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
 
   @override
   Widget build(BuildContext context) {
+    // all class open
     _listAllOpenClass = ref.read(listClassAllProvider).value!;
 
+    // list class open (filter)
     _listOpenClass = ref.read(listClassProvider).value!;
     _listOpenClassDataSource = RegisterClassDataSource(
       listRegisterClass: _listOpenClass,
     );
 
+    // list class register now
     _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
     // for (var classInfo in listClass) {
     //   _listRegisterClass.add(classInfo.copyWith(status_register: "SUCCESS"));

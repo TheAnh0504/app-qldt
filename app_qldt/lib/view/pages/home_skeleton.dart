@@ -16,6 +16,8 @@ import "package:stomp_dart_client/stomp.dart";
 import "package:stomp_dart_client/stomp_config.dart";
 import "package:stomp_dart_client/stomp_frame.dart";
 
+import "../../controller/list_class_provider.dart";
+
 class HomeSkeleton extends ConsumerStatefulWidget {
   const HomeSkeleton({required this.child, super.key});
 
@@ -54,6 +56,10 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
         ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
         // check account
         // await ref.read(accountProvider.notifier).getUserInfo(ref.read(accountProvider).value!.idAccount);
+        // get info-class
+        await ref.read(listClassProvider.notifier).getListClassInfo();
+        await ref.read(listClassAllProvider.notifier).getListClassInfo();
+        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
       }
     });
   }

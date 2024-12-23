@@ -97,6 +97,32 @@ class AsyncClassInfoFilterNotifier extends AsyncNotifier<List<ClassInfoModel>?> 
     }
   }
 
+  Future<bool> addStudent(String classId, String accountId) async {
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      await authRepository.api.addStudent(classId, accountId).then((value) async {
+        print('giá trị $value');
+      });
+      return true;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteClass(String classId) async {
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      await authRepository.api.deleteClass(classId).then((value) async {
+        print('giá trị $value');
+      });
+      return true;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      return false;
+    }
+  }
+
   // update state với AccountModel mới
   void forward(AsyncValue<List<ClassInfoModel>?> value) => state = value;
 }

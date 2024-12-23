@@ -256,6 +256,24 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<Map<String, dynamic>> addStudent(String classId, String accountId) {
+    return api.addStudent(classId, accountId).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> deleteClass(String classId) {
+    return api.deleteClass(classId).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {

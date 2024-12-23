@@ -11,6 +11,7 @@ import "package:app_qldt/controller/verify_code_provider.dart";
 
 import "../model/repositories/messaging_repository.dart";
 import "../view/pages/home_skeleton.dart";
+import "list_class_provider.dart";
 
 final checkExpiredToken =
 AsyncNotifierProvider<CheckExpiredTokenNotifier, bool?>(
@@ -102,9 +103,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
     try {
       var authRepository = (await ref.read(authRepositoryProvider.future));
       AccountModel response = const AccountModel();
-      await authRepository.api
-          .getUserInfo(id)
-          .then<AsyncValue<AccountModel?>>((value) async {
+      await authRepository.api.getUserInfo(id).then((value) {
         final account = AccountModel(
             email: value["data"]["email"],
             idAccount: value["data"]["id"],
@@ -116,12 +115,10 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
             avatar: value["data"]["avatar"] ?? "",
         );
         response = account;
-        return AsyncData(account);
       });
       return response;
       // bắt lỗi Map<String, dynamic> map
     } on Map<String, dynamic> catch (map) {
-      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
       return null;
     }
   }
@@ -178,6 +175,9 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
         ref.invalidate(searchGroupChatProvider);
         ref.invalidate(listAccountProvider);
         ref.invalidate(messagingRepositoryProvider);
+        ref.invalidate(listClassRegisterNowProvider);
+        ref.invalidate(listClassProvider);
+        ref.invalidate(listClassAllProvider);
         ref.invalidateSelf();
       });
     }

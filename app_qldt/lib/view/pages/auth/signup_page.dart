@@ -26,7 +26,7 @@ class SignupPage extends StatelessWidget {
             child: Text("Đăng ký tài khoản", style: TypeStyle.title1White),
           ),
           leading: IconButton(
-              onPressed: () => context.go(loginRoute),
+              onPressed: () => context.pop(),
               icon: const FaIcon(FaIcons.arrowLeft, color: Palette.white,))),
       body: const _BuildBody());
     // return PopScope(
@@ -95,7 +95,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   //           color: Theme.of(context).colorScheme.error)),
                   //   const TextSpan(text: ") Bắt buộc"),
                   // ], style: TypeStyle.body5)),
-                  const SizedBox(height: 22),
+                  // const SizedBox(height: 22),
                   Text.rich(TextSpan(children: [
                     const TextSpan(text: "Họ", style: TypeStyle.title4),
                     TextSpan(
@@ -218,7 +218,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       );
                     }),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 70),
                 ]),
           )
       ),

@@ -39,8 +39,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   Future<void> _navigate() async {
     final pref = await SharedPreferences.getInstance();
-    if (pref.getCurrentAccount() != null && mounted
-        && pref.getCheckTokenExpired() != null) {
+    if (pref.getCurrentAccount() != null && mounted && pref.getCheckTokenExpired() != null) {
       ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
       print("111");
       if (pref.getCurrentAccount()?.status == "Kích hoạt") {
@@ -48,7 +47,6 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         Future.microtask(() => ref
             .read(accountProvider.notifier)
             .forward(AsyncData(pref.getCurrentAccount())));
-        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         return context.go(feedRoute);
       } else {
         print("222");
@@ -72,6 +70,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       ref.invalidate(searchGroupChatProvider);
       ref.invalidate(listAccountProvider);
       ref.invalidate(messagingRepositoryProvider);
+      ref.invalidate(listClassRegisterNowProvider);
+      ref.invalidate(listClassProvider);
+      ref.invalidate(listClassAllProvider);
     });
     var accounts = await ref.read(savedAccountProvider.future);
     if (accounts.isEmpty && mounted) return context.go(loginRoute);

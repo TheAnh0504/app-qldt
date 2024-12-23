@@ -197,7 +197,8 @@ class _BuildBody extends ConsumerWidget {
                                 TextButton(
                                     onPressed: () => _.pop(),
                                     child: const Text("Hủy"))
-                              ])).then((value) {
+                              ])
+                  ).then((value) {
                     if (value == null) return;
                     ref.read(accountProvider.notifier).logout(isSaved: value);
                   });

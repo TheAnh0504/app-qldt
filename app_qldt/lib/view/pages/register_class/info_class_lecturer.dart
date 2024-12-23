@@ -2,7 +2,6 @@
 
 import 'package:app_qldt/controller/account_provider.dart';
 import 'package:app_qldt/controller/list_class_provider.dart';
-import 'package:app_qldt/view/pages/register_class/info_class_lecturer.dart';
 import 'package:app_qldt/view/pages/register_class/register_class_page_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,16 +21,17 @@ import '../../../core/theme/typestyle.dart';
 import '../../../model/entities/account_model.dart';
 import '../../../model/entities/class_info_model.dart';
 
-class ClassManagerLecturer extends ConsumerStatefulWidget {
-  const ClassManagerLecturer({super.key});
+class InfoClassLecturer extends ConsumerStatefulWidget {
+  final dynamic data;
+
+  const InfoClassLecturer({super.key, required this.data});
 
   @override
-  ConsumerState<ClassManagerLecturer> createState() => _ClassManagerLecturer();
+  ConsumerState<InfoClassLecturer> createState() => _InfoClassLecturer();
 }
 
-class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
+class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
   final classCode = TextEditingController();
-  final idStudent = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
   // checked rows - selected class in register-form (Xóa lớp)
@@ -59,16 +59,13 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
 
   @override
   Widget build(BuildContext context) {
-    // all class open
     _listAllOpenClass = ref.read(listClassAllProvider).value!;
 
-    // list class open (filter)
     _listOpenClass = ref.read(listClassProvider).value!;
     _listOpenClassDataSource = RegisterClassDataSource(
       listRegisterClass: _listOpenClass,
     );
 
-    // list class register now
     _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
     // for (var classInfo in listClass) {
     //   _listRegisterClass.add(classInfo.copyWith(status_register: "SUCCESS"));
@@ -104,9 +101,9 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          title: const Align(
+          title: Align(
             alignment: Alignment(-0.25, 0), // Căn phải một chút
-            child: Text("Quản lý lớp học", style: TypeStyle.title1White),
+            child: Text("Quản lý lớp ${widget.data}", style: TypeStyle.title1White),
           ),
           leading: IconButton(
               onPressed: () => context.pop(),
@@ -145,16 +142,27 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                       Center(
                         child: FilledButton(
                           onPressed: () {
-                            if (_listRegisterClass.any((value) => value.class_id == classCode.text)) {
-                              Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                  builder: (context) => InfoClassLecturer(data: classCode.text),
-                                ),
-                              );
-                            } else if (_listAllOpenClass.any((value) => value.class_id == classCode.text)) {
-                              Fluttertoast.showToast(msg: 'Bạn không phải giảng viên của lớp với mã lớp ${classCode.text}');
-                            } else {
-                              Fluttertoast.showToast(msg: 'Không tồn tại lớp học với mã lớp ${classCode.text}');
+                            if (formKey.currentState?.validate() ?? false) {
+                              print(_listAllOpenClass.length);
+
+                              if (_listRegisterClass.any((value) => value.class_id == classCode.text)) {
+                                // TODO: chuyển sang page chỉnh sửa lớp học có xóa lớp học ở trong
+                                // _listRegisterClass.add(
+                                //     _listAllOpenClass.firstWhere((value) => value.class_id == classCode.text)
+                                // );
+                                // Fluttertoast.showToast(msg: 'Bạn đã thêm lớp với mã lớp: ${classCode.text} vào danh sách đăng ký lớp!');
+                              } else {
+                                Fluttertoast.showToast(msg: 'Bạn không phải giảng viên của lớp với mã lớp ${classCode.text}');
+                              }
+
+                              // setState(() {
+                              //   _listRegisterClassDataSource = RegisterClassDataSource(
+                              //     listRegisterClass: _listRegisterClass,
+                              //   );
+                              // });
+                              // print("đăng ký lơớp");
+                              // ref.read(signupProvider.notifier).signup(
+                              //     ho.text, ten.text, email.text, password.text, selectedRole);
                             }
                           },
                           child: const Center(child: Text("Tìm kiếm")),
@@ -176,15 +184,7 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                       selectionMode: SelectionMode.single,
                       onSelectionChanged: (List<DataGridRow> addedRows, List<DataGridRow> removedRows) {
                         selectRegister = _dataGridRegisterClassController.selectedRow!;
-                        print("select row: ${selectRegister.getCells().first.value}");
-                      },
-                      onCellDoubleTap: (_) {
-                        selectRegister = _dataGridRegisterClassController.selectedRow!;
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                            builder: (context) => InfoClassLecturer(data: selectRegister.getCells().first.value),
-                          ),
-                        );
+                        // TODO: mở 1 handle chứa thông tin chi tiết của class vừa chọn (mô phỏng edit-class + d/s sinh viên)
                       },
                       columns: [
                         GridColumn(
@@ -297,42 +297,44 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                       ]
                   ),
 
-                  const SizedBox(height: 0),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 32),
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () async {
+                              if (_listRegisterClass.isNotEmpty) {
                                 print("Tạo lớp học");
-                                print("select row: ${selectRegister.getCells().first.value}");
-                                // TODO: Tạo lớp học (chuyển page create-class)
+                                // TODO: Tạo lớp học (chuyển page)
                                 // List<String> classIds = [];
                                 // for (var classInfo in _listRegisterClass) {
                                 //   classIds.add(classInfo.class_id);
                                 // }
                                 // _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
-                                // setState(() {
-                                //   _listRegisterClassDataSource = RegisterClassDataSource(
-                                //     listRegisterClass: _listRegisterClass,
-                                //   );
-                                // });
-                                // Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
+                                setState(() {
+                                  _listRegisterClassDataSource = RegisterClassDataSource(
+                                    listRegisterClass: _listRegisterClass,
+                                  );
+                                });
+                                Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
+                              } else {
+                                Fluttertoast.showToast(msg: "Danh sách lớp trống. Vui lòng đăng ký lớp trước khi gửi đăng ký!");
+                              }
                             },
                             child: const Center(child: Text("Tạo lớp học")),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 32),
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () {
                               print("Chỉnh sửa");
-                              print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Chỉnh sửa lớp học(chuyển page edit-class)
+                              // TODO: Chỉnh sửa lớp học có xóa lớp ở trong (chuyển page)
                               // String message = "";
                               // for (int i = 0; i < selectRegister.length; i++) {
                               //   if (i != 0) {
@@ -346,219 +348,20 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 32),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     const SizedBox(width: 90),
-                  //     Expanded(
-                  //       child: Center(
-                  //         child: FilledButton(
-                  //           onPressed: () {
-                  //             print("Add sinh viên vào lớp học");
-                  //             // String message = "";
-                  //             // for (int i = 0; i < selectRegister.length; i++) {
-                  //             //   if (i != 0) {
-                  //             //     message = "$message, ";
-                  //             //   }
-                  //             //   message = message + selectRegister[i].getCells().first.value;
-                  //             // }
-                  //             // Fluttertoast.showToast(msg: "Chưa có api xóa lớp, danh sách lớp xóa: $message");
-                  //           },
-                  //           child: const Center(child: Text("Thêm sinh viên")),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     const SizedBox(width: 90),
-                  //   ],
-                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Center(
-                          child: FilledButton(
-                            onPressed: () async {
-                              print("Thêm sinh viên");
-                              // print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Done - Thêm sinh viên vào lớp học (Hộp thoại đồng ý or hủy)
-                              if (selectRegister.getCells().isNotEmpty) {
-                                showDialog<bool>(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                        title: const Text("Nhập MSSV"),
-                                        content: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text("Vui lòng nhập mã số sinh viên: "),
-                                              const SizedBox(height: 10),
-                                              TextInput(
-                                                controller: idStudent,
-                                                hintText: "Mã số sinh viên",
-                                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () => idStudent != "" ? _.pop(true) : Fluttertoast.showToast(msg: "Vui lòng nhập mã số sinh viên!"),
-                                              child: const Text("Xác nhận")),
-                                          TextButton(
-                                              onPressed: () => _.pop(false),
-                                              child: const Text("Hủy"))
-                                        ])
-                                ).then((value) async {
-                                  if (value == null) return;
-                                  if (value) {
-                                    AccountModel? acc = await ref.read(accountProvider.notifier).getUserInfo(idStudent.text);
-                                    print("acc: $acc");
-                                    if (acc != null) {
-                                      showDialog<bool>(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                              title: const Text("Xác nhận thêm sinh viên?"),
-                                              content: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text("Bạn có chắc chắn muốn thêm sinh viên sau vào lớp ${selectRegister.getCells().first.value} không?"),
-                                                    const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "MSSV: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: acc.idAccount,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                    const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "Tên: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: acc.name,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                    const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "Email: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: acc.email,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                  ],
-                                                ),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                    onPressed: () => _.pop(true),
-                                                    child: const Text("Xác nhận")),
-                                                TextButton(
-                                                    onPressed: () => _.pop(false),
-                                                    child: const Text("Hủy"))
-                                              ])
-                                      ).then((value) async {
-                                        if (value == null) return;
-                                        if (value) {
-                                          if (await ref.read(listClassRegisterNowProvider.notifier).deleteClass(selectRegister.getCells().first.value)) {
-                                            Fluttertoast.showToast(msg: "Thêm thành công sinh viên với mã sinh viên ${idStudent.text} vào lớp ${selectRegister.getCells().first.value}!");
-                                          } else {
-                                            Fluttertoast.showToast(msg: "Thêm sinh viên vào lớp thất bại!");
-                                          }
-                                        }
-
-                                      });
-                                    } else {
-                                      Fluttertoast.showToast(msg: "Không tìm thấy thông tin sinh viên với mã số sinh viên ${idStudent.text}!");
-                                    }
-                                  }
-                                });
-                              } else {
-                                Fluttertoast.showToast(msg: "Vui lòng chọn lớp để thực hiện chức năng này");
-                              }
-                            },
-                            child: const Center(child: Text("Thêm sinh viên")),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 90),
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () {
-                              print("Xóa lớp học");
-                              // print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Xóa lớp học (hộp thoại đồng ý or hủy)
-                              if (selectRegister.getCells().isNotEmpty) {
-                                showDialog<bool>(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                        title: Text("Xác nhận xóa lớp ${selectRegister.getCells().first.value}?"),
-                                        content: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Bạn có chắc chắn muốn xóa lớp ${selectRegister.getCells().first.value} không?"),
-                                              const SizedBox(height: 10),
-                                              Text.rich(TextSpan(children: [
-                                                TextSpan(text: " Lưu ý: ", style: TypeStyle.body4.copyWith(
-                                                      color: Theme.of(context).colorScheme.error)),
-                                                TextSpan(
-                                                    text: "Hành động xóa lớp không thể hoàn tác.",
-                                                    style: TypeStyle.body4.copyWith(
-                                                        color: Theme.of(context).colorScheme.error))
-                                              ])),
-                                            ],
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () => _.pop(true),
-                                              child: const Text("Xác nhận")),
-                                          TextButton(
-                                              onPressed: () => _.pop(false),
-                                              child: const Text("Hủy"))
-                                        ])
-                                ).then((value) async {
-                                  if (value == null) return;
-                                  if (value) {
-                                    if (await ref.read(listClassRegisterNowProvider.notifier).deleteClass(selectRegister.getCells().first.value)) {
-                                      Fluttertoast.showToast(msg: "Xóa lớp ${selectRegister.getCells().first.value} thành công!");
-                                    } else {
-                                      Fluttertoast.showToast(msg: "Xóa lớp ${selectRegister.getCells().first.value} thất bại!");
-                                    }
-                                  }
-                                });
-                              } else {
-                                Fluttertoast.showToast(msg: "Vui lòng chọn lớp để thực hiện chức năng này");
-                              }
-
-
-                              // List<String> classIds = [];
-                              // for (var classInfo in _listRegisterClass) {
-                              //   classIds.add(classInfo.class_id);
-                              // }
-                              // _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
-                              // setState(() {
-                              //   _listRegisterClassDataSource = RegisterClassDataSource(
-                              //     listRegisterClass: _listRegisterClass,
-                              //   );
-                              // });
-                              // Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
-
-
+                              print("Add sinh viên vào lớp học");
+                              // TODO: Add sinh viên vào lớp học
                               // String message = "";
                               // for (int i = 0; i < selectRegister.length; i++) {
                               //   if (i != 0) {
@@ -568,11 +371,11 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                               // }
                               // Fluttertoast.showToast(msg: "Chưa có api xóa lớp, danh sách lớp xóa: $message");
                             },
-                            child: const Center(child: Text("Xóa lớp học")),
+                            child: const Center(child: Text("Thêm sinh viên vào lớp")),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 90),
                     ],
                   ),
                   const SizedBox(height: 30),
