@@ -24,9 +24,9 @@ mixin _$ClassInfoModel {
   String get class_name => throw _privateConstructorUsedError;
   String? get attached_code => throw _privateConstructorUsedError;
   String get class_type => throw _privateConstructorUsedError;
-  String get lecturer_name => throw _privateConstructorUsedError;
+  String? get lecturer_name => throw _privateConstructorUsedError;
   String get lecturer_account_id => throw _privateConstructorUsedError;
-  String get student_count => throw _privateConstructorUsedError;
+  String? get student_count => throw _privateConstructorUsedError;
   String get start_date => throw _privateConstructorUsedError;
   String get end_date => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
@@ -56,9 +56,9 @@ abstract class $ClassInfoModelCopyWith<$Res> {
       String class_name,
       String? attached_code,
       String class_type,
-      String lecturer_name,
+      String? lecturer_name,
       String lecturer_account_id,
-      String student_count,
+      String? student_count,
       String start_date,
       String end_date,
       String status,
@@ -86,9 +86,9 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
     Object? class_name = null,
     Object? attached_code = freezed,
     Object? class_type = null,
-    Object? lecturer_name = null,
+    Object? lecturer_name = freezed,
     Object? lecturer_account_id = null,
-    Object? student_count = null,
+    Object? student_count = freezed,
     Object? start_date = null,
     Object? end_date = null,
     Object? status = null,
@@ -113,18 +113,18 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
           ? _value.class_type
           : class_type // ignore: cast_nullable_to_non_nullable
               as String,
-      lecturer_name: null == lecturer_name
+      lecturer_name: freezed == lecturer_name
           ? _value.lecturer_name
           : lecturer_name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       lecturer_account_id: null == lecturer_account_id
           ? _value.lecturer_account_id
           : lecturer_account_id // ignore: cast_nullable_to_non_nullable
               as String,
-      student_count: null == student_count
+      student_count: freezed == student_count
           ? _value.student_count
           : student_count // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       start_date: null == start_date
           ? _value.start_date
           : start_date // ignore: cast_nullable_to_non_nullable
@@ -166,9 +166,9 @@ abstract class _$$ClassInfoModelImplCopyWith<$Res>
       String class_name,
       String? attached_code,
       String class_type,
-      String lecturer_name,
+      String? lecturer_name,
       String lecturer_account_id,
-      String student_count,
+      String? student_count,
       String start_date,
       String end_date,
       String status,
@@ -194,9 +194,9 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
     Object? class_name = null,
     Object? attached_code = freezed,
     Object? class_type = null,
-    Object? lecturer_name = null,
+    Object? lecturer_name = freezed,
     Object? lecturer_account_id = null,
-    Object? student_count = null,
+    Object? student_count = freezed,
     Object? start_date = null,
     Object? end_date = null,
     Object? status = null,
@@ -221,18 +221,18 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
           ? _value.class_type
           : class_type // ignore: cast_nullable_to_non_nullable
               as String,
-      lecturer_name: null == lecturer_name
+      lecturer_name: freezed == lecturer_name
           ? _value.lecturer_name
           : lecturer_name // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       lecturer_account_id: null == lecturer_account_id
           ? _value.lecturer_account_id
           : lecturer_account_id // ignore: cast_nullable_to_non_nullable
               as String,
-      student_count: null == student_count
+      student_count: freezed == student_count
           ? _value.student_count
           : student_count // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       start_date: null == start_date
           ? _value.start_date
           : start_date // ignore: cast_nullable_to_non_nullable
@@ -270,9 +270,9 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
       required this.class_name,
       this.attached_code,
       required this.class_type,
-      required this.lecturer_name,
+      this.lecturer_name,
       required this.lecturer_account_id,
-      required this.student_count,
+      this.student_count,
       required this.start_date,
       required this.end_date,
       required this.status,
@@ -293,11 +293,11 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
   @override
   final String class_type;
   @override
-  final String lecturer_name;
+  final String? lecturer_name;
   @override
   final String lecturer_account_id;
   @override
-  final String student_count;
+  final String? student_count;
   @override
   final String start_date;
   @override
@@ -397,9 +397,9 @@ abstract class _ClassInfoModel implements ClassInfoModel {
           required final String class_name,
           final String? attached_code,
           required final String class_type,
-          required final String lecturer_name,
+          final String? lecturer_name,
           required final String lecturer_account_id,
-          required final String student_count,
+          final String? student_count,
           required final String start_date,
           required final String end_date,
           required final String status,
@@ -420,11 +420,11 @@ abstract class _ClassInfoModel implements ClassInfoModel {
   @override
   String get class_type;
   @override
-  String get lecturer_name;
+  String? get lecturer_name;
   @override
   String get lecturer_account_id;
   @override
-  String get student_count;
+  String? get student_count;
   @override
   String get start_date;
   @override

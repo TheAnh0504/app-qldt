@@ -2,6 +2,7 @@
 
 import 'package:app_qldt/controller/account_provider.dart';
 import 'package:app_qldt/controller/list_class_provider.dart';
+import 'package:app_qldt/view/pages/register_class/create_class.dart';
 import 'package:app_qldt/view/pages/register_class/info_class.dart';
 import 'package:app_qldt/view/pages/register_class/register_class_page_home.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,29 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
     super.initState();
   }
 
+  Future<void> _refreshData() async {
+    print('check12222221111');
+    // ref.invalidate(listClassRegisterNowProvider);
+    // ref.invalidate(listClassAllProvider);
+    // ref.invalidate(listClassProvider);
+    await ref.read(listClassAllProvider.notifier).getListClassInfo();
+    await ref.read(listClassProvider.notifier).getListClassInfo();
+    await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+
+    // _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
+    // _listOpenClass = ref.read(listClassProvider).value!;
+    // _listAllOpenClass = ref.read(listClassAllProvider).value!;
+    // setState(() {
+    //   _listRegisterClassDataSource = RegisterClassDataSource(
+    //     listRegisterClass: _listRegisterClass,
+    //   );
+    //   _listOpenClassDataSource = RegisterClassDataSource(
+    //     listRegisterClass: _listOpenClass,
+    //   );
+    // });
+    // context.go(feedRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
     // all class open
@@ -70,9 +94,6 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
 
     // list class register now
     _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
-    // for (var classInfo in listClass) {
-    //   _listRegisterClass.add(classInfo.copyWith(status_register: "SUCCESS"));
-    // }
     _listRegisterClassDataSource = RegisterClassDataSource(
       listRegisterClass: _listRegisterClass,
     );
@@ -313,20 +334,42 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                         child: Center(
                           child: FilledButton(
                             onPressed: () async {
-                                print("Tạo lớp học");
-                                print("select row: ${selectRegister.getCells().first.value}");
-                                // TODO: Tạo lớp học (chuyển page create-class)
-                                // List<String> classIds = [];
-                                // for (var classInfo in _listRegisterClass) {
-                                //   classIds.add(classInfo.class_id);
-                                // }
-                                // _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
-                                // setState(() {
-                                //   _listRegisterClassDataSource = RegisterClassDataSource(
-                                //     listRegisterClass: _listRegisterClass,
-                                //   );
-                                // });
-                                // Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
+                              print("Tạo lớp học");
+                              // print("select row: ${selectRegister.getCells().first.value}");
+                              // TODO: Tạo lớp học (chuyển page create-class)
+                              // ref.invalidate(listClassRegisterNowProvider);
+                              await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                              // _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
+                              // setState(() {
+                              //   _listRegisterClassDataSource = RegisterClassDataSource(
+                              //     listRegisterClass: _listRegisterClass,
+                              //   );
+                              // });
+
+                              // push chỉ có 1 page này thôi: xóa các page giống cũ
+                              // Navigator.of(context, rootNavigator: true).pushReplacement(
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const ClassManagerLecturer(),
+                              //   ),
+                              // );
+
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const CreateClass(),
+                                ),
+                              );
+
+                              // List<String> classIds = [];
+                              // for (var classInfo in _listRegisterClass) {
+                              //   classIds.add(classInfo.class_id);
+                              // }
+                              // _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
+                              // setState(() {
+                              //   _listRegisterClassDataSource = RegisterClassDataSource(
+                              //     listRegisterClass: _listRegisterClass,
+                              //   );
+                              // });
+                              // Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
                             },
                             child: const Center(child: Text("Tạo lớp học")),
                           ),

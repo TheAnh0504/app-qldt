@@ -298,17 +298,17 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          // if (ref.read(listClassAllProvider).value == null) {
+                          if (ref.read(listClassAllProvider).value == null) {
                             await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          // }
-                          // if (ref.read(listClassProvider).value == null) {
+                          }
+                          if (ref.read(listClassProvider).value == null) {
                             await ref.read(listClassProvider.notifier).getListClassInfo();
-                          // } else {
-                          //   ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
-                          // }
-                          // if (ref.read(listClassRegisterNowProvider).value == null) {
+                          } else {
+                            ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
+                          }
+                          if (ref.read(listClassRegisterNowProvider).value == null) {
                             await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
-                          // }
+                          }
                           // Xử lý khi click vào ô vuông 1
                           if (ref.read(checkExpiredToken).value != null) {
                             Navigator.of(context, rootNavigator: true).push(
@@ -358,17 +358,17 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          // if (ref.read(listClassAllProvider).value == null) {
+                          if (ref.read(listClassAllProvider).value == null) {
                             await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          // }
-                          // if (ref.read(listClassProvider).value == null) {
+                          }
+                          if (ref.read(listClassProvider).value == null) {
                             await ref.read(listClassProvider.notifier).getListClassInfo();
-                          // } else {
-                          //   ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
-                          // }
-                          // if (ref.read(listClassRegisterNowProvider).value == null) {
+                          } else {
+                            ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
+                          }
+                          if (ref.read(listClassRegisterNowProvider).value == null) {
                             await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
-                          // }
+                          }
                           // Xử lý khi click vào ô vuông 1
                           if (ref.read(checkExpiredToken).value != null) {
                             Navigator.of(context, rootNavigator: true).push(
