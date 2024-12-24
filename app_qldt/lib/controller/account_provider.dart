@@ -178,6 +178,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
         ref.invalidate(listClassRegisterNowProvider);
         ref.invalidate(listClassProvider);
         ref.invalidate(listClassAllProvider);
+        ref.invalidate(infoClassDataProvider);
         ref.invalidateSelf();
       });
     }

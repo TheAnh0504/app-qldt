@@ -16,7 +16,9 @@ class ClassInfoModel with _$ClassInfoModel {
         required String start_date,
         required String end_date,
         required String status,
-        String? status_register
+        String? status_register,
+        String? max_student_amount,
+        List<Map<String, dynamic>>? student_accounts
       }) = _ClassInfoModel;
 
   factory ClassInfoModel.fromJson(Map<String, dynamic> json) =>

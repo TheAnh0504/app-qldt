@@ -34,7 +34,7 @@ class SWApi {
 
         // bắt error access-token expired
         try {
-          if (res.data["data"] == null && res.data["code"] == null) {
+          if (res.data["meta"]["code"].toString() == "9998") {
             print("check 345");
             ref.read(checkExpiredToken.notifier).forward(const AsyncValue.data(null));
             var repo = (await ref.read(authRepositoryProvider.future));
@@ -805,6 +805,15 @@ class SWApi {
             "page": "0",
             "page_size": "2000"
           }
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getClassInfo(String classId) async {
+    return dio.post("/it5023e/get_class_info",
+      data: {
+        "token": await accessToken,
+        "class_id": classId
       },
     ).then((value) => value.data);
   }

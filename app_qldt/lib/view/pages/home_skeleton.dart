@@ -177,8 +177,17 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
             onDestinationSelected: (value) => context.go(
                 [feedRoute, messagingRoute, profileRoute, settingsRoute][value]),
             destinations: [
-              const NavigationDestination(
-                  icon: FaIcon(FaIcons.house), label: "Trang chủ"),
+              NavigationDestination(
+                icon: Badge(
+                  label: Text(
+                    countNotification < 10 ? countNotification.toString() : "9+", // Giá trị số
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
+                  ),
+                  isLabelVisible: countNotification > 0,
+                  child: FaIcon(FaIcons.house)
+                ),
+                label: "Trang chủ"
+              ),
               NavigationDestination(
                 icon: Badge(
                   // Hiển thị số tin nhắn chưa đọc
@@ -194,10 +203,8 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
               const NavigationDestination(
                   icon: FaIcon(FaIcons.solidCircleUser), label: "Hồ sơ"),
               const NavigationDestination(
-                  icon: Badge(
-                      isLabelVisible: true,
-                      child: FaIcon(FaIcons.gear)),
-                  label: "Cài đặt")
+                icon: FaIcon(FaIcons.gear),
+                label: "Cài đặt")
             ],
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected),
       ),

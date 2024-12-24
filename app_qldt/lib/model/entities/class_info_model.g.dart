@@ -19,6 +19,9 @@ _$ClassInfoModelImpl _$$ClassInfoModelImplFromJson(Map<String, dynamic> json) =>
       end_date: json['end_date'] as String,
       status: json['status'] as String,
       status_register: json['status_register'] as String?,
+      student_accounts: (json['student_accounts'] as List<dynamic>?)
+          ?.map((e) => e as Map<String, dynamic>)
+          .toList(),
     );
 
 Map<String, dynamic> _$$ClassInfoModelImplToJson(
@@ -35,4 +38,5 @@ Map<String, dynamic> _$$ClassInfoModelImplToJson(
       'end_date': instance.end_date,
       'status': instance.status,
       'status_register': instance.status_register,
+      'student_accounts': instance.student_accounts,
     };

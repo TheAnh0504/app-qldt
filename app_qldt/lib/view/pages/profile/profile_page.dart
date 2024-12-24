@@ -13,45 +13,59 @@ import "package:app_qldt/core/theme/palette.dart";
 import "package:app_qldt/core/theme/typestyle.dart";
 import "package:app_qldt/model/entities/user_model.dart";
 import "package:app_qldt/controller/user_provider.dart";
+import "package:syncfusion_flutter_datagrid/datagrid.dart";
 import "package:url_launcher/url_launcher.dart";
 
 import "../../../controller/list_class_provider.dart";
 import "../../../model/entities/class_info_model.dart";
+import "../register_class/info_class.dart";
+import "../register_class/register_class_page_home.dart";
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: _BuildBody());
-  }
+  ConsumerState<ProfilePage> createState() => _BuildBody();
 }
 
-class _BuildBody extends ConsumerWidget {
-  const _BuildBody();
+class _BuildBody extends ConsumerState<ProfilePage> {
+  DataGridRow selectRegister = const DataGridRow(cells: []);
+  List<ClassInfoModel> listRegisterClass = <ClassInfoModel>[];
+  RegisterClassDataSource listRegisterClassDataSource = RegisterClassDataSource(listRegisterClass: []);
+  DataGridController dataGridRegisterClassController = DataGridController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ref.invalidate(listClassRegisterNowProvider);
+    listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
+    listRegisterClassDataSource = RegisterClassDataSource(
+      listRegisterClass: listRegisterClass,
+    );
     return ref.watch(accountProvider).when(
         skipLoadingOnRefresh: false,
         data: (data) {
-          final idAccount = data?.idAccount;
-          var ho = data?.ho;
-          var ten = data?.ten;
           final name = data?.name;
-          final email = data?.email;
           final role = data?.role;
-          final status = data?.status;
           var avatar = data?.avatar != ""
               ? 'https://drive.google.com/uc?id=${data?.avatar.split('/d/')[1].split('/')[0]}'
               : null;
           var linkAvatarHust = 'https://drive.google.com/file/d/1RD5P0nSyYtL8DcSbaUDb7iBWUgK7MBEC/view?usp=sharing';
           var avatarHust = 'https://drive.google.com/uc?id=${linkAvatarHust.split('/d/')[1].split('/')[0]}';
-          final List<ClassInfoModel>? classList = ref.read(listClassRegisterNowProvider).value!;
-          print("list class: $classList");
           return RefreshIndicator(
             onRefresh: () async {
+              // ref.invalidate(listClassRegisterNowProvider);
               await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+              listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
+              setState(() {
+                listRegisterClassDataSource = RegisterClassDataSource(
+                  listRegisterClass: listRegisterClass,
+                );
+              });
             },
             child: CustomScrollView(
               slivers: [
@@ -148,6 +162,152 @@ class _BuildBody extends ConsumerWidget {
                     children: [
                        // Text("Tìm kiếm gần đây", style: TypeStyle.title3)
                       //TODO: table- list class: click -> info class
+                      // const SizedBox(height: 32),
+                      // if (listRegisterClassDataSource.dataGridRows.isNotEmpty) const SizedBox(height: 12),
+                      if (listRegisterClassDataSource.dataGridRows.isNotEmpty) Text(
+                          role == "LECTURER" ? 'Danh sách lớp giảng dạy' : 'Danh sách lớp học',
+                          style: TypeStyle.body3.copyWith(color: Palette.red100)
+                      ),
+                      if (listRegisterClassDataSource.dataGridRows.isNotEmpty) const SizedBox(height: 12),
+                      if (listRegisterClassDataSource.dataGridRows.isEmpty)
+                        Text(
+                            role == "LECTURER" ? 'Bạn chưa giảng dạy lớp nào!' : 'Bạn chưa đăng ký lớp học nào',
+                            style: TypeStyle.body3.copyWith(color: Palette.red100)
+                        ),
+                      if (listRegisterClassDataSource.dataGridRows.isEmpty) const SizedBox(height: 12),
+                      SfDataGrid(
+                          source: listRegisterClassDataSource,
+                          controller: dataGridRegisterClassController,
+                          showCheckboxColumn: true,
+                          checkboxColumnSettings: const DataGridCheckboxColumnSettings(
+                              label: Text(''), width: 50),
+                          selectionMode: SelectionMode.single,
+                          onSelectionChanged: (List<DataGridRow> addedRows, List<DataGridRow> removedRows) {
+                            selectRegister = dataGridRegisterClassController.selectedRow!;
+                            print("select row: ${selectRegister.getCells().first.value}");
+                          },
+                          onCellDoubleTap: (_) async {
+                            selectRegister = dataGridRegisterClassController.selectedRow!;
+                            // TODO: Done - home-page of class-info
+                            await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            if (ref.read(infoClassDataProvider).value != null) {
+                              Navigator.of(context, rootNavigator: true).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const InfoClassLecturer(),
+                                ),
+                              );
+                            }
+                          },
+                          columns: [
+                            GridColumn(
+                              columnName: 'class_id',
+                              width: 100,
+                              label: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text(
+                                    'Mã lớp',
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
+                            ),
+                            GridColumn(
+                                columnName: 'class_name',
+                                width: 200,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      'Tên lớp',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'attached_code',
+                                width: 110,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      'Mã lớp kèm',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'class_type',
+                                width: 90,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Loại lớp',
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                )
+                            ),
+                            GridColumn(
+                                columnName: 'lecturer_name',
+                                width: 200,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      'Tên giảng viên',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'student_count',
+                                width: 170,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Số sinh viên đăng ký',
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                )
+                            ),
+                            GridColumn(
+                                columnName: 'start_date',
+                                width: 120,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Ngày bắt đầu',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'end_date',
+                                width: 120,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Ngày kết thúc',
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                )
+                            ),
+                            GridColumn(
+                                columnName: 'status',
+                                width: 120,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Trạng thái lớp',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                            GridColumn(
+                                columnName: 'status_register',
+                                width: 0,
+                                label: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Trạng thái đăng ký',
+                                      overflow: TextOverflow.ellipsis,
+                                    ))),
+                          ]
+                      ),
                     ],
                   )
                 )),
@@ -216,7 +376,7 @@ class _BuildBody extends ConsumerWidget {
                                         .primary))),
                       ),
                       ListTile(
-                          title: const Text("MSSV", style: TypeStyle.body4),
+                          title: Text(account.role == "STUDENT" ? "MSSV" : "Mã giảng viên", style: TypeStyle.body4),
                           subtitle: Text(account.idAccount,
                               style: TypeStyle.body3.copyWith(
                                   color:

@@ -31,6 +31,8 @@ mixin _$ClassInfoModel {
   String get end_date => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   String? get status_register => throw _privateConstructorUsedError;
+  List<Map<String, dynamic>>? get student_accounts =>
+      throw _privateConstructorUsedError;
 
   /// Serializes this ClassInfoModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -59,7 +61,8 @@ abstract class $ClassInfoModelCopyWith<$Res> {
       String start_date,
       String end_date,
       String status,
-      String? status_register});
+      String? status_register,
+      List<Map<String, dynamic>>? student_accounts});
 }
 
 /// @nodoc
@@ -88,6 +91,7 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
     Object? end_date = null,
     Object? status = null,
     Object? status_register = freezed,
+    Object? student_accounts = freezed,
   }) {
     return _then(_value.copyWith(
       class_id: null == class_id
@@ -134,6 +138,10 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
           ? _value.status_register
           : status_register // ignore: cast_nullable_to_non_nullable
               as String?,
+      student_accounts: freezed == student_accounts
+          ? _value.student_accounts
+          : student_accounts // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>?,
     ) as $Val);
   }
 }
@@ -157,7 +165,8 @@ abstract class _$$ClassInfoModelImplCopyWith<$Res>
       String start_date,
       String end_date,
       String status,
-      String? status_register});
+      String? status_register,
+      List<Map<String, dynamic>>? student_accounts});
 }
 
 /// @nodoc
@@ -184,6 +193,7 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
     Object? end_date = null,
     Object? status = null,
     Object? status_register = freezed,
+    Object? student_accounts = freezed,
   }) {
     return _then(_$ClassInfoModelImpl(
       class_id: null == class_id
@@ -230,6 +240,10 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
           ? _value.status_register
           : status_register // ignore: cast_nullable_to_non_nullable
               as String?,
+      student_accounts: freezed == student_accounts
+          ? _value._student_accounts
+          : student_accounts // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>?,
     ));
   }
 }
@@ -249,7 +263,9 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
       required this.start_date,
       required this.end_date,
       required this.status,
-      this.status_register});
+      this.status_register,
+      final List<Map<String, dynamic>>? student_accounts})
+      : _student_accounts = student_accounts;
 
   factory _$ClassInfoModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ClassInfoModelImplFromJson(json);
@@ -276,10 +292,20 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
   final String status;
   @override
   final String? status_register;
+  final List<Map<String, dynamic>>? _student_accounts;
+  @override
+  List<Map<String, dynamic>>? get student_accounts {
+    final value = _student_accounts;
+    if (value == null) return null;
+    if (_student_accounts is EqualUnmodifiableListView)
+      return _student_accounts;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'ClassInfoModel(class_id: $class_id, class_name: $class_name, attached_code: $attached_code, class_type: $class_type, lecturer_name: $lecturer_name, lecturer_account_id: $lecturer_account_id, student_count: $student_count, start_date: $start_date, end_date: $end_date, status: $status, status_register: $status_register)';
+    return 'ClassInfoModel(class_id: $class_id, class_name: $class_name, attached_code: $attached_code, class_type: $class_type, lecturer_name: $lecturer_name, lecturer_account_id: $lecturer_account_id, student_count: $student_count, start_date: $start_date, end_date: $end_date, status: $status, status_register: $status_register, student_accounts: $student_accounts)';
   }
 
   @override
@@ -307,7 +333,9 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
                 other.end_date == end_date) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.status_register, status_register) ||
-                other.status_register == status_register));
+                other.status_register == status_register) &&
+            const DeepCollectionEquality()
+                .equals(other._student_accounts, _student_accounts));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -324,7 +352,8 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
       start_date,
       end_date,
       status,
-      status_register);
+      status_register,
+      const DeepCollectionEquality().hash(_student_accounts));
 
   /// Create a copy of ClassInfoModel
   /// with the given fields replaced by the non-null parameter values.
@@ -345,17 +374,19 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
 
 abstract class _ClassInfoModel implements ClassInfoModel {
   const factory _ClassInfoModel(
-      {required final String class_id,
-      required final String class_name,
-      final String? attached_code,
-      required final String class_type,
-      required final String lecturer_name,
-      required final String lecturer_account_id,
-      required final String student_count,
-      required final String start_date,
-      required final String end_date,
-      required final String status,
-      final String? status_register}) = _$ClassInfoModelImpl;
+          {required final String class_id,
+          required final String class_name,
+          final String? attached_code,
+          required final String class_type,
+          required final String lecturer_name,
+          required final String lecturer_account_id,
+          required final String student_count,
+          required final String start_date,
+          required final String end_date,
+          required final String status,
+          final String? status_register,
+          final List<Map<String, dynamic>>? student_accounts}) =
+      _$ClassInfoModelImpl;
 
   factory _ClassInfoModel.fromJson(Map<String, dynamic> json) =
       _$ClassInfoModelImpl.fromJson;
@@ -382,6 +413,8 @@ abstract class _ClassInfoModel implements ClassInfoModel {
   String get status;
   @override
   String? get status_register;
+  @override
+  List<Map<String, dynamic>>? get student_accounts;
 
   /// Create a copy of ClassInfoModel
   /// with the given fields replaced by the non-null parameter values.

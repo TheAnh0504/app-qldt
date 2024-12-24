@@ -47,6 +47,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         Future.microtask(() => ref
             .read(accountProvider.notifier)
             .forward(AsyncData(pref.getCurrentAccount())));
+        await ref.read(listClassProvider.notifier).getListClassInfo();
+        await ref.read(listClassAllProvider.notifier).getListClassInfo();
+        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         return context.go(feedRoute);
       } else {
         print("222");
@@ -73,6 +76,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       ref.invalidate(listClassRegisterNowProvider);
       ref.invalidate(listClassProvider);
       ref.invalidate(listClassAllProvider);
+      ref.invalidate(infoClassDataProvider);
     });
     var accounts = await ref.read(savedAccountProvider.future);
     if (accounts.isEmpty && mounted) return context.go(loginRoute);

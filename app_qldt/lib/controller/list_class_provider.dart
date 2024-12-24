@@ -157,3 +157,30 @@ class AsyncClassInfoAllNotifier extends AsyncNotifier<List<ClassInfoModel>?> {
     }
   }
 }
+
+final infoClassDataProvider =
+AsyncNotifierProvider<AsyncInfoClassNotifier, ClassInfoModel?>(AsyncInfoClassNotifier.new);
+class AsyncInfoClassNotifier extends AsyncNotifier<ClassInfoModel?> {
+  @override
+  Future<ClassInfoModel?> build() async {
+    return null;
+  }
+
+  void forward(AsyncValue<ClassInfoModel?> value) => state = value;
+
+  Future<ClassInfoModel?> getClassInfo(String classId) async {
+    state = const AsyncValue.loading();
+    try {
+      ClassInfoModel? res;
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      state = await authRepository.api.getClassInfo(classId).then((value) {
+        res = value;
+        return AsyncData(value);
+      });
+      return res;
+    } on Map<String, dynamic> catch (map) {
+      state = AsyncError(errorMap[map["code"]].toString(), StackTrace.current);
+      return null;
+    }
+  }
+}

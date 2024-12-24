@@ -213,6 +213,15 @@ class AuthApiRepository {
     });
   }
 
+  Future<ClassInfoModel> getClassInfo(String classId) {
+    return api.getClassInfo(classId).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return ClassInfoModel.fromJson((value["data"] as Map<String, dynamic>));
+      }
+      throw value;
+    });
+  }
+
   Future<List<ClassInfoModel>> getListClassInfoBy(String? classId, String? className, String? status, String? classType) {
     return api.getListClassInfoBy(classId, className, status, classType).then((value) async {
       if (value["meta"]["code"] == "1000") {
