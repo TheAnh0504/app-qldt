@@ -818,6 +818,15 @@ class SWApi {
     ).then((value) => value.data);
   }
 
+  Future<Map<String, dynamic>> getClassBasicInfo(String classId) async {
+    return dio.post("/it5023e/get_basic_class_info",
+      data: {
+        "token": await accessToken,
+        "class_id": classId
+      },
+    ).then((value) => value.data);
+  }
+
   Future<Map<String, dynamic>> getRegisterClassNow() async {
     return dio.post("/it5023e/get_class_list",
       data: {

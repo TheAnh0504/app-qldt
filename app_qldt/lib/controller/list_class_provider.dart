@@ -172,9 +172,13 @@ class AsyncInfoClassNotifier extends AsyncNotifier<ClassInfoModel?> {
     state = const AsyncValue.loading();
     try {
       ClassInfoModel? res;
+      String? max_student_amount;
       var authRepository = (await ref.read(authRepositoryProvider.future));
+      await authRepository.api.getClassBasicInfo(classId).then((value) {
+        max_student_amount = value.max_student_amount;
+      });
       state = await authRepository.api.getClassInfo(classId).then((value) {
-        res = value;
+        res = value.copyWith(max_student_amount: max_student_amount);
         return AsyncData(value);
       });
       return res;

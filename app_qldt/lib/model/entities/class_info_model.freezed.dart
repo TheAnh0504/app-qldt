@@ -31,6 +31,7 @@ mixin _$ClassInfoModel {
   String get end_date => throw _privateConstructorUsedError;
   String get status => throw _privateConstructorUsedError;
   String? get status_register => throw _privateConstructorUsedError;
+  String? get max_student_amount => throw _privateConstructorUsedError;
   List<Map<String, dynamic>>? get student_accounts =>
       throw _privateConstructorUsedError;
 
@@ -62,6 +63,7 @@ abstract class $ClassInfoModelCopyWith<$Res> {
       String end_date,
       String status,
       String? status_register,
+      String? max_student_amount,
       List<Map<String, dynamic>>? student_accounts});
 }
 
@@ -91,6 +93,7 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
     Object? end_date = null,
     Object? status = null,
     Object? status_register = freezed,
+    Object? max_student_amount = freezed,
     Object? student_accounts = freezed,
   }) {
     return _then(_value.copyWith(
@@ -138,6 +141,10 @@ class _$ClassInfoModelCopyWithImpl<$Res, $Val extends ClassInfoModel>
           ? _value.status_register
           : status_register // ignore: cast_nullable_to_non_nullable
               as String?,
+      max_student_amount: freezed == max_student_amount
+          ? _value.max_student_amount
+          : max_student_amount // ignore: cast_nullable_to_non_nullable
+              as String?,
       student_accounts: freezed == student_accounts
           ? _value.student_accounts
           : student_accounts // ignore: cast_nullable_to_non_nullable
@@ -166,6 +173,7 @@ abstract class _$$ClassInfoModelImplCopyWith<$Res>
       String end_date,
       String status,
       String? status_register,
+      String? max_student_amount,
       List<Map<String, dynamic>>? student_accounts});
 }
 
@@ -193,6 +201,7 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
     Object? end_date = null,
     Object? status = null,
     Object? status_register = freezed,
+    Object? max_student_amount = freezed,
     Object? student_accounts = freezed,
   }) {
     return _then(_$ClassInfoModelImpl(
@@ -240,6 +249,10 @@ class __$$ClassInfoModelImplCopyWithImpl<$Res>
           ? _value.status_register
           : status_register // ignore: cast_nullable_to_non_nullable
               as String?,
+      max_student_amount: freezed == max_student_amount
+          ? _value.max_student_amount
+          : max_student_amount // ignore: cast_nullable_to_non_nullable
+              as String?,
       student_accounts: freezed == student_accounts
           ? _value._student_accounts
           : student_accounts // ignore: cast_nullable_to_non_nullable
@@ -264,6 +277,7 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
       required this.end_date,
       required this.status,
       this.status_register,
+      this.max_student_amount,
       final List<Map<String, dynamic>>? student_accounts})
       : _student_accounts = student_accounts;
 
@@ -292,6 +306,8 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
   final String status;
   @override
   final String? status_register;
+  @override
+  final String? max_student_amount;
   final List<Map<String, dynamic>>? _student_accounts;
   @override
   List<Map<String, dynamic>>? get student_accounts {
@@ -305,7 +321,7 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
 
   @override
   String toString() {
-    return 'ClassInfoModel(class_id: $class_id, class_name: $class_name, attached_code: $attached_code, class_type: $class_type, lecturer_name: $lecturer_name, lecturer_account_id: $lecturer_account_id, student_count: $student_count, start_date: $start_date, end_date: $end_date, status: $status, status_register: $status_register, student_accounts: $student_accounts)';
+    return 'ClassInfoModel(class_id: $class_id, class_name: $class_name, attached_code: $attached_code, class_type: $class_type, lecturer_name: $lecturer_name, lecturer_account_id: $lecturer_account_id, student_count: $student_count, start_date: $start_date, end_date: $end_date, status: $status, status_register: $status_register, max_student_amount: $max_student_amount, student_accounts: $student_accounts)';
   }
 
   @override
@@ -334,6 +350,8 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.status_register, status_register) ||
                 other.status_register == status_register) &&
+            (identical(other.max_student_amount, max_student_amount) ||
+                other.max_student_amount == max_student_amount) &&
             const DeepCollectionEquality()
                 .equals(other._student_accounts, _student_accounts));
   }
@@ -353,6 +371,7 @@ class _$ClassInfoModelImpl implements _ClassInfoModel {
       end_date,
       status,
       status_register,
+      max_student_amount,
       const DeepCollectionEquality().hash(_student_accounts));
 
   /// Create a copy of ClassInfoModel
@@ -385,6 +404,7 @@ abstract class _ClassInfoModel implements ClassInfoModel {
           required final String end_date,
           required final String status,
           final String? status_register,
+          final String? max_student_amount,
           final List<Map<String, dynamic>>? student_accounts}) =
       _$ClassInfoModelImpl;
 
@@ -413,6 +433,8 @@ abstract class _ClassInfoModel implements ClassInfoModel {
   String get status;
   @override
   String? get status_register;
+  @override
+  String? get max_student_amount;
   @override
   List<Map<String, dynamic>>? get student_accounts;
 

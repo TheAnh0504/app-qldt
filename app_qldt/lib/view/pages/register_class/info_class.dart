@@ -227,7 +227,7 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                         child: Text.rich(TextSpan(children: [
                           const TextSpan(text: "Số sinh viên: ", style: TypeStyle.body4),
                           TextSpan(
-                              text: data.student_count,
+                              text: '${data.student_count}/${data.max_student_amount}',
                               style: TypeStyle.body4.copyWith(
                                   color: Theme.of(context).colorScheme.error))
                         ])),
