@@ -23,20 +23,21 @@ import '../../../model/entities/account_model.dart';
 import '../../../model/entities/class_info_model.dart';
 import 'class_manager_lecturer.dart';
 
-class CreateClass extends ConsumerStatefulWidget {
-  const CreateClass({super.key});
+class EditClass extends ConsumerStatefulWidget {
+  const EditClass({super.key});
 
   @override
-  ConsumerState<CreateClass> createState() => _CreateClass();
+  ConsumerState<EditClass> createState() => _EditClass();
 }
 
-class _CreateClass extends ConsumerState<CreateClass> {
-  final classId = TextEditingController();
-  final className = TextEditingController();
-  String classType = "LT";
-  final TextEditingController startDate = TextEditingController();
-  final TextEditingController endDate = TextEditingController();
-  final maxStudentAmount = TextEditingController();
+class _EditClass extends ConsumerState<EditClass> {
+  TextEditingController classId = TextEditingController();
+  TextEditingController className = TextEditingController();
+  String classType = "";
+  String classStatus = "";
+  TextEditingController startDate = TextEditingController();
+  TextEditingController endDate = TextEditingController();
+  TextEditingController maxStudentAmount = TextEditingController();
   // final attachedCode = TextEditingController();
 
   Future<void> _selectDate(BuildContext context, String type) async {
@@ -60,21 +61,36 @@ class _CreateClass extends ConsumerState<CreateClass> {
   }
 
   final formKey = GlobalKey<FormState>();
+  late ClassInfoModel data;
 
   @override
   void initState() {
     super.initState();
+    data = ref.read(infoClassDataProvider).value!;
+    classId.text = data.class_id;
+    className.text = data.class_name;
+    classType = data.class_type;
+    startDate.text = data.start_date;
+    endDate.text = data.end_date;
+    maxStudentAmount.text = data.max_student_amount!;
+    classStatus = data.status;
   }
 
   @override
   Widget build(BuildContext context) {
-
+    // data = ref.read(infoClassDataProvider).value!;
+    // classId = TextEditingController(text: widget.data.getCells().firstWhere((cell) => cell.columnName == "class_id").value);
+    // className = TextEditingController(text: widget.data.getCells().firstWhere((cell) => cell.columnName == "class_name").value);
+    // classType = widget.data.getCells().firstWhere((cell) => cell.columnName == "class_type").value;
+    // startDate = TextEditingController(text: widget.data.getCells().firstWhere((cell) => cell.columnName == "start_date").value);
+    // endDate = TextEditingController(text: widget.data.getCells().firstWhere((cell) => cell.columnName == "end_date").value);
+    // maxStudentAmount = TextEditingController(text: widget.data.getCells().firstWhere((cell) => cell.columnName == "max_student_amount").value);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
-          title: const Align(
-            alignment: Alignment(-0.25, 0), // Căn phải một chút
-            child: Text("Tạo lớp mới", style: TypeStyle.title1White),
+          title: Align(
+            alignment: const Alignment(-0.4, 0), // Căn phải một chút
+            child: Text("Chỉnh sửa lớp ${data.class_id}", style: TypeStyle.title1White),
           ),
           leading: IconButton(
               onPressed: () => context.pop(),
@@ -102,6 +118,7 @@ class _CreateClass extends ConsumerState<CreateClass> {
                     hintText: "Nhập mã lớp",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: Validator.classId(),
+                    readOnly: true
                   ),
                   const SizedBox(height: 16),
 
@@ -155,7 +172,7 @@ class _CreateClass extends ConsumerState<CreateClass> {
                     ),
                     items: const [
                       DropdownMenuItem(value: 'LT', child: Text('LT')),
-                      DropdownMenuItem(value: 'BT', child: Text('BT')),
+                      DropdownMenuItem(value: 'BT', child: Text('Bt')),
                       DropdownMenuItem(value: 'LT_BT', child: Text('LT+BT')),
                     ],
                     onChanged: (value) {
@@ -166,6 +183,41 @@ class _CreateClass extends ConsumerState<CreateClass> {
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Vui lòng chọn loại lớp";
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+
+                  Text.rich(TextSpan(children: [
+                    const TextSpan(text: "Trạng thái lớp", style: TypeStyle.title4),
+                    TextSpan(
+                        text: "*",
+                        style: TypeStyle.body4.copyWith(
+                            color: Theme.of(context).colorScheme.error))
+                  ])),
+                  const SizedBox(height: 5),
+                  DropdownButtonFormField<String>(
+                    value: classStatus,
+                    decoration: InputDecoration(
+                      hintText: "Chọn trạng thái lớp",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'ACTIVE', child: Text('ACTIVE')),
+                      DropdownMenuItem(value: 'COMPLETED', child: Text('COMPLETED')),
+                      DropdownMenuItem(value: 'UPCOMING', child: Text('UPCOMING')),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        classStatus = value; // Cập nhật giá trị đã chọn
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Vui lòng chọn trạng thái lớp";
                       }
                       return null;
                     },
@@ -251,7 +303,7 @@ class _CreateClass extends ConsumerState<CreateClass> {
                               showDialog<bool>(
                                   context: context,
                                   builder: (_) => AlertDialog(
-                                      title: const Text("Xác nhận tạo lớp mới?"),
+                                      title: const Text("Xác nhận cập nhật thông tin lớp học?"),
                                       content: SingleChildScrollView(
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
@@ -259,13 +311,7 @@ class _CreateClass extends ConsumerState<CreateClass> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text.rich(TextSpan(children: [
-                                              const TextSpan(text: "Bạn có chắc chắn muốn tạo lớp ", style: TypeStyle.body4),
-                                              TextSpan(
-                                                  text: className.text,
-                                                  style: TypeStyle.body4.copyWith(
-                                                      color: Theme.of(context).colorScheme.error)
-                                              ),
-                                              const TextSpan(text: " với mã lớp ", style: TypeStyle.body4),
+                                              const TextSpan(text: "Bạn có chắc chắn muốn cập nhật thông tin lớp học với mã lớp ", style: TypeStyle.body4),
                                               TextSpan(
                                                   text: classId.text,
                                                   style: TypeStyle.body4.copyWith(
@@ -287,28 +333,45 @@ class _CreateClass extends ConsumerState<CreateClass> {
                               ).then((value) async {
                                 if (value == null) return;
                                 if (value) {
-                                  if (await ref.read(listClassRegisterNowProvider.notifier).addClass(classId.text, className.text, classType, startDate.text, endDate.text, maxStudentAmount.text)) {
+                                  if (await ref.read(listClassRegisterNowProvider.notifier).updateClass(classId.text, className.text, classType, startDate.text, endDate.text, maxStudentAmount.text, classStatus)) {
                                     ClassInfoModel classNew = ClassInfoModel(
                                         class_id: classId.text,
                                         class_name: className.text,
                                         class_type: classType,
                                         lecturer_name: ref.read(accountProvider).value?.name,
                                         lecturer_account_id: ref.read(accountProvider).value!.idAccount,
-                                        student_count: "0",
+                                        student_count: data.student_count,
                                         start_date: startDate.text,
                                         end_date: endDate.text,
-                                        status: "ACTIVE",
-                                        student_accounts: []
+                                        status: classStatus,
+                                        student_accounts: data.student_accounts
                                     );
+
                                     List<ClassInfoModel>? registerNow = ref.watch(listClassRegisterNowProvider).value;
-                                    List<ClassInfoModel>? listClass = ref.watch(listClassProvider).value;
-                                    List<ClassInfoModel>? listClassAll = ref.watch(listClassAllProvider).value;
-                                    registerNow?.add(classNew);
-                                    listClass?.add(classNew);
-                                    listClassAll?.add(classNew);
+                                    // List<ClassInfoModel>? listClass = ref.watch(listClassProvider).value;
+                                    // List<ClassInfoModel>? listClassAll = ref.watch(listClassAllProvider).value;
+
+                                    var targetRegisterClass = registerNow?.firstWhere((cls) => cls.class_id == classId.text);
+                                    if (targetRegisterClass != null) {
+                                      int index = registerNow!.indexOf(targetRegisterClass);
+                                      registerNow[index] = classNew;
+                                    }
+
+                                    // var targetClassClass = listClass?.firstWhere((cls) => cls.class_id == classId.text);
+                                    // if (targetClassClass != null) {
+                                    //   int index = listClass!.indexOf(targetClassClass);
+                                    //   listClass[index] = classNew;
+                                    // }
+                                    //
+                                    // var targetListClassClass = listClassAll?.firstWhere((cls) => cls.class_id == classId.text);
+                                    // if (targetListClassClass != null) {
+                                    //   int index = listClassAll!.indexOf(targetListClassClass);
+                                    //   listClassAll[index] = classNew;
+                                    // }
+
                                     ref.read(listClassRegisterNowProvider.notifier).forward(AsyncData(registerNow));
-                                    ref.read(listClassProvider.notifier).forward(AsyncData(listClass));
-                                    ref.read(listClassAllProvider.notifier).forward(AsyncData(listClassAll));
+                                    // ref.read(listClassProvider.notifier).forward(AsyncData(listClass));
+                                    // ref.read(listClassAllProvider.notifier).forward(AsyncData(listClassAll));
                                     // push chỉ có 1 page này thôi: xóa các page giống cũ
                                     // Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                                     //   MaterialPageRoute(
@@ -317,20 +380,21 @@ class _CreateClass extends ConsumerState<CreateClass> {
                                     // );
                                     Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (context) => const ClassManagerLecturer()),
-                                        (Route<dynamic> route) => route.isFirst
+                                            (Route<dynamic> route) => route.isFirst
                                     );
-                                    Fluttertoast.showToast(msg: "Tạo lớp ${classId.text} thành công");
+                                    Fluttertoast.showToast(msg: "Cập nhật thông tin lớp ${classId.text} thành công");
                                   } else {
-                                    Fluttertoast.showToast(msg: "Tạo lớp ${classId.text} thất bại");
+                                    Fluttertoast.showToast(msg: "Cập nhật thông tin lớp ${classId.text} thất bại");
                                   }
                                 }
+
                               });
                             } else {
                               Fluttertoast.showToast(msg: "Ngày bắt đầu phải nhỏ hơn ngày kết thúc của lớp học");
                             }
                           }
                         },
-                        child: const Center(child: Text("Tạo lớp học")),
+                        child: const Center(child: Text("Cập nhật thông tin lớp học")),
                       );
                     }),
                   ),

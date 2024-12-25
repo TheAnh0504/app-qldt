@@ -1,5 +1,6 @@
 import 'package:app_qldt/model/entities/class_info_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../core/error/error.dart';
 import '../model/repositories/auth_repository.dart';
@@ -114,6 +115,33 @@ class AsyncClassInfoFilterNotifier extends AsyncNotifier<List<ClassInfoModel>?> 
     try {
       var authRepository = (await ref.read(authRepositoryProvider.future));
       await authRepository.api.deleteClass(classId).then((value) async {
+        print('giá trị $value');
+      });
+      return true;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      return false;
+    }
+  }
+
+  Future<bool> addClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount) async {
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      await authRepository.api.addClass(classId, className, classType, startDate, endDate, maxStudentAmount).then((value) async {
+        print('giá trị $value');
+      });
+      return true;
+      // bắt lỗi Map<String, dynamic> map
+    } on Map<String, dynamic> catch (map) {
+      Fluttertoast.showToast(msg: map["data"] == "class id already exists" ? "Mã lớp đã tồn tại" : map["data"]);
+      return false;
+    }
+  }
+
+  Future<bool> updateClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount, String status) async {
+    try {
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      await authRepository.api.updateClass(classId, className, classType, startDate, endDate, maxStudentAmount, status).then((value) async {
         print('giá trị $value');
       });
       return true;

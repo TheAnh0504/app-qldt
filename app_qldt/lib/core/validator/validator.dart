@@ -69,6 +69,10 @@ class Validator {
       return "Số lượng sinh viên tối đa phải là số nguyên dương";
     }
 
+    if (int.parse(str) > 50) {
+      return "Số lượng sinh viên tối đa không được lớn hơn 50";
+    }
+
     return null;
   };
 

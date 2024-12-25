@@ -125,7 +125,6 @@ class MessagingConversationListPage extends ConsumerWidget {
         });
       }
     }
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
 
     showModalBottomSheet(
         context: context,
@@ -208,11 +207,9 @@ class MessagingConversationListPage extends ConsumerWidget {
                               ),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                  backgroundImage: ExtendedNetworkImageProvider(
-                                    results[index]["avatar"] != null
-                                        ? 'https://drive.google.com/uc?id=${results[index]["avatar"].split('/d/')[1].split('/')[0]}'
-                                        : 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}',
-                                  ),
+                                  backgroundImage: results[index]["avatar"] != null
+                                      ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${results[index]["avatar"].split('/d/')[1].split('/')[0]}',)
+                                      : const AssetImage('images/avatar-trang.jpg'),
                                   radius: 20, // Kích thước của ảnh
                                 ),
                                 title: Column(
@@ -329,7 +326,6 @@ class _MessagingConversationItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return Card(
       color: Palette.grey25,
       elevation: 0,
@@ -381,11 +377,9 @@ class _MessagingConversationItem extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                       radius: 30,
-                      backgroundImage: ExtendedNetworkImageProvider(
-                          model.infoGroup.partnerAvatar != null
-                              ? 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}'
-                              : 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}',
-                          cache: true)),
+                      backgroundImage: model.infoGroup.partnerAvatar != null
+                          ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
+                          cache: true) : const AssetImage('images/avatar-trang.jpg')),
                   const SizedBox(width: 15),
                   Expanded(
                     child: Column(

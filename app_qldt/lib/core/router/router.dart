@@ -13,16 +13,14 @@ import "package:app_qldt/view/pages/auth/verify_forget_pas_page.dart";
 import "package:app_qldt/view/pages/auth/verify_unlock_acc_page.dart";
 import "package:app_qldt/view/pages/auth/verify_user_page.dart";
 import "package:app_qldt/view/pages/feed/feed_page.dart";
-import "package:app_qldt/view/pages/feed/feed_search_page.dart";
 import "package:app_qldt/view/pages/home_skeleton.dart";
-import "package:app_qldt/view/pages/image_page.dart";
 import "package:app_qldt/view/pages/messaging/messaging_conversation_list_page.dart";
-import "package:app_qldt/view/pages/monitor/monitor_page.dart";
-import "package:app_qldt/view/pages/profile/profile_change_user_info.dart";
 import "package:app_qldt/view/pages/profile/profile_page.dart";
 import "package:app_qldt/view/pages/settings/settings_page.dart";
 import "package:app_qldt/view/pages/splash_page.dart";
 import "package:app_qldt/view/pages/welcome_page.dart";
+
+import "../../view/pages/image_page.dart";
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -135,22 +133,11 @@ final router = GoRouter(
               })),
       GoRoute(
           parentNavigatorKey: rootNavigatorKey,
-          path: searchRoute,
-          pageBuilder: (context, state) {
-            return MaterialPage(
-                key: state.pageKey, child: const FeedSearchPage());
-          }),
-      GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
           path: changePasswordRoute,
           pageBuilder: (context, state) {
             return MaterialPage(
                 key: state.pageKey, child: const ForceChangePasswordPage());
           }),
-      GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: "$profileRoute/edit",
-          builder: (context, state) => const ProfileChangeUserInfoPage()),
       ShellRoute(
           parentNavigatorKey: rootNavigatorKey,
           navigatorKey: _shellNavigatorKey,

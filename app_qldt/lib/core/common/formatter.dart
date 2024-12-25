@@ -14,8 +14,8 @@ String formatMessageDate(DateTime date, [String? locale]) {
   }
   final now = DateTime.now();
   // final now = DateTime.now().add(DateTime.now().timeZoneOffset);
-  print(date);
-  print(now);
+  // print(date);
+  // print(now);
   // khoảng time chênh lệch giữa now và date
   final duration = now.difference(date);
   if (duration.inDays > 365) {

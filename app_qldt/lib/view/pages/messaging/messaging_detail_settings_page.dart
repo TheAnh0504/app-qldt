@@ -37,7 +37,6 @@ class _BuildBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
 
     return Consumer(
         builder: (context, ref, _)
@@ -47,11 +46,17 @@ class _BuildBody extends ConsumerWidget {
         future: future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Hiển thị khi đang chờ dữ liệu
+            return const Center(
+              child: CircularProgressIndicator(),  // Hiển thị khi đang chờ dữ liệu
+            );
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}'); // Hiển thị khi lỗi xảy ra
+            return Center(
+              child: Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
+            );
           } else if (!snapshot.hasData) {
-            return const Text('No data available'); // Khi không có dữ liệu
+            return const Center(
+              child: Text('No data available'), // Khi không có dữ liệu
+            );
           }
 
           final account = snapshot.data!;
@@ -61,15 +66,11 @@ class _BuildBody extends ConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
                     radius: 40,
-                    backgroundImage: ExtendedNetworkImageProvider(
-                        user.avatar != null
-                            ? 'https://drive.google.com/uc?id=${user.avatar
-                            ?.split('/d/')[1].split('/')[0]}'
-                            : 'https://drive.google.com/uc?id=${avatarNull
-                            .split('/d/')[1].split('/')[0]}',
-                        cache: true)),
+                    backgroundImage: account['avatar'] != null
+                        ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${account['avatar'].split('/d/')[1].split('/')[0]}', cache: true)
+                        : const AssetImage('images/avatar-trang.jpg')),
               ),
-              Text(user.name, style: TypeStyle.title1),
+              Text(account['name'], style: TypeStyle.title1),
               const SizedBox(height: 48),
               // Padding(
               //   padding: const EdgeInsets.only(left: 15),

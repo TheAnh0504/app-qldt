@@ -191,11 +191,12 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                             // TODO: Done - home-page of class-info
                             await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             if (ref.read(infoClassDataProvider).value != null) {
-                              Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const InfoClassLecturer(),
-                                ),
-                              );
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                              // Navigator.of(context, rootNavigator: true).push(
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const InfoClassLecturer(),
+                              //   ),
+                              // );
                             }
                           },
                           columns: [

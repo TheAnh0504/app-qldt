@@ -113,11 +113,13 @@ class _BuildBody extends ConsumerWidget {
           ListTileSection(title: "Bảo mật", tiles: [
             ListTile(
                 onTap: () {
-                  Navigator.push(
-                      rootNavigatorKey.currentContext!,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const SettingsChangePasswordPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsChangePasswordPage()));
+                  // Navigator.push(
+                  //     rootNavigatorKey.currentContext!,
+                  //     MaterialPageRoute(
+                  //         builder: (context) =>
+                  //             const SettingsChangePasswordPage())
+                  // );
                 },
                 leading: const FaIcon(FaIcons.key),
                 title: const Text("Đổi mật khẩu"),

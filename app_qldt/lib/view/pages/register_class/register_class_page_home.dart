@@ -19,6 +19,7 @@ import '../../../core/theme/palette.dart';
 import '../../../core/theme/typestyle.dart';
 import '../../../model/entities/account_model.dart';
 import '../../../model/entities/class_info_model.dart';
+import 'info_class.dart';
 
 class RegisterClassPageHome extends ConsumerStatefulWidget {
   const RegisterClassPageHome({super.key});
@@ -80,6 +81,7 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
   final formKey = GlobalKey<FormState>();
   // checked rows - selected class in register-form (Xóa lớp)
   List<DataGridRow> selectRegister = [];
+  DataGridRow selectRowRegister = const DataGridRow(cells: []);
 
   final classId = TextEditingController();
   final className = TextEditingController();
@@ -168,6 +170,7 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: TextFormField(
@@ -179,7 +182,7 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              Fluttertoast.showToast(msg: 'Vui lòng nhập mã lớp');
+                                return "Vui lòng nhập mã lớp";
                             }
                             return null;
                           },
@@ -197,11 +200,12 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                                     _listAllOpenClass.firstWhere((value) => value.class_id == classCode.text)
                                   );
                                   Fluttertoast.showToast(msg: 'Bạn đã thêm lớp với mã lớp: ${classCode.text} vào danh sách đăng ký lớp!');
+                                  // classCode.clear();
                                 } else {
                                   Fluttertoast.showToast(msg: 'Bạn đã đăng ký lớp này rồi!');
                                 }
                               } catch (_) {
-                                Fluttertoast.showToast(msg: 'Đăng ký lớp thất bại: Mã lớp không chính xác!');
+                                Fluttertoast.showToast(msg: 'Đăng ký lớp thất bại: Mã lớp không chính xác hoặc lớp đã COMP2ETED!');
                               }
                               setState(() {
                                 _listRegisterClassDataSource = RegisterClassDataSource(
@@ -252,6 +256,20 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                       selectionMode: SelectionMode.multiple,
                       onSelectionChanged: (List<DataGridRow> addedRows, List<DataGridRow> removedRows) {
                         selectRegister = _dataGridRegisterClassController.selectedRows;
+                        selectRowRegister = _dataGridRegisterClassController.selectedRow!;
+                      },
+                      onCellDoubleTap: (_) async {
+                        selectRowRegister = _dataGridRegisterClassController.selectedRow!;
+                        // TODO: Done - home-page of class-info
+                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        if (ref.read(infoClassDataProvider).value != null) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                          // Navigator.of(context, rootNavigator: true).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const InfoClassLecturer(),
+                          //   ),
+                          // );
+                        }
                       },
                       columns: [
                         GridColumn(
@@ -373,21 +391,25 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                         child: Center(
                           child: FilledButton(
                             onPressed: () async {
-                              if (_listRegisterClass.isNotEmpty) {
-                                print("Đăng ký lớp");
-                                List<String> classIds = [];
-                                for (var classInfo in _listRegisterClass) {
-                                  classIds.add(classInfo.class_id);
+                              try {
+                                if (_listRegisterClass.isNotEmpty) {
+                                  print("Đăng ký lớp");
+                                  List<String> classIds = [];
+                                  for (var classInfo in _listRegisterClass) {
+                                    classIds.add(classInfo.class_id);
+                                  }
+                                  _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
+                                  setState(() {
+                                    _listRegisterClassDataSource = RegisterClassDataSource(
+                                      listRegisterClass: _listRegisterClass,
+                                    );
+                                  });
+                                  Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
+                                } else {
+                                  Fluttertoast.showToast(msg: "Danh sách lớp trống. Vui lòng đăng ký lớp trước khi gửi đăng ký!");
                                 }
-                                _listRegisterClass = (await ref.read(listClassRegisterNowProvider.notifier).registerClass(classIds, _listRegisterClass))!;
-                                setState(() {
-                                  _listRegisterClassDataSource = RegisterClassDataSource(
-                                    listRegisterClass: _listRegisterClass,
-                                  );
-                                });
-                                Fluttertoast.showToast(msg: "Đăng ký lớp thành công, vui lòng kiểm tra Trạng thái đăng ký lớp!");
-                              } else {
-                                Fluttertoast.showToast(msg: "Danh sách lớp trống. Vui lòng đăng ký lớp trước khi gửi đăng ký!");
+                              } catch (_) {
+                                Fluttertoast.showToast(msg: "Đăng ký lớp thất bại!");
                               }
                             },
                             child: const Center(child: Text("Gửi đăng ký")),
@@ -537,9 +559,9 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                             ),
                             items: const [
                               DropdownMenuItem(value: '', child: Text('(All)')),
-                              DropdownMenuItem(value: 'LT', child: Text('Lý thuyết')),
-                              DropdownMenuItem(value: 'BT', child: Text('Bài tập')),
-                              DropdownMenuItem(value: 'LT_BT', child: Text('Cả lý thuyết và bài tập')),
+                              DropdownMenuItem(value: 'LT', child: Text('LT')),
+                              DropdownMenuItem(value: 'BT', child: Text('BT')),
+                              DropdownMenuItem(value: 'LT_BT', child: Text('LT+BT')),
                             ],
                             onChanged: (value) {
                               if (value != null) {

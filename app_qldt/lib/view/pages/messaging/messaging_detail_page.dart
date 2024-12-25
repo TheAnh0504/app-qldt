@@ -40,7 +40,6 @@ class MessagingDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
 
     return WillPopScope(
       onWillPop: () async {
@@ -69,11 +68,9 @@ class MessagingDetailPage extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: ExtendedNetworkImageProvider(
-                    model.infoGroup.partnerAvatar == null
-                        ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
-                        : 'https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
-                    cache: true),
+                backgroundImage: model.infoGroup.partnerAvatar != null
+                    ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
+                    cache: true) : const AssetImage('images/avatar-trang.jpg'),
               ),
               const SizedBox(width: 10),
               Text.rich(
@@ -100,7 +97,8 @@ class MessagingDetailPage extends StatelessWidget {
                               user: MessageUserModel(
                                   id: model.infoGroup.partnerId,
                                   name: model.infoGroup.partnerName,
-                                  avatar: model.infoGroup.partnerAvatar))));
+                                  avatar: model.infoGroup.partnerAvatar)))
+                  );
                 },
                 icon: const FaIcon(FaIcons.circleInfo, color: Palette.white))
           ],
@@ -183,7 +181,6 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
   @override
   Widget build(BuildContext context) {
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return Column(
       children: [
         Expanded(
@@ -232,11 +229,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       CircleAvatar(
                           radius: 40,
-                          backgroundImage: ExtendedNetworkImageProvider(
-                              widget.model.infoGroup.partnerAvatar == null
-                                  ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
-                                  : 'https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
-                              cache: true)),
+                          backgroundImage: widget.model.infoGroup.partnerAvatar != null
+                              ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
+                              cache: true) : const AssetImage('images/avatar-trang.jpg')),
                       const SizedBox(height: 10),
                       Text(
                           widget.model.infoGroup.partnerName.toString().length >
@@ -254,11 +249,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       CircleAvatar(
                           radius: 40,
-                          backgroundImage: ExtendedNetworkImageProvider(
-                              widget.model.infoGroup.partnerAvatar == null
-                                  ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
-                                  : 'https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
-                              cache: true)),
+                          backgroundImage: widget.model.infoGroup.partnerAvatar != null ?
+                          ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${widget.model.infoGroup.partnerAvatar?.split('/d/')[1].split('/')[0]}',
+                              cache: true) : const AssetImage('images/avatar-trang.jpg')),
                       const SizedBox(width: 10),
                       Text(
                           widget.model.infoGroup.partnerName.toString().length >
@@ -500,82 +493,7 @@ class _TextMessageBubbleState extends ConsumerState<_TextMessageBubble> {
           )),
     );
   }
-
-  // void openBottomSheet(BuildContext context) {
-  //   showModalBottomSheet(
-  //       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-  //       context: context,
-  //       builder: (context) => BottomSheet(
-  //           enableDrag: false,
-  //           backgroundColor: Palette.grey40,
-  //           onClosing: () {},
-  //           shape:
-  //               const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-  //           builder: (context) => SizedBox(
-  //                 height: MediaQuery.sizeOf(context).width / 4,
-  //                 child: Row(
-  //                   children: [
-  //                     Expanded(
-  //                         child: InkWell(
-  //                       onTap: () {
-  //                         Clipboard.setData(ClipboardData(text: widget.msg)).then(
-  //                             (value) =>
-  //                                 Fluttertoast.showToast(msg: "Đã sao chép."));
-  //                       },
-  //                       child: const Column(
-  //                         mainAxisAlignment: MainAxisAlignment.center,
-  //                         children: [
-  //                           FaIcon(FaIcons.solidCopy),
-  //                           SizedBox(height: 8),
-  //                           Text("Sao chép")
-  //                         ],
-  //                       ),
-  //                     ))
-  //                   ],
-  //                 ),
-  //               )));
-  // }
 }
-
-// class _ImageMessageBubble extends StatelessWidget {
-//   final String img;
-//
-//   const _ImageMessageBubble({required this.img});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: () {
-//         context.push("$imageRoute?url=$img");
-//       },
-//       child: Hero(
-//         tag: img,
-//         child: Container(
-//             clipBehavior: Clip.antiAlias,
-//             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-//             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
-//             constraints: BoxConstraints.loose(
-//                 Size.fromWidth(MediaQuery.sizeOf(context).width / 3 * 2)),
-//             child: AspectRatio(
-//                 aspectRatio: 16 / 9,
-//                 child: ExtendedImage(
-//                   image: ExtendedNetworkImageProvider(img, cache: true),
-//                   fit: BoxFit.cover,
-//                   gaplessPlayback: true,
-//                   loadStateChanged: (state) =>
-//                       switch (state.extendedImageLoadState) {
-//                     LoadState.failed => Container(
-//                         alignment: Alignment.center,
-//                         color: Palette.grey40,
-//                         child: const FaIcon(FaIcons.circleExclamation,
-//                             color: Palette.white)),
-//                     _ => null
-//                   },
-//                 ))),
-//       ),
-//     );
-//   }
-// }
 
 class _OtherMessageSection extends StatefulWidget {
   final MessageModel message;
@@ -591,7 +509,6 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
 
   @override
   Widget build(BuildContext context) {
-    const avatarNull = 'https://drive.google.com/file/d/1TcbEp_FoZKrXbp-_82PfCeBYtgozFzJa/view?usp=sharing';
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -619,11 +536,9 @@ class _OtherMessageSectionState extends State<_OtherMessageSection> {
                 padding: const EdgeInsets.all(4),
                 child: CircleAvatar(
                     radius: 20,
-                    backgroundImage:  ExtendedNetworkImageProvider(
-                          widget.message.user.avatar == null
-                          ? 'https://drive.google.com/uc?id=${avatarNull.split('/d/')[1].split('/')[0]}'
-                              : 'https://drive.google.com/uc?id=${widget.message.user.avatar?.split('/d/')[1].split('/')[0]}',
-                            cache: true)
+                    backgroundImage: widget.message.user.avatar != null
+                        ? ExtendedNetworkImageProvider('https://drive.google.com/uc?id=${widget.message.user.avatar?.split('/d/')[1].split('/')[0]}',
+                            cache: true) : const AssetImage('images/avatar-trang.jpg')
                         ),
               ),
               widget.message.message != "first_message"

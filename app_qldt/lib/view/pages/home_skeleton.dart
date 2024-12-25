@@ -174,8 +174,16 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
                         .value
                         .uri
                         .toString()),
-            onDestinationSelected: (value) => context.go(
-                [feedRoute, messagingRoute, profileRoute, settingsRoute][value]),
+            onDestinationSelected: (value) {
+              if (value == 2) {
+                if (
+                  ref.read(listClassRegisterNowProvider).value == null ||
+                  ref.read(listClassProvider).value == null ||
+                  ref.read(listClassAllProvider).value == null
+                ) return;
+              }
+              context.go([feedRoute, messagingRoute, profileRoute, settingsRoute][value]);
+            },
             destinations: [
               NavigationDestination(
                 icon: Badge(
@@ -184,7 +192,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                   isLabelVisible: countNotification > 0,
-                  child: FaIcon(FaIcons.house)
+                  child: const FaIcon(FaIcons.house)
                 ),
                 label: "Trang chủ"
               ),

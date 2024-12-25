@@ -19,9 +19,10 @@ class TextInput extends StatefulWidget {
       this.validator,
       this.controller,
       this.autovalidateMode,
-      this.keyboardType});
+      this.keyboardType,
+      this.readOnly = false});
 
-  final bool isPassword, forceErrorState;
+  final bool isPassword, forceErrorState, readOnly;
   final String? Function(String?)? validator;
   final String hintText;
   final String? errorText;
@@ -43,6 +44,7 @@ class _TextInputState extends State<TextInput> {
       controller: widget.controller,
       obscureText: widget.isPassword && isHidden,
       autovalidateMode: widget.autovalidateMode,
+      readOnly: widget.readOnly,
       validator: (value) {
         final result = widget.validator?.call(value);
         if (!widget.forceErrorState) {
@@ -80,7 +82,9 @@ class _TextInputState extends State<TextInput> {
               .copyWith(color: Theme.of(context).colorScheme.error),
           errorText: widget.errorText,
           filled: true,
-          fillColor: Palette.white,
+          fillColor: widget.readOnly
+              ? Palette.grey55 // Change the background color if readOnly is true
+              : Palette.white,
           focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide(

@@ -1,5 +1,6 @@
 import "package:app_qldt/controller/account_provider.dart";
 import "package:app_qldt/model/entities/class_info_model.dart";
+import "package:app_qldt/view/pages/feed/feed_find.dart";
 import "package:app_qldt/view/pages/register_class/register_class_page_home.dart";
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
@@ -11,9 +12,7 @@ import "package:app_qldt/core/common/types.dart";
 import "package:app_qldt/core/router/url.dart";
 import "package:app_qldt/core/theme/typestyle.dart";
 import "package:app_qldt/model/entities/post_model.dart";
-import "package:app_qldt/view/pages/feed/feed_create_post_page.dart";
 import "package:app_qldt/view/pages/feed/feed_noti_page.dart";
-import "package:app_qldt/view/pages/feed/feed_post.dart";
 import "package:app_qldt/controller/post_provider.dart";
 import "package:app_qldt/controller/user_provider.dart";
 import "package:app_qldt/core/theme/palette.dart";
@@ -64,10 +63,11 @@ class FeedPage extends ConsumerWidget {
           //     icon: const FaIcon(FaIcons.magnifyingGlass)),
           IconButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(
-                    MaterialPageRoute(
-                        builder: (context) => const FeedNotiPage())
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedNotiPage()));
+                // Navigator.of(context, rootNavigator: true).push(
+                //     MaterialPageRoute(
+                //         builder: (context) => const FeedNotiPage())
+                // );
               },
               // icon: const FaIcon(FaIcons.bell, color: Palette.white,),
             icon: Badge(
@@ -298,23 +298,21 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          if (ref.read(listClassAllProvider).value == null) {
-                            await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          }
-                          if (ref.read(listClassProvider).value == null) {
-                            await ref.read(listClassProvider.notifier).getListClassInfo();
-                          } else {
-                            ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
-                          }
-                          if (ref.read(listClassRegisterNowProvider).value == null) {
-                            await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
-                          }
+                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          await ref.read(listClassProvider.notifier).getListClassInfo();
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           // Xử lý khi click vào ô vuông 1
-                          if (ref.read(checkExpiredToken).value != null) {
-                            Navigator.of(context, rootNavigator: true).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const RegisterClassPageHome())
-                            );
+                          if (
+                            ref.read(checkExpiredToken).value != null &&
+                            ref.read(listClassAllProvider).value != null &&
+                            ref.read(listClassProvider).value != null &&
+                            ref.read(listClassRegisterNowProvider).value != null
+                          ) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterClassPageHome()));
+                            // Navigator.of(context, rootNavigator: true).push(
+                            //   MaterialPageRoute(
+                            //       builder: (context) => const RegisterClassPageHome())
+                            // );
                           }
                           print("Ô vuông 1 được nhấn!");
                         },
@@ -358,24 +356,22 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          if (ref.read(listClassAllProvider).value == null) {
-                            await ref.read(listClassAllProvider.notifier).getListClassInfo();
-                          }
-                          if (ref.read(listClassProvider).value == null) {
-                            await ref.read(listClassProvider.notifier).getListClassInfo();
-                          } else {
-                            ref.read(listClassProvider.notifier).forward(AsyncData(ref.read(listClassAllProvider).value!));
-                          }
-                          if (ref.read(listClassRegisterNowProvider).value == null) {
-                            await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
-                          }
+                          await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          await ref.read(listClassProvider.notifier).getListClassInfo();
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           // Xử lý khi click vào ô vuông 1
-                          if (ref.read(checkExpiredToken).value != null) {
-                            Navigator.of(context, rootNavigator: true).push(
-                                MaterialPageRoute(
-                                    builder: (
-                                        context) => const ClassManagerLecturer())
-                            );
+                          if (
+                          ref.read(checkExpiredToken).value != null &&
+                              ref.read(listClassAllProvider).value != null &&
+                              ref.read(listClassProvider).value != null &&
+                              ref.read(listClassRegisterNowProvider).value != null
+                          ) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ClassManagerLecturer()));
+                            // Navigator.of(context, rootNavigator: true).push(
+                            //     MaterialPageRoute(
+                            //         builder: (
+                            //             context) => const ClassManagerLecturer())
+                            // );
                           }
                           print("Ô vuông 1 được nhấn!");
                         },
@@ -421,6 +417,13 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                         onTap: () {
                           // Xử lý khi click vào ô vuông 2
                           print("Ô vuông 2 được nhấn!");
+                          // Navigator.of(context, rootNavigator: true).push(
+                          //     MaterialPageRoute(
+                          //         builder: (
+                          //             context) => const FeedFind()
+                          //     )
+                          // );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const FeedFind()));
                         },
                         child: Container(
                           width: 80,

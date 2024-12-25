@@ -885,4 +885,33 @@ class SWApi {
       },
     ).then((value) => value.data);
   }
+
+  Future<Map<String, dynamic>> addClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount) async {
+    return dio.post("/it5023e/create_class",
+      data: {
+        "token": await accessToken,
+        "class_id": classId,
+        "class_name": className,
+        "class_type": classType,
+        "start_date": startDate,
+        "end_date": endDate,
+        "max_student_amount": int.parse(maxStudentAmount)
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> updateClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount, String status) async {
+    return dio.post("/it5023e/edit_class",
+      data: {
+        "token": await accessToken,
+        "class_id": classId,
+        "class_name": className,
+        "class_type": classType,
+        "start_date": startDate,
+        "end_date": endDate,
+        "max_student_amount": int.parse(maxStudentAmount),
+        "status": status
+      },
+    ).then((value) => value.data);
+  }
 }

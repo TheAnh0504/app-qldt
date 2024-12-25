@@ -292,6 +292,24 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<Map<String, dynamic>> addClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount) {
+    return api.addClass(classId, className, classType, startDate, endDate, maxStudentAmount).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> updateClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount, String status) {
+    return api.updateClass(classId, className, classType, startDate, endDate, maxStudentAmount, status).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {
