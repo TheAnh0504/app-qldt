@@ -44,11 +44,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       print("111");
       if (pref.getCurrentAccount()?.status == "Kích hoạt") {
         ref.read(accountProvider);
-        Future.microtask(() => ref
-            .read(accountProvider.notifier)
+        Future.microtask(() => ref.read(accountProvider.notifier)
             .forward(AsyncData(pref.getCurrentAccount())));
-        await ref.read(listClassProvider.notifier).getListClassInfo();
-        await ref.read(listClassAllProvider.notifier).getListClassInfo();
+        // await ref.read(listClassProvider.notifier).getListClassInfo();
+        // await ref.read(listClassAllProvider.notifier).getListClassInfo();
         await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         return context.go(feedRoute);
       } else {

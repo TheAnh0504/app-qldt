@@ -37,10 +37,7 @@ class _BuildBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
-    return Consumer(
-        builder: (context, ref, _)
-    {
+    return Consumer(builder: (context, ref, _) {
       final future = ref.read(getUserInfoProvider(user.id.toString()).future); // Lấy Future
       return FutureBuilder<Map<String, dynamic>>(
         future: future,

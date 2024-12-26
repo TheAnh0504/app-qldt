@@ -179,20 +179,26 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                   const SizedBox(height: 32),
                   Center(
                     child: Consumer(builder: (context, ref, child) {
-                      ref.listen(accountProvider, (prev, next) {
+                      ref.listen(accountProvider, (prev, next) async {
                         if (next is AsyncError) {
                           Fluttertoast.showToast(msg: next.error.toString());
                         }
                         if (next is AsyncData &&
                             next.value?.status == "Kích hoạt") {
+                          // await ref.read(listClassProvider.notifier).getListClassInfo();
+                          // await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          // await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           context.go(feedRoute);
                         }
                       });
                       return FilledButton(
                         onPressed: () async {
-                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                           await ref.read(changeInfoAfterSignupProvider.notifier)
                               .changeInfoAfterSignup(avatar: await avatar?.file);
+                          await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+                          // await ref.read(listClassProvider.notifier).getListClassInfo();
+                          // await ref.read(listClassAllProvider.notifier).getListClassInfo();
+                          // await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
                         },
                         child: const Center(child: Text("Xác nhận")),
                       );

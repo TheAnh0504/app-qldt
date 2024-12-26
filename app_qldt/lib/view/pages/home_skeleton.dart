@@ -27,8 +27,10 @@ class HomeSkeleton extends ConsumerStatefulWidget {
   ConsumerState<HomeSkeleton> createState() => _HomeSkeletonState();
 }
 
+// tin nhắn
 final countProvider = StateProvider<int>((ref) => 0);
 final checkCountProvider = StateProvider<int>((ref) => 0);
+// thông báo
 final countNotificationProvider = StateProvider<int>((ref) => 0);
 
 class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBindingObserver {
@@ -49,17 +51,16 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
       ) {
         print("111111111");
         ref.read(checkCountProvider.notifier).state = ref.watch(checkCountProvider) + 1;
+        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+        ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
         final listMess = await ref.read(groupChatProvider(0).future);
-        final newCount = listMess.first.numNewMessage;
+        final newCount = listMess.isNotEmpty ? listMess.first.numNewMessage : 0;
         // Update the count value using the provider
         ref.read(countProvider.notifier).state = newCount;
-        ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
-        // check account
-        // await ref.read(accountProvider.notifier).getUserInfo(ref.read(accountProvider).value!.idAccount);
         // get info-class
-        await ref.read(listClassProvider.notifier).getListClassInfo();
-        await ref.read(listClassAllProvider.notifier).getListClassInfo();
-        await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+        // await ref.read(listClassProvider.notifier).getListClassInfo();
+        // await ref.read(listClassAllProvider.notifier).getListClassInfo();
+
       }
     });
   }
@@ -92,28 +93,11 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
       // Ứng dụng quay trở lại foreground
       print("Ứng dụng đã quay lại foreground");
       final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
-      print('That thu vi: $connectivityResult');
-// This condition is for demo purposes only to explain every connection type.
-// Use conditions which work for your requirements.
-      if (connectivityResult.contains(ConnectivityResult.mobile)) {
-        // Mobile network available.
-      } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-        // Wi-fi is available.
-        // Note for Android:
-        // When both mobile and Wi-Fi are turned on system will return Wi-Fi only as active network type
-      } else if (connectivityResult.contains(ConnectivityResult.ethernet)) {
-        // Ethernet connection available.
-      } else if (connectivityResult.contains(ConnectivityResult.vpn)) {
-        // Vpn connection active.
-        // Note for iOS and macOS:
-        // There is no separate network interface type for [vpn].
-        // It returns [other] on any device (also simulator)
-      } else if (connectivityResult.contains(ConnectivityResult.bluetooth)) {
-        // Bluetooth connection available.
-      } else if (connectivityResult.contains(ConnectivityResult.other)) {
-        // Connected to a network which is not in the above mentioned networks.
-      } else if (connectivityResult.contains(ConnectivityResult.none)) {
+      if (connectivityResult.contains(ConnectivityResult.none)) {
         // No available network types
+      } else {
+        print('Đã kết nối mạng');
+        // Thực hiện các hành động khi có kết nối
       }
       // Thực thi lệnh mong muốn
       ref.invalidate(countGetNotificationProvider);
@@ -176,11 +160,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
                         .toString()),
             onDestinationSelected: (value) {
               if (value == 2) {
-                if (
-                  ref.read(listClassRegisterNowProvider).value == null ||
-                  ref.read(listClassProvider).value == null ||
-                  ref.read(listClassAllProvider).value == null
-                ) return;
+                if (ref.read(listClassRegisterNowProvider).value == null) return;
               }
               context.go([feedRoute, messagingRoute, profileRoute, settingsRoute][value]);
             },

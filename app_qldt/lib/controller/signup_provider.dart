@@ -59,7 +59,7 @@ class AsyncChangeInfoAfterSignupNotifier
   void build() {}
 
   Future<void> changeInfoAfterSignup({File? avatar}) async {
-    state = const AsyncValue.loading();
+    ref.read(accountProvider.notifier).forward(const AsyncLoading());
     try {
       var repo = (await ref.read(authRepositoryProvider.future));
       ref.read(checkExpiredToken.notifier).forward(const AsyncData(true));
