@@ -199,6 +199,19 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                               // );
                             }
                           },
+                          onCellLongPress: (_) async {
+                            selectRegister = dataGridRegisterClassController.selectedRow!;
+                            // TODO: Done - home-page of class-info
+                            await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            if (ref.read(infoClassDataProvider).value != null) {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                              // Navigator.of(context, rootNavigator: true).push(
+                              //   MaterialPageRoute(
+                              //     builder: (context) => const InfoClassLecturer(),
+                              //   ),
+                              // );
+                            }
+                          },
                           columns: [
                             GridColumn(
                               columnName: 'class_id',

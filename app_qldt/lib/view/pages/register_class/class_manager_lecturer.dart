@@ -59,29 +59,6 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
     super.initState();
   }
 
-  Future<void> _refreshData() async {
-    print('check12222221111');
-    // ref.invalidate(listClassRegisterNowProvider);
-    // ref.invalidate(listClassAllProvider);
-    // ref.invalidate(listClassProvider);
-    await ref.read(listClassAllProvider.notifier).getListClassInfo();
-    await ref.read(listClassProvider.notifier).getListClassInfo();
-    await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
-
-    // _listRegisterClass = ref.read(listClassRegisterNowProvider).value!;
-    // _listOpenClass = ref.read(listClassProvider).value!;
-    // _listAllOpenClass = ref.read(listClassAllProvider).value!;
-    // setState(() {
-    //   _listRegisterClassDataSource = RegisterClassDataSource(
-    //     listRegisterClass: _listRegisterClass,
-    //   );
-    //   _listOpenClassDataSource = RegisterClassDataSource(
-    //     listRegisterClass: _listOpenClass,
-    //   );
-    // });
-    // context.go(feedRoute);
-  }
-
   @override
   Widget build(BuildContext context) {
     // all class open
@@ -110,18 +87,6 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
         context.go(feedRoute);
       }
     });
-
-    // ref.listen(listClassFilterProvider, (prev, next) {
-    //   if (next is AsyncError) {
-    //     Fluttertoast.showToast(msg: next.error.toString());
-    //   }
-    //   if (next is AsyncData) {
-    //     _listRegisterClassDataSource = RegisterClassDataSource(
-    //       listRegisterClass: next.value ?? [],
-    //     );
-    //     context.go(feedRoute);
-    //   }
-    // });
 
     return Scaffold(
       appBar: AppBar(
@@ -208,6 +173,19 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                         print("select row: ${selectRegister.getCells().first.value}");
                       },
                       onCellDoubleTap: (_) async {
+                        selectRegister = _dataGridRegisterClassController.selectedRow!;
+                        // TODO: Done - home-page of class-info
+                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                        if (ref.read(infoClassDataProvider).value != null) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                          // Navigator.of(context, rootNavigator: true).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const InfoClassLecturer(),
+                          //   ),
+                          // );
+                        }
+                      },
+                      onCellLongPress: (_) async {
                         selectRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
                         await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);

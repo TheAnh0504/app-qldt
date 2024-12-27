@@ -135,18 +135,6 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
       }
     });
 
-    // ref.listen(listClassFilterProvider, (prev, next) {
-    //   if (next is AsyncError) {
-    //     Fluttertoast.showToast(msg: next.error.toString());
-    //   }
-    //   if (next is AsyncData) {
-    //     _listRegisterClassDataSource = RegisterClassDataSource(
-    //       listRegisterClass: next.value ?? [],
-    //     );
-    //     context.go(feedRoute);
-    //   }
-    // });
-
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
@@ -259,6 +247,19 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                         selectRowRegister = _dataGridRegisterClassController.selectedRow!;
                       },
                       onCellDoubleTap: (_) async {
+                        selectRowRegister = _dataGridRegisterClassController.selectedRow!;
+                        // TODO: Done - home-page of class-info
+                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        if (ref.read(infoClassDataProvider).value != null) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                          // Navigator.of(context, rootNavigator: true).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const InfoClassLecturer(),
+                          //   ),
+                          // );
+                        }
+                      },
+                      onCellLongPress: (_) async {
                         selectRowRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
                         await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
