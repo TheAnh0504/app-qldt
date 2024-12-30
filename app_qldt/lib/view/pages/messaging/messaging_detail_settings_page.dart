@@ -48,7 +48,9 @@ class _BuildBody extends ConsumerWidget {
             );
           } else if (snapshot.hasError) {
             return Center(
-              child: Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
+              child: snapshot.error.toString().contains("9990")
+                  ? const Text('Tài khoản đã bị khóa!')
+                  : Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
             );
           } else if (!snapshot.hasData) {
             return const Center(

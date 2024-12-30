@@ -129,21 +129,56 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 4),
                               RichText(
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                        text: "Nội dung: ",
-                                        style: TypeStyle.body4.copyWith(color: Colors.black),
+                                      text: '${item.message?.split('; ')[0].split(': ')[0]}: ',
+                                      style: TypeStyle.body4.copyWith(color: Colors.black),
                                     ),
                                     TextSpan(
-                                      text: item.message,
-                                      style: TypeStyle.body4.copyWith(color: Colors.black),
+                                      text: item.message?.split('; ')[0].split(': ')[1],
+                                      style: TypeStyle.body4.copyWith(color: Colors.blue),
                                     ),
                                   ],
                                 ),
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: '${item.message?.split('; ')[1].split(': ')[0]}: ',
+                                      style: TypeStyle.body4.copyWith(color: Colors.black),
+                                    ),
+                                    TextSpan(
+                                      text: item.message?.split('; ')[1].split(': ')[1],
+                                      style: TypeStyle.body4.copyWith(color: Colors.blue),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Nội dung:\n",
+                                      style: TypeStyle.body4.copyWith(color: Colors.black),
+                                    ),
+                                    ...?item.message
+                                        ?.split('; ')
+                                        .where((messagePart) => !messagePart.contains('MSSV') && !messagePart.contains('Email'))
+                                        .map(
+                                          (messagePart) =>
+                                              TextSpan(
+                                        text: "   • $messagePart\n", // Thêm dấu bullet cho từng mục
+                                        style: TypeStyle.body4.copyWith(color: Colors.black),
+                                      ),
+                                    )
+                                        .toList(),
+                                  ],
+                                ),
                               )
+
                             ],
                           ),
                         ),
@@ -164,10 +199,10 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                 );
               },
               noItemsFoundIndicatorBuilder: (context) => const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Chưa có thông báo nào\n", style: TypeStyle.title3),
+                    Text("Chưa có thông báo nào!\n", style: TypeStyle.title3),
                   ]),
               noMoreItemsIndicatorBuilder: (context) =>
                   const Center(child: Text("Đã tải hết thông báo")),

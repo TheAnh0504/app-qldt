@@ -48,6 +48,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             .forward(AsyncData(pref.getCurrentAccount())));
         // await ref.read(listClassProvider.notifier).getListClassInfo();
         // await ref.read(listClassAllProvider.notifier).getListClassInfo();
+        ref.invalidate(listClassRegisterNowProvider);
         await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         return context.go(feedRoute);
       } else {

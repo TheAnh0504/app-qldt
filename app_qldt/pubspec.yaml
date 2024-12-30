@@ -89,6 +89,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   syncfusion_flutter_datagrid: ^28.1.33
   connectivity_plus: ^6.1.1
+  file_picker: ^8.0.7
 
 dev_dependencies:
   flutter_test:
@@ -115,6 +116,7 @@ flutter:
   assets:
     - images/avatar-trang.jpg
     - images/hust.png
+    - images/upload.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

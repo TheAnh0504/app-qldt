@@ -5,6 +5,7 @@ import "package:app_qldt/view/pages/register_class/register_class_page_home.dart
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:go_router/go_router.dart";
 import "package:infinite_scroll_pagination/infinite_scroll_pagination.dart";
@@ -109,10 +110,32 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   // Danh sách trạng thái màu
   List<Color> listColor = List.generate(7, (index) => Colors.grey[300]!);
   int selectedDayIndex = -1;
-  bool schedule = true;
+  bool schedule = false;
+  List<bool> listColorDay = List.generate(7, (index) => false);
+  List<ClassInfoModel> listClass = [];
+  ValueNotifier<List<ClassInfoModel>> results = ValueNotifier([]);
+
+  Future<void> updateResults(int query) async {
+    results.value = listClass.where((classInfo) {
+      final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+      return classId != null ? classId % 7 == query : false;  // Lọc giá trị hợp lệ
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     var avatar = ref.watch(accountProvider).value?.avatar;
+    // listClass = ref.read(listClassRegisterNowProvider).value!;
+    // for (int i = 0; i < 7; i++) {
+    //   if (listClass.where((classInfo) {
+    //     final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+    //     return classId != null ? classId % 7 == i : false;  // Lọc giá trị hợp lệ
+    //   }).toList().isNotEmpty) {
+    //     listColorDay.add(true);
+    //   } else {
+    //     listColorDay.add(false);
+    //   }
+    // }
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('dd/MM/yyyy').format(currentDate);
     // Tính ngày đầu tiên của tuần (Thứ Hai)
@@ -129,6 +152,10 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
     if (selectedDayIndex == -1) {
       selectedDayIndex = indexDay;
       listColor[selectedDayIndex] = Palette.red;
+      // results.value = listClass.where((classInfo) {
+      //   final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+      //   return classId != null ? classId % 7 == indexDay : false;  // Lọc giá trị hợp lệ
+      // }).toList();
     }
     print(listDay);
 
@@ -150,11 +177,16 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
             return Center(
               child: Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
             );
-          } else if (!snapshot.hasData) {
+          } else if (!snapshot.hasData && snapshot.data!.isEmpty) {
             return const Center(
               child: Text('No data available'), // Khi không có dữ liệu
             );
           }
+
+          // listClass = snapshot.data![1];
+          // if (snapshot.data![1] is List<ClassInfoModel>) {
+          //   listClass = snapshot.data![1] as List<ClassInfoModel>;
+          // }
 
           return SingleChildScrollView(
             child: Column(
@@ -218,7 +250,20 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                         icon: const Icon(Icons.calendar_month, color: Palette.red100,),
                         onPressed: () {
                           setState(() {
+                            listClass = ref.watch(listClassRegisterNowProvider).value!;
                             schedule = !schedule;
+                            for (int i = 0; i < 7; i++) {
+                              if (listClass.where((classInfo) {
+                                final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+                                return classId != null ? classId % 7 == i : false;  // Lọc giá trị hợp lệ
+                              }).toList().isNotEmpty) {
+                                listColorDay[i] = true;
+                              }
+                            }
+                            results.value = listClass.where((classInfo) {
+                              final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+                              return classId != null ? classId % 7 == indexDay : false;  // Lọc giá trị hợp lệ
+                            }).toList();
                           });
                         },
                       ),
@@ -273,7 +318,9 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                                 children: [
                                   Text(
                                     listDayOfWeek[index],
-                                    style: TypeStyle.body2,
+                                    style: listColorDay[index]
+                                        ? TypeStyle.body2.copyWith(color: Palette.red100)
+                                        : TypeStyle.body2,
                                   ),
                                   Material(
                                     color: listColor[index], // Màu nền xám
@@ -289,6 +336,8 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                                           for (int i = 0; i < listColor.length; i++) {
                                             listColor[i] = i == index ? Palette.red : Colors.grey[300]!;
                                           }
+                                          print("index: $index");
+                                          updateResults(index);
                                         });
                                       },
                                     ),
@@ -298,17 +347,113 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                             );
                           }),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 10),
                         const Divider(
                           color: Colors.black,      // Màu đường kẻ
                           thickness: 1,             // Độ dày của đường kẻ
                           indent: 50,                // Khoảng cách từ trái
                           endIndent: 50,             // Khoảng cách từ phải
                         ),
-                        const SizedBox(height: 16),
-
+                        const SizedBox(height: 7),
                         // TODO: 1.info class in day
 
+                        ValueListenableBuilder<List<ClassInfoModel>>(
+                          valueListenable: results,
+                          builder: (context, results, _) {
+                            if (results.isEmpty) {
+                              return const Center(child: Text("Không có kết quả tìm kiếm"));
+                            }
+                            return SizedBox(
+                              height: 180,
+                              child: ListView.builder(
+                                itemCount: results.length,
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: Palette.grey55, // Màu nền
+                                      borderRadius: BorderRadius.circular(8), // Bo góc
+                                      // boxShadow: [
+                                      //   BoxShadow(
+                                      //     color: Colors.grey.withOpacity(0.3), // Màu đổ bóng
+                                      //     spreadRadius: 2,
+                                      //     blurRadius: 4,
+                                      //     offset: const Offset(0, 3), // Vị trí đổ bóng
+                                      //   ),
+                                      // ],
+                                      // border: Border.all(color: Palette.red100), // Viền
+                                    ),
+                                    child: ListTile(
+                                      leading: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            '06:45',
+                                            style: TypeStyle.body3,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 19.0), // Thêm khoảng cách trái
+                                            child: Container(
+                                              height: 8, // Chiều cao của gạch
+                                              width: 1,   // Độ dày của gạch
+                                              color: Palette.grey100, // Màu của gạch
+                                            ),
+                                          ),
+                                          const Text(
+                                            '10:05',
+                                            style: TypeStyle.body3,
+                                          ),
+                                          // Text(
+                                          //   results[index]["email"],
+                                          //   style: TypeStyle.body3,
+                                          // ),
+                                        ],
+                                      ),
+                                      title: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            '${results[index].class_id} - ${results[index].class_name}',
+                                            style: TypeStyle.title2,
+                                          ),
+                                          Text.rich(TextSpan(children: [
+                                            const TextSpan(text: "Lớp: ", style: TypeStyle.body3),
+                                            TextSpan(
+                                                text: results[index].class_type,
+                                                style: TypeStyle.body3.copyWith(
+                                                    color: Theme.of(context).colorScheme.error))
+                                          ])),
+                                          Text.rich(TextSpan(children: [
+                                            const TextSpan(text: "Giảng viên: ", style: TypeStyle.body3),
+                                            TextSpan(
+                                                text: results[index].lecturer_name,
+                                                style: TypeStyle.body3.copyWith(
+                                                    color: Theme.of(context).colorScheme.error))
+                                          ])),
+                                        ],
+                                      ),
+                                      onTap: () async {
+                                        // Logic xử lý khi nhấn vào
+                                        print("Selected: ${results[index]}");
+                                        try {
+                                          await ref.read(infoClassDataProvider.notifier).getClassInfo(results[index].class_id);
+                                        } catch (_) {
+                                          Fluttertoast.showToast(msg: "Lấy thông tin lớp ${results[index].class_id} thất bại");
+                                        }
+                                        if (ref.read(infoClassDataProvider).value != null) {
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
+                                        }
+                                      },
+                                    ),
+
+                                  ),
+                                ),
+                              ),
+                            );
+
+                          },
+                        )
                       ],
                     ),
                   )

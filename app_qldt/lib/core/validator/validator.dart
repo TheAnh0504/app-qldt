@@ -60,6 +60,14 @@ class Validator {
     return null;
   };
 
+  static String? Function(String?) reason() => (String? str) {
+    if (str?.isEmpty ?? true) {
+      return "Lý do xin nghỉ học không được để trống";
+    }
+
+    return null;
+  };
+
   static String? Function(String?) maxStudentAmount() => (String? str) {
     if (str?.isEmpty ?? true) {
       return "Số lượng sinh viên tối đa không được để trống";

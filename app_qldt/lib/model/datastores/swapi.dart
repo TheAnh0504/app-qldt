@@ -914,4 +914,39 @@ class SWApi {
       },
     ).then((value) => value.data);
   }
+
+  Future<Map<String, dynamic>> requestAbsence(String classId, String date, String reason, File? file, String title) async {
+    return dio.post("/it5023e/request_absence",
+      data: file != null
+          ? FormData.fromMap(
+            {
+              "file": await MultipartFile.fromFile(file!.path),
+              "token": await accessToken,
+              "classId": classId,
+              "date": date,
+              "reason": reason,
+              "title": title
+            }
+          ) : FormData.fromMap(
+          {
+            "token": await accessToken,
+            "classId": classId,
+            "date": date,
+            "reason": reason,
+            "title": title
+          }),
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> sendNotify(String message, String toUser, String type) async {
+    return dio
+        .post("/it5023e/send_notification",
+        data: FormData.fromMap({
+          "token": await accessToken,
+          "message": message,
+          "toUser": toUser,
+          "type": type
+        })
+    ).then((value) => value.data);
+  }
 }

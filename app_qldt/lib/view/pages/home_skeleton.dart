@@ -51,6 +51,7 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
       ) {
         print("111111111");
         ref.read(checkCountProvider.notifier).state = ref.watch(checkCountProvider) + 1;
+        ref.invalidate(listClassRegisterNowProvider);
         await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
         ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
         final listMess = await ref.read(groupChatProvider(0).future);

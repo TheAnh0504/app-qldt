@@ -249,7 +249,12 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                       onCellDoubleTap: (_) async {
                         selectRowRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
-                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        try {
+                          await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        } catch (_) {
+                          Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRowRegister.getCells().first.value} thất bại");
+                        }
+                        // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                           // Navigator.of(context, rootNavigator: true).push(
@@ -262,7 +267,12 @@ class _RegisterClassPageHomeState extends ConsumerState<RegisterClassPageHome> {
                       onCellLongPress: (_) async {
                         selectRowRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
-                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        try {
+                          await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
+                        } catch (_) {
+                          Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRowRegister.getCells().first.value} thất bại");
+                        }
+                        // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRowRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                           // Navigator.of(context, rootNavigator: true).push(

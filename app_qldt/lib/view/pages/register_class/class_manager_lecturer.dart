@@ -135,7 +135,12 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                           onPressed: () async {
                             if (formKey.currentState?.validate() ?? false) {
                               if (_listRegisterClass.any((value) => value.class_id == classCode.text)) {
-                                await ref.read(infoClassDataProvider.notifier).getClassInfo(classCode.text);
+                                try {
+                                  await ref.read(infoClassDataProvider.notifier).getClassInfo(classCode.text);
+                                } catch (_) {
+                                  Fluttertoast.showToast(msg: "Lấy thông tin lớp ${classCode.text} thất bại");
+                                }
+                                // await ref.read(infoClassDataProvider.notifier).getClassInfo(classCode.text);
                                 if (ref.read(infoClassDataProvider).value != null) {
                                   // Navigator.of(context, rootNavigator: true).push(
                                   //   MaterialPageRoute(
@@ -175,7 +180,12 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                       onCellDoubleTap: (_) async {
                         selectRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
-                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                        try {
+                          await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                        } catch (_) {
+                          Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                        }
+                        // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                           // Navigator.of(context, rootNavigator: true).push(
@@ -188,7 +198,12 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                       onCellLongPress: (_) async {
                         selectRegister = _dataGridRegisterClassController.selectedRow!;
                         // TODO: Done - home-page of class-info
-                        await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                        try {
+                          await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                        } catch (_) {
+                          Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                        }
+                        // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                           // Navigator.of(context, rootNavigator: true).push(
@@ -340,7 +355,12 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                               // print("select row: ${selectRegister.getCells().first.value}");
                               // TODO: Done - Chỉnh sửa lớp học(chuyển page edit-class)
                               if (selectRegister.getCells().isNotEmpty) {
-                                await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                                try {
+                                  await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                                } catch (_) {
+                                  Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                                }
+                                // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                                 if (ref.read(infoClassDataProvider).value != null) {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const EditClass()));
                                   // Navigator.of(context, rootNavigator: true).push(

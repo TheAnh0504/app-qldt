@@ -3,6 +3,7 @@ import "package:app_qldt/model/entities/account_model.dart";
 import "package:extended_image/extended_image.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:go_router/go_router.dart";
 import "package:share_plus/share_plus.dart";
@@ -189,7 +190,12 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                           onCellDoubleTap: (_) async {
                             selectRegister = dataGridRegisterClassController.selectedRow!;
                             // TODO: Done - home-page of class-info
-                            await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            try {
+                              await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            } catch (_) {
+                              Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                            }
+                            // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             if (ref.read(infoClassDataProvider).value != null) {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                               // Navigator.of(context, rootNavigator: true).push(
@@ -202,7 +208,12 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                           onCellLongPress: (_) async {
                             selectRegister = dataGridRegisterClassController.selectedRow!;
                             // TODO: Done - home-page of class-info
-                            await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            try {
+                              await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
+                            } catch (_) {
+                              Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                            }
+                            // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             if (ref.read(infoClassDataProvider).value != null) {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
                               // Navigator.of(context, rootNavigator: true).push(
@@ -356,18 +367,18 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 15),
-                        child: Row(
-                          children: [
+                        child: Center(
+                          child:
                              Text('Thông tin ${account.role == 'STUDENT' ? 'sinh viên' : 'giảng viên'}',
                                 style: TypeStyle.title1),
-                            const Spacer(),
-                            TextButton(
-                                onPressed: () {
-                                  rootNavigatorKey.currentContext
-                                      ?.go("$profileRoute/edit");
-                                },
-                                child: const Text("Chỉnh sửa"))
-                          ],
+                            // const Spacer(),
+                            // TextButton(
+                            //     onPressed: () {
+                            //       rootNavigatorKey.currentContext
+                            //           ?.go("$profileRoute/edit");
+                            //     },
+                            //     child: const Text("Chỉnh sửa"))
+
                         ),
                       ),
                       ListTile(

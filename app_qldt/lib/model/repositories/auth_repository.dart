@@ -1,3 +1,5 @@
+import "dart:io";
+
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -304,6 +306,24 @@ class AuthApiRepository {
 
   Future<Map<String, dynamic>> updateClass(String classId, String className, String classType, String startDate, String endDate, String maxStudentAmount, String status) {
     return api.updateClass(classId, className, classType, startDate, endDate, maxStudentAmount, status).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> requestAbsence(String classId, String date, String reason, File? file, String title) {
+    return api.requestAbsence(classId, date, reason, file, title).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value["data"];
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> sendNotify(String message, String toUser, String type) {
+    return api.sendNotify(message, toUser, type).then((value) async {
       if (value["meta"]["code"] == "1000") {
         return value;
       }
