@@ -949,4 +949,18 @@ class SWApi {
         })
     ).then((value) => value.data);
   }
+
+  Future<Map<String, dynamic>> getAbsenceRequestStudent(String? classId, String? status, String? date) async {
+    if (classId == '') classId = null;
+    if (status == '') status = null;
+    if (date == '') date = null;
+    return dio.post("/it5023e/get_student_absence_requests",
+      data: {
+        "token": await accessToken,
+        "class_id": classId,
+        "status": status,
+        "date": date,
+      },
+    ).then((value) => value.data);
+  }
 }

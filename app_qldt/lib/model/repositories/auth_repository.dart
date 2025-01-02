@@ -330,6 +330,15 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<Map<String, dynamic>> getAbsenceRequestStudent(String? classId, String? status, String? date) {
+    return api.getAbsenceRequestStudent(classId, status, date).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value['data'];
+      }
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../controller/absence_provider.dart';
 import '../../../controller/messaging_provider.dart';
 import '../../../core/common/types.dart';
 import '../../../core/theme/palette.dart';
@@ -43,19 +44,10 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
       String day = pickedDate.day.toString();
       if (day.length == 1) day = "0$day";
       setState(() =>startDate.text = "${pickedDate.year}-$month-$day");
-    }
-  }
-
-  Future<void> updateResults(String query) async {
-    if (query.isEmpty) {
-      results.value = [];
     } else {
-      await ref.watch(listAccountProvider.notifier).getListAccount(query).then((value) {
-        results.value = value;
-      });
+      setState(() => startDate.clear());
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +84,7 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
                       Center(
                         child: FilledButton(
                           onPressed: () async {
-                            // await ref.read(listClassProvider.notifier).getListClassInfoBy(classId.text, className.text, status, classType);
+                            results.value = await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(classId.text, status, startDate.text);
                           },
                           child: const Center(child: Text("Tìm kiếm")),
                         ),

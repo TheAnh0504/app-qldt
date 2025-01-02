@@ -47,6 +47,21 @@ class AsyncAbsenceNotifier extends AsyncNotifier<Map<String, dynamic>?> {
     }
   }
 
+  Future<Map<String, dynamic>?> getAbsenceRequestStudent(String? classId, String? status, String? date) async {
+    try {
+      Map<String, dynamic> res = {};
+      var authRepository = (await ref.read(authRepositoryProvider.future));
+      res = await authRepository.api.getAbsenceRequestStudent(classId, status, date)
+          .then((value) async {
+            return value;
+      });
+      return res;
+    } on Map<String, dynamic> catch (map) {
+      print('error');
+      return null;
+    }
+  }
+
 
   // Future<bool> addStudent(String classId, String accountId) async {
   //   try {

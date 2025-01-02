@@ -1,3 +1,4 @@
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:fluttertoast/fluttertoast.dart";
@@ -209,9 +210,58 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       return FilledButton(
                         onPressed: ref.watch(accountProvider) is AsyncLoading
                             ? null
-                            : () {
+                            : () async {
                                 if (formKey.currentState?.validate() ?? false) {
-                                  ref.read(signupProvider.notifier).signup(ho.text, ten.text, email.text, password.text, selectedRole);
+                                  final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+                                  if (connectivityResult.contains(ConnectivityResult.none)) {
+                                    showDialog<bool>(
+                                        context: context,
+                                        builder: (_) {
+                                          return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return AlertDialog(
+                                                    title: const Text("Thông báo"),
+                                                    content: SingleChildScrollView(
+                                                      child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        // Thu nhỏ chiều cao Column
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          // const Text("Thông báo: "),
+                                                          // const SizedBox(height: 10),
+
+                                                          Text.rich(TextSpan(children: [
+                                                            TextSpan(
+                                                                text: "Mất kết nối mạng, vui lòng thử lại sau!",
+                                                                style: TypeStyle.body4.copyWith(
+                                                                    color: Theme.of(context).colorScheme.error))
+                                                          ]))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      // TextButton(
+                                                      //     onPressed: () => _.pop(true),
+                                                      //     child: const Text(
+                                                      //         "Xác nhận")),
+                                                      TextButton(
+                                                          onPressed: () => _.pop(false),
+                                                          child: const Text("Đồng ý"))
+                                                    ]);
+                                              });
+                                        }
+                                    ).then((value) async {
+                                      if (value == null) return;
+                                      if (value) {}
+                                    });
+                                    // No available network types
+                                  } else {
+                                    print('Đã kết nối mạng');
+                                    // Thực hiện các hành động khi có kết nối
+                                    ref.read(signupProvider.notifier).signup(ho.text, ten.text, email.text, password.text, selectedRole);
+                                  }
+
                                 }
                               },
                         child: const Center(child: Text("Đăng ký")),

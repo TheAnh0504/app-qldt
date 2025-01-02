@@ -4,6 +4,7 @@ import "package:connectivity_plus/connectivity_plus.dart";
 import "package:flutter/material.dart";
 import "package:flutter/scheduler.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:go_router/go_router.dart";
 import "package:app_qldt/core/common/types.dart";
@@ -17,6 +18,7 @@ import "package:stomp_dart_client/stomp_config.dart";
 import "package:stomp_dart_client/stomp_frame.dart";
 
 import "../../controller/list_class_provider.dart";
+import "../../core/theme/typestyle.dart";
 
 class HomeSkeleton extends ConsumerStatefulWidget {
   const HomeSkeleton({required this.child, super.key});
@@ -37,6 +39,11 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
   final String webSocketUrl = 'http://157.66.24.126:8080/ws';
   late StompClient _client;
   bool _isDialogShowing = false;
+  // check internet
+  late final Connectivity _connectivity;
+  late final Stream<List<ConnectivityResult>> _connectivityStream;
+  late List<ConnectivityResult> _checkOldInternet;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +52,25 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
     _client = StompClient(
         config: StompConfig.sockJS(url: webSocketUrl, onConnect: onConnectCallback));
     _client.activate();
+    // check internet
+    _connectivity = Connectivity();
+    _connectivityStream = _connectivity.onConnectivityChanged;
+
+    // Lắng nghe sự thay đổi kết nối
+    _connectivityStream.listen((List<ConnectivityResult> result) {
+      if (result.contains(ConnectivityResult.none)) {
+        _checkOldInternet = result;
+        _showNoConnectivityDialog();
+      } else {
+        debugPrint('Đã kết nối mạng: $result');
+        if (_checkOldInternet.contains(ConnectivityResult.none)) {
+          Fluttertoast.showToast(msg: "Đã kết nối lại mạng!");
+          _checkOldInternet = result;
+        } else {
+          _checkOldInternet = result;
+        }
+      }
+    });
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted && ref.read(accountProvider).value != null
         && ref.read(checkExpiredToken).value != null
@@ -64,6 +90,30 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
 
       }
     });
+  }
+
+  Future<void> _showNoConnectivityDialog() async {
+    showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // Không cho phép đóng khi nhấn bên ngoài
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Thông báo"),
+          content: const Text(
+            "Mất kết nối mạng, vui lòng thử lại sau!",
+            style: TextStyle(color: Colors.red),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("Đồng ý"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void onConnectCallback(StompFrame connectFrame) {
@@ -93,13 +143,6 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
     if (state == AppLifecycleState.resumed) {
       // Ứng dụng quay trở lại foreground
       print("Ứng dụng đã quay lại foreground");
-      final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        // No available network types
-      } else {
-        print('Đã kết nối mạng');
-        // Thực hiện các hành động khi có kết nối
-      }
       // Thực thi lệnh mong muốn
       ref.invalidate(countGetNotificationProvider);
       ref.read(countNotificationProvider.notifier).state = await ref.read(countGetNotificationProvider.future);
