@@ -1,4 +1,5 @@
 // cấu hình firebase --> gửi thông báo đẩy trong ứng dụng
+import "package:app_qldt/controller/account_provider.dart";
 import "package:app_qldt/view/pages/home_skeleton.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
@@ -131,7 +132,18 @@ class app_qldt extends HookConsumerWidget {
       // Lắng nghe thông báo khi ứng dụng ở foreground
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print("checklog: ${message.data}");
+        print("checklog: ${message.from}");
+        print("checklog: ${ref.read(accountProvider).value?.idAccount}");
         if (message.data['type'] == 'NOTIFICATION') {
+          if (ref.read(accountProvider).value?.role == 'STUDENT') {
+            if (message.notification?.title == 'Absence request') {
+              return;
+            }
+          } else if (ref.read(accountProvider).value?.role == 'LECTURER') {
+            if (message.notification?.title == 'Reject Absence request' || message.notification?.title == 'Accept Absence request') {
+              return;
+            }
+          }
           // print("checklog: ${message.data}"); MESSAGE
           final title = message.notification?.title ?? "Thông báo";
           final body = message.notification?.body ?? "Không có nội dung";

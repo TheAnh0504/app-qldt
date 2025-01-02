@@ -11,6 +11,7 @@ import "package:app_qldt/controller/account_provider.dart";
 import "package:app_qldt/controller/saved_account_provider.dart";
 import "package:url_launcher/url_launcher.dart";
 
+import "../../controller/absence_provider.dart";
 import "../../controller/list_class_provider.dart";
 import "../../controller/messaging_provider.dart";
 import "../../controller/user_provider.dart";
@@ -77,6 +78,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       ref.invalidate(listClassProvider);
       ref.invalidate(listClassAllProvider);
       ref.invalidate(infoClassDataProvider);
+      ref.invalidate(absenceProvider);
     });
     var accounts = await ref.read(savedAccountProvider.future);
     if (accounts.isEmpty && mounted) return context.go(loginRoute);

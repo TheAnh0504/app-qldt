@@ -11,9 +11,11 @@ import "package:app_qldt/core/theme/typestyle.dart";
 import "package:app_qldt/model/entities/push_noti.dart";
 import "package:app_qldt/core/theme/palette.dart";
 
+import "../../../controller/absence_provider.dart";
 import "../../../controller/messaging_provider.dart";
 import "../../../core/common/formatter.dart";
 import "../home_skeleton.dart";
+import "../register_class/absence_request_manager.dart";
 
 class FeedNotiPage extends ConsumerStatefulWidget {
   const FeedNotiPage({super.key});
@@ -68,6 +70,7 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
               itemBuilder: (context, item, index) {
                 return GestureDetector(
                   onTap: () async {
+                    print('item: $item');
                     if (clickedNotifications[index]) {
                       final notify = await ref.read(readNotificationProvider(item.id).future);
                       setState(() {
@@ -75,6 +78,16 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                         Fluttertoast.showToast(msg: notify);
                         ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) - 1;
                       });
+                    }
+                    if (item.titlePushNotification == 'Absence request') {
+                      await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(item.message?.split('Lớp: ')[1].split(' - ')[0], 'PENDING', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Lớp: ')[1].split(' - ')[0],)));
+                    } else if (item.titlePushNotification == 'Accept Absence request') {
+                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'ACCEPTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0],)));
+                    } else if (item.titlePushNotification == 'Reject Absence request') {
+                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'REJECTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0],)));
                     }
                   },
                   child: Container(
@@ -161,12 +174,15 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                                 text: TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: "Nội dung:\n",
+                                      text: item.titlePushNotification == 'Absence request' ? "Nội dung:\n"
+                                      : item.titlePushNotification == 'Accept Absence request' ? "Nội dung: Giảng viên đã Đồng ý duyệt đơn xin phép nghỉ học của bạn!\n"
+                                      : item.titlePushNotification == 'Reject Absence request' ? "Nội dung: Giảng viên đã Từ chối đơn xin phép nghỉ học của bạn!\n"
+                                      :'Nội dung:\n',
                                       style: TypeStyle.body4.copyWith(color: Colors.black),
                                     ),
                                     ...?item.message
                                         ?.split('; ')
-                                        .where((messagePart) => !messagePart.contains('MSSV') && !messagePart.contains('Email'))
+                                        .where((messagePart) => !messagePart.contains('MSSV') && !messagePart.contains('Email') && !messagePart.contains('Mã giảng viên'))
                                         .map(
                                           (messagePart) =>
                                               TextSpan(

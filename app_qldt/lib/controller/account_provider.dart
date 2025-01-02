@@ -11,6 +11,7 @@ import "package:app_qldt/controller/verify_code_provider.dart";
 
 import "../model/repositories/messaging_repository.dart";
 import "../view/pages/home_skeleton.dart";
+import "absence_provider.dart";
 import "list_class_provider.dart";
 
 final checkExpiredToken =
@@ -179,6 +180,7 @@ class AsyncAccountNotifier extends AsyncNotifier<AccountModel?> {
         ref.invalidate(listClassProvider);
         ref.invalidate(listClassAllProvider);
         ref.invalidate(infoClassDataProvider);
+        ref.invalidate(absenceProvider);
         ref.invalidateSelf();
       });
     }

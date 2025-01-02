@@ -960,6 +960,37 @@ class SWApi {
         "class_id": classId,
         "status": status,
         "date": date,
+        "pageable_request": {
+          "page": "0",
+          "page_size": "2000"
+        }
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getAbsenceRequestLecture(String? classId, String? status, String? date) async {
+    if (status == '') status = null;
+    if (date == '') date = null;
+    return dio.post("/it5023e/get_absence_requests",
+      data: {
+        "token": await accessToken,
+        "class_id": classId,
+        "status": status,
+        "date": date,
+        "pageable_request": {
+          "page": "0",
+          "page_size": "2000"
+        }
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> reviewAbsenceRequest(String requestId, String status) async {
+    return dio.post("/it5023e/review_absence_request",
+      data: {
+        "token": await accessToken,
+        "request_id": requestId,
+        "status": status
       },
     ).then((value) => value.data);
   }

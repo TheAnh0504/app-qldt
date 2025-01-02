@@ -278,8 +278,7 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                   Text("Chức năng", style: TypeStyle.title1.copyWith(color: Palette.red100)),
                   const SizedBox(height: 10),
 
-
-                  if (ref.read(accountProvider).value?.role == "STUDENT")
+                  // TODO: Nghỉ phép - Done
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -287,222 +286,228 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                       Expanded(
                         child: Center(
                           child: FilledButton(
-                            onPressed: () {
+                            onPressed: () async {
                               print("Xin nghỉ học");
-                              showDialog<bool>(
-                                context: context,
-                                builder: (_) {
-                                  return StatefulBuilder(
-                                      builder: (context, setState) {
-                                        return AlertDialog(
-                                            title: const Text("Xin nghỉ học"),
-                                            content: SingleChildScrollView(
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                // Thu nhỏ chiều cao Column
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .center,
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  const Text(
-                                                      "Vui lòng chọn chức năng: "),
-                                                  const SizedBox(height: 10),
+                              if (ref.read(accountProvider).value?.role == 'LECTURER') {
+                                await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(data.class_id, 'PENDING', null);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: data.class_id,)));
+                              } else {
+                                showDialog<bool>(
+                                    context: context,
+                                    builder: (_) {
+                                      return StatefulBuilder(
+                                          builder: (context, setState) {
+                                            return AlertDialog(
+                                                title: const Text("Xin nghỉ học"),
+                                                content: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    // Thu nhỏ chiều cao Column
+                                                    mainAxisAlignment: MainAxisAlignment
+                                                        .center,
+                                                    crossAxisAlignment: CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                          "Vui lòng chọn chức năng: "),
+                                                      const SizedBox(height: 10),
 
-                                                  RadioListTile<String>(
-                                                    title: const Text(
-                                                        "Tạo đơn xin nghỉ học"),
-                                                    value: "absence_request",
-                                                    groupValue: absenceType,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        absenceType = value!;
-                                                        print(absenceType);
-                                                      });
-                                                    },
-                                                  ),
-                                                  RadioListTile<String>(
-                                                    title: const Text(
-                                                        "Xem đơn xin nghỉ học trước đó"),
-                                                    value: "get_absence",
-                                                    groupValue: absenceType,
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        absenceType = value!;
-                                                        print(absenceType);
-                                                      });
-                                                    },
-                                                  ),
-
-
-                                                ],
-                                              ),
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () => _.pop(true),
-                                                  child: const Text(
-                                                      "Xác nhận")),
-                                              TextButton(
-                                                  onPressed: () => _.pop(false),
-                                                  child: const Text("Hủy"))
-                                            ]);
-                                      });
-                                }
-                              ).then((value) async {
-                                if (value == null) return;
-                                if (value) {
-                                  if (absenceType == 'absence_request') {
-                                    final formKeyAbsence = GlobalKey<FormState>();
-                                    showDialog<bool>(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                            title: Text("Đơn xin nghỉ học lớp ${data.class_id}", style: TypeStyle.title1),
-                                            content: SingleChildScrollView(
-                                              child: Form(
-                                                key: formKeyAbsence,
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    // Text("Bạn có chắc chắn muốn thêm sinh viên sau vào lớp ${selectRegister.getCells().first.value} không?"),
-                                                    // const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "MSSV: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: ref.read(accountProvider).value?.idAccount,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                    const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "Sinh viên: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: ref.read(accountProvider).value?.name,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                    const SizedBox(height: 10),
-                                                    Text.rich(TextSpan(children: [
-                                                      const TextSpan(text: "Email: ", style: TypeStyle.body4),
-                                                      TextSpan(
-                                                          text: ref.read(accountProvider).value?.email,
-                                                          style: TypeStyle.body4.copyWith(
-                                                              color: Theme.of(context).colorScheme.error))
-                                                    ])),
-                                                    const SizedBox(height: 10),
-                                                    TextFormField(
-                                                      controller: startDate,
-                                                      readOnly: true, // Không cho phép nhập tay
-                                                      onTap: () => _selectDate(context), // Mở hộp thoại chọn ngày
-                                                      decoration: const InputDecoration(
-                                                        hintText: "Chọn ngày xin nghỉ",
-                                                        border: OutlineInputBorder(),
-                                                        suffixIcon: Icon(Icons.calendar_today),
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null || value.isEmpty) {
-                                                          return "Vui lòng chọn ngày xin nghỉ.";
-                                                        }
-                                                        DateTime startDateCheck = DateTime.parse(startDate.text);
-                                                        if (startDateCheck.isBefore(DateTime.now())) {
-                                                          return "Ngày xin nghỉ phải sau hôm nay";
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    const Text("Lý do: ", style: TypeStyle.body4),
-                                                    const SizedBox(height: 5),
-                                                    TextInput(
-                                                      controller: reason,
-                                                      validator: Validator.reason(),
-                                                      hintText: "Nhập lý do xin nghỉ học",
-                                                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                    ),
-                                                    const SizedBox(height: 10),
-                                                    const Text("Hồ sơ minh chứng: ", style: TypeStyle.body4),
-                                                    const SizedBox(height: 5),
-                                                    Center(
-                                                      child: ElevatedButton(
-                                                        style: ElevatedButton.styleFrom(
-                                                          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 24), // Đặt padding phù hợp
-                                                          backgroundColor: Colors.blue, // Màu nền của nút
-                                                          foregroundColor: Colors.white, // Màu chữ của nút
-                                                        ),
-                                                        onPressed: () async {
-                                                          // Sử dụng thư viện file_picker để chọn file
-                                                          final result = await FilePicker.platform.pickFiles();
-
-                                                          if (result != null && result.files.single.path != null) {
-                                                            // Xử lý file được chọn
-                                                            setState(() {
-                                                              selectedFile = File(result.files.single.path!); // Lưu file đã chọn
-                                                            });
-                                                          } else {
-                                                            // Người dùng hủy chọn file
-                                                            setState(() {
-                                                              selectedFile = null;
-                                                            });
-                                                          }
+                                                      RadioListTile<String>(
+                                                        title: const Text(
+                                                            "Tạo đơn xin nghỉ học"),
+                                                        value: "absence_request",
+                                                        groupValue: absenceType,
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            absenceType = value!;
+                                                            print(absenceType);
+                                                          });
                                                         },
-                                                        child: const Text("Chọn file"), // Nội dung nút
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () {
-                                                    if (formKeyAbsence.currentState?.validate() ?? false) {
-                                                      _.pop(true);
-                                                    }
-                                                  },
-                                                  child: const Text("Gửi")),
-                                              TextButton(
-                                                  onPressed: () => _.pop(false),
-                                                  child: const Text("Hủy"))
-                                            ])
-                                    ).then((value) async {
-                                      if (value == null) return;
-                                      if (value) {
-                                        print(value);
-                                        if (await ref.read(absenceProvider.notifier).requestAbsence(data.class_id, startDate.text, reason.text, selectedFile, "Đơn xin nghỉ học")) {
-                                          await ref.read(absenceProvider.notifier).sendNotify(
-                                              'MSSV: ${ref.read(accountProvider).value?.idAccount}; Email: ${ref.read(accountProvider).value?.email}; Ngày xin nghỉ: ${startDate.text}; Lớp: ${data.class_id} - ${data.class_name}; Lý do: ${reason.text}',
-                                              data.lecturer_account_id, "ABSENCE"
-                                          );
-                                          startDate.clear();
-                                          reason.clear();
-                                          selectedFile = null;
-                                          Fluttertoast.showToast(msg: "Gửi đơn xin nghỉ học thành công");
-                                        } else {
-                                          Fluttertoast.showToast(msg: "Gửi đơn xin nghỉ học thất bại!");
-                                        }
-                                      }
+                                                      RadioListTile<String>(
+                                                        title: const Text(
+                                                            "Xem đơn xin nghỉ học trước đó"),
+                                                        value: "get_absence",
+                                                        groupValue: absenceType,
+                                                        onChanged: (value) {
+                                                          setState(() {
+                                                            absenceType = value!;
+                                                            print(absenceType);
+                                                          });
+                                                        },
+                                                      ),
 
-                                    });
-                                  } else if (absenceType == 'get_absence') {
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => const AbsenceRequestManager()));
+
+                                                    ],
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () => _.pop(true),
+                                                      child: const Text(
+                                                          "Xác nhận")),
+                                                  TextButton(
+                                                      onPressed: () => _.pop(false),
+                                                      child: const Text("Hủy"))
+                                                ]);
+                                          });
+                                    }
+                                ).then((value) async {
+                                  if (value == null) return;
+                                  if (value) {
+                                    if (absenceType == 'absence_request') {
+                                      final formKeyAbsence = GlobalKey<FormState>();
+                                      showDialog<bool>(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                              title: Text("Đơn xin nghỉ học lớp ${data.class_id}", style: TypeStyle.title1),
+                                              content: SingleChildScrollView(
+                                                  child: Form(
+                                                    key: formKeyAbsence,
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        // Text("Bạn có chắc chắn muốn thêm sinh viên sau vào lớp ${selectRegister.getCells().first.value} không?"),
+                                                        // const SizedBox(height: 10),
+                                                        Text.rich(TextSpan(children: [
+                                                          const TextSpan(text: "MSSV: ", style: TypeStyle.body4),
+                                                          TextSpan(
+                                                              text: ref.read(accountProvider).value?.idAccount,
+                                                              style: TypeStyle.body4.copyWith(
+                                                                  color: Theme.of(context).colorScheme.error))
+                                                        ])),
+                                                        const SizedBox(height: 10),
+                                                        Text.rich(TextSpan(children: [
+                                                          const TextSpan(text: "Sinh viên: ", style: TypeStyle.body4),
+                                                          TextSpan(
+                                                              text: ref.read(accountProvider).value?.name,
+                                                              style: TypeStyle.body4.copyWith(
+                                                                  color: Theme.of(context).colorScheme.error))
+                                                        ])),
+                                                        const SizedBox(height: 10),
+                                                        Text.rich(TextSpan(children: [
+                                                          const TextSpan(text: "Email: ", style: TypeStyle.body4),
+                                                          TextSpan(
+                                                              text: ref.read(accountProvider).value?.email,
+                                                              style: TypeStyle.body4.copyWith(
+                                                                  color: Theme.of(context).colorScheme.error))
+                                                        ])),
+                                                        const SizedBox(height: 10),
+                                                        TextFormField(
+                                                          controller: startDate,
+                                                          readOnly: true, // Không cho phép nhập tay
+                                                          onTap: () => _selectDate(context), // Mở hộp thoại chọn ngày
+                                                          decoration: const InputDecoration(
+                                                            hintText: "Chọn ngày xin nghỉ",
+                                                            border: OutlineInputBorder(),
+                                                            suffixIcon: Icon(Icons.calendar_today),
+                                                          ),
+                                                          validator: (value) {
+                                                            if (value == null || value.isEmpty) {
+                                                              return "Vui lòng chọn ngày xin nghỉ.";
+                                                            }
+                                                            DateTime startDateCheck = DateTime.parse(startDate.text);
+                                                            if (startDateCheck.isBefore(DateTime.now())) {
+                                                              return "Ngày xin nghỉ phải sau hôm nay";
+                                                            }
+                                                            return null;
+                                                          },
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                        const Text("Lý do: ", style: TypeStyle.body4),
+                                                        const SizedBox(height: 5),
+                                                        TextInput(
+                                                          controller: reason,
+                                                          validator: Validator.reason(),
+                                                          hintText: "Nhập lý do xin nghỉ học",
+                                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                        const Text("Hồ sơ minh chứng: ", style: TypeStyle.body4),
+                                                        const SizedBox(height: 5),
+                                                        Center(
+                                                          child: ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 24), // Đặt padding phù hợp
+                                                              backgroundColor: Colors.blue, // Màu nền của nút
+                                                              foregroundColor: Colors.white, // Màu chữ của nút
+                                                            ),
+                                                            onPressed: () async {
+                                                              // Sử dụng thư viện file_picker để chọn file
+                                                              final result = await FilePicker.platform.pickFiles();
+
+                                                              if (result != null && result.files.single.path != null) {
+                                                                // Xử lý file được chọn
+                                                                setState(() {
+                                                                  selectedFile = File(result.files.single.path!); // Lưu file đã chọn
+                                                                });
+                                                              } else {
+                                                                // Người dùng hủy chọn file
+                                                                setState(() {
+                                                                  selectedFile = null;
+                                                                });
+                                                              }
+                                                            },
+                                                            child: const Text("Chọn file"), // Nội dung nút
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () {
+                                                      if (formKeyAbsence.currentState?.validate() ?? false) {
+                                                        _.pop(true);
+                                                      }
+                                                    },
+                                                    child: const Text("Gửi")),
+                                                TextButton(
+                                                    onPressed: () => _.pop(false),
+                                                    child: const Text("Hủy"))
+                                              ])
+                                      ).then((value) async {
+                                        if (value == null) return;
+                                        if (value) {
+                                          print(value);
+                                          if (await ref.read(absenceProvider1.notifier).requestAbsence(data.class_id, startDate.text, reason.text, selectedFile, "Đơn xin nghỉ học")) {
+                                            await ref.read(absenceProvider1.notifier).sendNotify(
+                                                'MSSV: ${ref.read(accountProvider).value?.idAccount}; Email: ${ref.read(accountProvider).value?.email}; Ngày xin nghỉ: ${startDate.text}; Lớp: ${data.class_id} - ${data.class_name}; Lý do: ${reason.text}',
+                                                data.lecturer_account_id, "ABSENCE"
+                                            );
+                                            startDate.clear();
+                                            reason.clear();
+                                            selectedFile = null;
+                                            Fluttertoast.showToast(msg: "Gửi đơn xin nghỉ học thành công");
+                                          } else {
+                                            Fluttertoast.showToast(msg: "Gửi đơn xin nghỉ học thất bại!");
+                                          }
+                                        }
+
+                                      });
+                                    } else if (absenceType == 'get_absence') {
+                                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(null, null, null);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: data.class_id,)));
+                                    }
                                   }
-                                }
-                              });
+                                });
+                              }
                             },
-                            child: const Center(child: Text("Xin nghỉ học")),
+                            child: const Center(child: Text("Nghỉ phép")),
                           ),
                         ),
                       ),
                       const SizedBox(width: 20),
+                      // TODO: Bài tập
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () async {
                               print("Bài tập");
                               // print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Done - Chỉnh sửa lớp học(chuyển page edit-class)
                               if (selectRegister.getCells().isNotEmpty) {
                                 try {
                                   await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
@@ -523,11 +528,12 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                       const SizedBox(width: 20),
                     ],
                   ),
-                  if (ref.read(accountProvider).value?.role == "STUDENT") const SizedBox(height: 10),
-                  if (ref.read(accountProvider).value?.role == "STUDENT") Row(
+                  const SizedBox(height: 10),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(width: 20),
+                      // TODO: Tài liệu
                       Expanded(
                         child: Center(
                           child: FilledButton(
@@ -535,7 +541,6 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                               // idStudent.clear();
                               print("Tài liệu môn học");
                               // print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Done - Thêm sinh viên vào lớp học (Hộp thoại đồng ý or hủy)
                               if (selectRegister.getCells().isNotEmpty) {
 
                               } else {
@@ -547,13 +552,14 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                         ),
                       ),
                       const SizedBox(width: 20),
+                      // if (ref.read(accountProvider).value?.role == 'STUDENT') const SizedBox(width: 20),
+                      // TODO: Điểm danh
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () {
-                              print("Xóa lớp học");
+                              print("Điểm danh");
                               // print("select row: ${selectRegister.getCells().first.value}");
-                              // TODO: Done - Xóa lớp học (hộp thoại đồng ý or hủy)
                               if (selectRegister.getCells().isNotEmpty) {
                                 showDialog<bool>(
                                     context: context,
@@ -629,7 +635,7 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                               // }
                               // Fluttertoast.showToast(msg: "Chưa có api xóa lớp, danh sách lớp xóa: $message");
                             },
-                            child: const Center(child: Text("Xóa lớp học")),
+                            child: const Center(child: Text("Điểm danh")),
                           ),
                         ),
                       ),

@@ -1,5 +1,6 @@
 import "dart:io";
 
+import "package:app_qldt/model/entities/absence_request_model.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -331,10 +332,36 @@ class AuthApiRepository {
     });
   }
 
-  Future<Map<String, dynamic>> getAbsenceRequestStudent(String? classId, String? status, String? date) {
+  Future<List<AbsenceRequestModel>> getAbsenceRequestStudent(String? classId, String? status, String? date) {
     return api.getAbsenceRequestStudent(classId, status, date).then((value) async {
       if (value["meta"]["code"] == "1000") {
-        return value['data'];
+        var listClass = <AbsenceRequestModel>[];
+        for (int i = 0; i < (value["data"]["page_content"] as List<dynamic>).length; i++) {
+          listClass.add(AbsenceRequestModel.fromJson((value["data"]["page_content"] as List<dynamic>)[i]));
+        }
+        return listClass;
+      }
+      throw value;
+    });
+  }
+
+  Future<List<AbsenceRequestModel>> getAbsenceRequestLecture(String? classId, String? status, String? date) {
+    return api.getAbsenceRequestLecture(classId, status, date).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        var listClass = <AbsenceRequestModel>[];
+        for (int i = 0; i < (value["data"]["page_content"] as List<dynamic>).length; i++) {
+          listClass.add(AbsenceRequestModel.fromJson((value["data"]["page_content"] as List<dynamic>)[i]));
+        }
+        return listClass;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> reviewAbsenceRequest(String requestId, String status) {
+    return api.reviewAbsenceRequest(requestId, status).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
       }
       throw value;
     });
