@@ -139,6 +139,7 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                                   await ref.read(infoClassDataProvider.notifier).getClassInfo(classCode.text);
                                 } catch (_) {
                                   Fluttertoast.showToast(msg: "Lấy thông tin lớp ${classCode.text} thất bại");
+                                  return;
                                 }
                                 // await ref.read(infoClassDataProvider.notifier).getClassInfo(classCode.text);
                                 if (ref.read(infoClassDataProvider).value != null) {
@@ -184,6 +185,7 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                           await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         } catch (_) {
                           Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                          return;
                         }
                         // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
@@ -202,6 +204,7 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                           await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         } catch (_) {
                           Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                          return;
                         }
                         // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                         if (ref.read(infoClassDataProvider).value != null) {
@@ -359,15 +362,10 @@ class _ClassManagerLecturer extends ConsumerState<ClassManagerLecturer> {
                                   await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                                 } catch (_) {
                                   Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                                  return;
                                 }
-                                // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                                 if (ref.read(infoClassDataProvider).value != null) {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => const EditClass()));
-                                  // Navigator.of(context, rootNavigator: true).push(
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => EditClass(),
-                                  //   ),
-                                  // );
                                 }
                               } else {
                                 Fluttertoast.showToast(msg: "Vui lòng chọn lớp để thực hiện chức năng này");

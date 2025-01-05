@@ -19,7 +19,10 @@ import '../messaging/messaging_detail_settings_page.dart';
 
 class AbsenceRequestManager extends ConsumerStatefulWidget {
   final String classIdLecturer;
-  const AbsenceRequestManager({super.key, required this.classIdLecturer});
+  final String? dateStart;
+  final String? status;
+  final List<AbsenceRequestModel>? data;
+  const AbsenceRequestManager(this.data, {super.key, required this.classIdLecturer, required this.dateStart, required this.status});
 
   @override
   ConsumerState<AbsenceRequestManager> createState() => _AbsenceRequestManager();
@@ -60,34 +63,33 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
   @override
   Widget build(BuildContext context) {
     checkStudent = ref.read(accountProvider).value?.role == "STUDENT";
-    if (!checkStudent) {
-      status = 'PENDING';
-      classId.text = widget.classIdLecturer;
+    classId.text = widget.classIdLecturer;
+    if (widget.status != null) {
+      status = widget.status;
     }
-    return Consumer(builder: (context, ref, _) {
-      final future = ref.read(absenceProvider.future); // Lấy Future
-      return FutureBuilder<List<AbsenceRequestModel>?>(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),  // Hiển thị khi đang chờ dữ liệu
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: snapshot.error.toString().contains("9990")
-                  ? const Text('Tài khoản đã bị khóa!')
-                  : Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
-            );
-          } else if (!snapshot.hasData) {
-            return const Center(
-              child: Text('No data available'), // Khi không có dữ liệu
-            );
-          }
+    if (widget.dateStart != null) {
+      startDate.text = widget.dateStart!;
+    }
+    results.value = widget.data ?? [];
 
-          final data = snapshot.data!;
-          results.value = data;
-          return Scaffold(
+    ref.listen(absenceProvider, (prev, next) {
+      if (next is AsyncData) {
+        // setState(() {
+        //   results.value = next.value!;
+        // });
+        results.value = next.value!;
+      } else if (next is AsyncError) {
+        Fluttertoast.showToast(msg: next.error.toString());
+      }
+    });
+
+    return Consumer(builder: (context, ref, _) {
+      final infoMaterialState = ref.watch(absenceProvider);
+
+      return Stack(
+        children: [
+          // Giao diện chính của màn hình
+          Scaffold(
             appBar: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 title: const Align(
@@ -122,11 +124,11 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
                                   List<AbsenceRequestModel>? value = checkStudent
                                       ? await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(classId.text, status, startDate.text)
                                       : await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(classId.text, status, startDate.text);
-                                  if (value != null) {
-                                    results.value = value;
-                                  } else {
-                                    results.value = [];
-                                  }
+                                  // if (value != null) {
+                                  //   results.value = value;
+                                  // } else {
+                                  //   results.value = [];
+                                  // }
                                 },
                                 child: const Center(child: Text("Tìm kiếm")),
                               ),
@@ -149,9 +151,9 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
                                     hintText: "Nhập mã lớp",
                                     border: const OutlineInputBorder(),
                                     filled: true,
-                                      fillColor: !checkStudent
-                                          ? Palette.grey55 // Change the background color if readOnly is true
-                                          : Palette.white,
+                                    fillColor: !checkStudent
+                                        ? Palette.grey55 // Change the background color if readOnly is true
+                                        : Palette.white,
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                                   ),
                                 ),
@@ -368,31 +370,41 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
                                           if (value == null) return;
                                           if (value) {
                                             if (absenceType == 'true') {
-                                              if (await ref.read(absenceProvider1.notifier).reviewAbsenceRequest(results1[index].id, 'ACCEPTED')) {
+                                              if (await ref.read(absenceProvider.notifier).reviewAbsenceRequest(results1[index].id, 'ACCEPTED')) {
                                                 final filtered = results.value.where((item) => item.id != results1[index].id).toList();
                                                 // setState(() {
-                                                await ref.read(absenceProvider1.notifier).sendNotify(
+                                                await ref.read(absenceProvider.notifier).sendNotify(
                                                     'Mã giảng viên: ${ref.read(accountProvider).value?.idAccount}; Email: ${ref.read(accountProvider).value?.email}; Mã đơn xin nghỉ học: ${results1[index].id}; Ngày xin nghỉ: ${results1[index].absence_date}; Mã lớp: ${results1[index].class_id}; Lý do: ${results1[index].reason}',
                                                     results1[index].student_account?['account_id'], "ACCEPT_ABSENCE_REQUEST"
                                                 );
-                                                  results.value = filtered;
-                                                ref.read(absenceProvider.notifier).forward(AsyncData(filtered));
-                                                // });
+                                                List<AbsenceRequestModel>? value = checkStudent
+                                                    ? await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(classId.text, status, startDate.text)
+                                                    : await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(classId.text, status, startDate.text);
+                                                // if (value != null) {
+                                                //   results.value = value;
+                                                // } else {
+                                                //   results.value = [];
+                                                // }
                                                 Fluttertoast.showToast(msg: "Đồng ý duyệt đơn xin nghỉ học thành công");
                                               } else {
                                                 Fluttertoast.showToast(msg: "Duyệt đơn xin nghỉ học thất bại");
                                               }
                                             } else if (absenceType == 'false') {
-                                              if (await ref.read(absenceProvider1.notifier).reviewAbsenceRequest(results1[index].id, 'REJECTED')) {
+                                              if (await ref.read(absenceProvider.notifier).reviewAbsenceRequest(results1[index].id, 'REJECTED')) {
                                                 final filtered = results.value.where((item) => item.id != results1[index].id).toList();
                                                 // setState(() {
-                                                await ref.read(absenceProvider1.notifier).sendNotify(
+                                                await ref.read(absenceProvider.notifier).sendNotify(
                                                     'Mã giảng viên: ${ref.read(accountProvider).value?.idAccount}; Email: ${ref.read(accountProvider).value?.email}; Mã đơn xin nghỉ học: ${results1[index].id}; Ngày xin nghỉ: ${startDate.text}; Mã lớp: ${results1[index].class_id}; Lý do: ${results1[index].reason}',
                                                     results1[index].student_account?['account_id'], "REJECT_ABSENCE_REQUEST"
                                                 );
-                                                  results.value = filtered;
-                                                ref.read(absenceProvider.notifier).forward(AsyncData(filtered));
-                                                // });
+                                                List<AbsenceRequestModel>? value = checkStudent
+                                                    ? await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(classId.text, status, startDate.text)
+                                                    : await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(classId.text, status, startDate.text);
+                                                // if (value != null) {
+                                                //   results.value = value;
+                                                // } else {
+                                                //   results.value = [];
+                                                // }
                                                 Fluttertoast.showToast(msg: "Từ chối đơn xin nghỉ học thành công");
                                               } else {
                                                 Fluttertoast.showToast(msg: "Duyệt đơn xin nghỉ học thất bại");
@@ -416,9 +428,19 @@ class _AbsenceRequestManager extends ConsumerState<AbsenceRequestManager> {
                   )
               ),
             ),
-          );
-        },
+          ),
+
+          // Hiển thị màn hình tải khi trạng thái là loading
+          if (infoMaterialState.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5), // Nền mờ
+              child: const Center(
+                child: CircularProgressIndicator(), // Vòng tròn tải
+              ),
+            ),
+        ],
       );
     });
+
   }
 }

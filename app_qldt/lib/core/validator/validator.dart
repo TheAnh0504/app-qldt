@@ -94,4 +94,28 @@ class Validator {
 
     return null;
   };
+
+  static String? Function(String?) materialName() => (String? str) {
+    if (str?.isEmpty ?? true) {
+      return "Tên tài liệu không được để trống";
+    }
+
+    return null;
+  };
+
+  static String? Function(String?) description() => (String? str) {
+    if (str?.isEmpty ?? true) {
+      return "Mô tả tài liệu không được để trống";
+    }
+
+    return null;
+  };
+
+  static String? Function(String?) materialType() => (String? str) {
+    if (str?.isEmpty ?? true) {
+      return "Loại tài liệu không được để trống";
+    }
+
+    return null;
+  };
 }

@@ -194,6 +194,7 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                               await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             } catch (_) {
                               Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                              return;
                             }
                             // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             if (ref.read(infoClassDataProvider).value != null) {
@@ -212,6 +213,7 @@ class _BuildBody extends ConsumerState<ProfilePage> {
                               await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             } catch (_) {
                               Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                              return;
                             }
                             // await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                             if (ref.read(infoClassDataProvider).value != null) {

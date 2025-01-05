@@ -1,10 +1,13 @@
 import "dart:io";
 
+import "package:connectivity_plus/connectivity_plus.dart";
 import "package:device_info_plus/device_info_plus.dart";
 import "package:dio/dio.dart";
 import "package:firebase_messaging/firebase_messaging.dart";
 import "package:flutter/cupertino.dart";
+import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:fluttertoast/fluttertoast.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:app_qldt/core/extension/extension.dart";
 import "package:app_qldt/core/log/logger.dart";
@@ -47,7 +50,16 @@ class SWApi {
         print("check 456");
         ref.read(checkExpiredToken.notifier).forward(const AsyncValue.data(true));
         return handler.next(res);
-      }));
+      }, onError: (DioError err, handler) async {
+          final List<ConnectivityResult> connectivityResult = await (Connectivity().checkConnectivity());
+          if (connectivityResult.contains(ConnectivityResult.none)) {
+            print('12345345435');
+            Fluttertoast.showToast(msg: "Mạng không khả dụng, vui lòng thử lại sau");
+          } else {
+            Fluttertoast.showToast(msg: "Không lấy được dữ liệu từ server");
+          }
+          return handler.next(err); // Tiếp tục xử lý lỗi
+        },));
   }
 
   late final Dio dio;
@@ -991,6 +1003,61 @@ class SWApi {
         "token": await accessToken,
         "request_id": requestId,
         "status": status
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> uploadMaterial(File file, String classId, String title, String description, String materialType) async {
+    return dio.post("/it5023e/upload_material",
+      data: FormData.fromMap(
+          {
+            "file": await MultipartFile.fromFile(file.path),
+            "token": await accessToken,
+            "classId": classId,
+            "title": title,
+            "description": description,
+            "materialType": materialType
+          }),
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> editMaterial(File file, String materialId, String title, String description, String materialType) async {
+    return dio.post("/it5023e/edit_material",
+      data: FormData.fromMap(
+          {
+            "file": await MultipartFile.fromFile(file.path),
+            "token": await accessToken,
+            "materialId": materialId,
+            "title": title,
+            "description": description,
+            "materialType": materialType
+          }),
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> deleteMaterial(String material_id) async {
+    return dio.post("/it5023e/delete_material",
+      data: {
+            "token": await accessToken,
+            "material_id": material_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getInfoMaterial(String material_id) async {
+    return dio.post("/it5023e/get_material_info",
+      data: {
+        "token": await accessToken,
+        "material_id": material_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getListMaterial(String class_id) async {
+    return dio.post("/it5023e/get_material_list",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
       },
     ).then((value) => value.data);
   }

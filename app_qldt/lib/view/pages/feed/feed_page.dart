@@ -110,7 +110,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   // Danh sách trạng thái màu
   List<Color> listColor = List.generate(7, (index) => Colors.grey[300]!);
   int selectedDayIndex = -1;
-  bool schedule = false;
+  bool schedule = true;
   List<bool> listColorDay = List.generate(7, (index) => false);
   List<ClassInfoModel> listClass = [];
   ValueNotifier<List<ClassInfoModel>> results = ValueNotifier([]);
@@ -123,19 +123,46 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.invalidate(listClassRegisterNowProvider);
+      await ref.read(listClassRegisterNowProvider.notifier).getRegisterClassNow();
+      listClass = ref.read(listClassRegisterNowProvider).value!;
+
+      final currentDate = DateTime.now();
+      final formattedDate = DateFormat('dd/MM/yyyy').format(currentDate);
+      // Tính ngày đầu tiên của tuần (Thứ Hai)
+      final firstDayOfWeek = currentDate.subtract(Duration(days: currentDate.weekday - 1));
+      final List<String> listDayOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      // Tạo danh sách các ngày trong tuần
+      final listDay = List.generate(7, (index) {
+        final day = firstDayOfWeek.add(Duration(days: index));
+        return DateFormat('dd').format(day);
+      });
+      final indexDay = listDay.indexOf(DateFormat('dd').format(currentDate));
+
+      setState(() {
+        for (int i = 0; i < 7; i++) {
+          if (listClass.where((classInfo) {
+            final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+            return classId != null ? classId % 7 == i : false;  // Lọc giá trị hợp lệ
+          }).toList().isNotEmpty) {
+            listColorDay[i] = true;
+          }
+        }
+        results.value = listClass.where((classInfo) {
+          final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
+          return classId != null ? classId % 7 == indexDay : false;  // Lọc giá trị hợp lệ
+        }).toList();
+      });
+
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     var avatar = ref.watch(accountProvider).value?.avatar;
-    // listClass = ref.read(listClassRegisterNowProvider).value!;
-    // for (int i = 0; i < 7; i++) {
-    //   if (listClass.where((classInfo) {
-    //     final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
-    //     return classId != null ? classId % 7 == i : false;  // Lọc giá trị hợp lệ
-    //   }).toList().isNotEmpty) {
-    //     listColorDay.add(true);
-    //   } else {
-    //     listColorDay.add(false);
-    //   }
-    // }
     final currentDate = DateTime.now();
     final formattedDate = DateFormat('dd/MM/yyyy').format(currentDate);
     // Tính ngày đầu tiên của tuần (Thứ Hai)
@@ -152,43 +179,19 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
     if (selectedDayIndex == -1) {
       selectedDayIndex = indexDay;
       listColor[selectedDayIndex] = Palette.red;
-      // results.value = listClass.where((classInfo) {
-      //   final classId = int.tryParse(classInfo.class_id); // Sử dụng tryParse
-      //   return classId != null ? classId % 7 == indexDay : false;  // Lọc giá trị hợp lệ
-      // }).toList();
     }
     print(listDay);
 
+
     return Consumer(builder: (context, ref, _) {
-      final future1 = ref.read(accountProvider.future); // Lấy Future
-      final future2 = ref.read(listClassRegisterNowProvider.future); // Lấy Future
-      final combinedFuture = Future.wait([
-        future1,
-        future2,
-      ]);
-      return FutureBuilder<List<dynamic>>(
-        future: combinedFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),  // Hiển thị khi đang chờ dữ liệu
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'), // Hiển thị khi lỗi xảy ra
-            );
-          } else if (!snapshot.hasData && snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No data available'), // Khi không có dữ liệu
-            );
-          }
+      final listClassRegisterNowProviderCheck = ref.watch(listClassRegisterNowProvider);
+      final listClassProviderCheck = ref.watch(listClassProvider);
+      final listClassAllProviderCheck = ref.watch(listClassAllProvider);
 
-          // listClass = snapshot.data![1];
-          // if (snapshot.data![1] is List<ClassInfoModel>) {
-          //   listClass = snapshot.data![1] as List<ClassInfoModel>;
-          // }
-
-          return SingleChildScrollView(
+      return Stack(
+        children: [
+          // Giao diện chính của màn hình
+          SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -200,7 +203,11 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: GestureDetector(
-                          onTap: () => context.push(profileRoute),
+                          onTap: () => {
+                            if (ref.read(listClassRegisterNowProvider).value == null) {
+                              Fluttertoast.showToast(msg: "Mạng không khả dụng, vui lòng thử lại sau")
+                            } else {context.push(profileRoute)}
+                          },
                           child: Container(
                             alignment: Alignment.center,
                             margin: const EdgeInsets.all(5),
@@ -250,7 +257,6 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                         icon: const Icon(Icons.calendar_month, color: Palette.red100,),
                         onPressed: () {
                           setState(() {
-                            listClass = ref.watch(listClassRegisterNowProvider).value!;
                             schedule = !schedule;
                             for (int i = 0; i < 7; i++) {
                               if (listClass.where((classInfo) {
@@ -440,6 +446,7 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
                                           await ref.read(infoClassDataProvider.notifier).getClassInfo(results[index].class_id);
                                         } catch (_) {
                                           Fluttertoast.showToast(msg: "Lấy thông tin lớp ${results[index].class_id} thất bại");
+                                          return;
                                         }
                                         if (ref.read(infoClassDataProvider).value != null) {
                                           Navigator.push(context, MaterialPageRoute(builder: (context) => const InfoClassLecturer()));
@@ -639,10 +646,20 @@ class _BuildBodyState extends ConsumerState<_BuildBody> {
 
               ],
             ),
-          );
-        },
+          ),
+
+          // Hiển thị màn hình tải khi trạng thái là loading
+          if (listClassRegisterNowProviderCheck.isLoading || listClassAllProviderCheck.isLoading || listClassProviderCheck.isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5), // Nền mờ
+              child: const Center(
+                child: CircularProgressIndicator(), // Vòng tròn tải
+              ),
+            ),
+        ],
       );
     });
+
   }
 }
 

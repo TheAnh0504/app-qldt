@@ -1,6 +1,7 @@
 import "dart:io";
 
 import "package:app_qldt/model/entities/absence_request_model.dart";
+import "package:app_qldt/model/entities/material_model.dart";
 import "package:flutter_hooks/flutter_hooks.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -361,6 +362,51 @@ class AuthApiRepository {
   Future<Map<String, dynamic>> reviewAbsenceRequest(String requestId, String status) {
     return api.reviewAbsenceRequest(requestId, status).then((value) async {
       if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> uploadMaterial(File file, String classId, String title, String description, String materialType) {
+    return api.uploadMaterial(file, classId, title, description, materialType).then((value) async {
+      if (value["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> editMaterial(File file, String materialId, String title, String description, String materialType) {
+    return api.editMaterial(file, materialId, title, description, materialType).then((value) async {
+      if (value["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> deleteMaterial(String material_id) {
+    return api.deleteMaterial(material_id).then((value) async {
+      if (value["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getInfoMaterial(String material_id) {
+    return api.getInfoMaterial(material_id).then((value) async {
+      if (value["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getListMaterial(String class_id) {
+    return api.getListMaterial(class_id).then((value) async {
+      if (value["code"] == "1000") {
         return value;
       }
       throw value;

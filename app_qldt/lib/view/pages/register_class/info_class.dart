@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:app_qldt/controller/absence_provider.dart';
 import 'package:app_qldt/controller/account_provider.dart';
 import 'package:app_qldt/controller/list_class_provider.dart';
+import 'package:app_qldt/view/pages/material/material_manager_page.dart';
 import 'package:app_qldt/view/pages/register_class/register_class_page_home.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,6 +19,7 @@ import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../controller/material_provider.dart';
 import '../../../controller/signup_provider.dart';
 import '../../../core/common/types.dart';
 import '../../../core/router/router.dart';
@@ -26,6 +28,7 @@ import '../../../core/theme/component.dart';
 import '../../../core/theme/palette.dart';
 import '../../../core/theme/typestyle.dart';
 import '../../../core/validator/validator.dart';
+import '../../../model/entities/absence_request_model.dart';
 import '../../../model/entities/account_model.dart';
 import '../../../model/entities/class_info_model.dart';
 import '../../../model/entities/message_model.dart';
@@ -289,8 +292,8 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                             onPressed: () async {
                               print("Xin nghỉ học");
                               if (ref.read(accountProvider).value?.role == 'LECTURER') {
-                                await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(data.class_id, 'PENDING', null);
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: data.class_id,)));
+                                List<AbsenceRequestModel>? value = await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(data.class_id, 'PENDING', null);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(value, classIdLecturer: data.class_id, dateStart: null,  status: 'PENDING',)));
                               } else {
                                 showDialog<bool>(
                                     context: context,
@@ -442,17 +445,25 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                                                                 // Xử lý file được chọn
                                                                 setState(() {
                                                                   selectedFile = File(result.files.single.path!); // Lưu file đã chọn
+                                                                  context.go(feedRoute);
                                                                 });
                                                               } else {
                                                                 // Người dùng hủy chọn file
                                                                 setState(() {
                                                                   selectedFile = null;
+                                                                  context.go(feedRoute);
                                                                 });
                                                               }
                                                             },
-                                                            child: const Text("Chọn file"), // Nội dung nút
+                                                            child: Text(selectedFile == null ? "Chọn file" : "Sửa file"), // Nội dung nút
                                                           ),
                                                         ),
+                                                        const SizedBox(height: 10),
+                                                        if (selectedFile != null) // Nếu đã chọn file, hiển thị tên file
+                                                          Text(
+                                                            "File đã chọn: ${selectedFile!.path.split('/').last}",
+                                                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                          ),
                                                       ],
                                                     ),
                                                   )
@@ -489,8 +500,8 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
 
                                       });
                                     } else if (absenceType == 'get_absence') {
-                                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(null, null, null);
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: data.class_id,)));
+                                      List<AbsenceRequestModel>? value = await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(null, null, null);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(value, classIdLecturer: data.class_id, dateStart: null, status: null,)));
                                     }
                                   }
                                 });
@@ -513,6 +524,7 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                                   await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
                                 } catch (_) {
                                   Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
+                                  return;
                                 }
                                 if (ref.read(infoClassDataProvider).value != null) {
                                   // Navigator.push(context, MaterialPageRoute(builder: (context) => const EditClass()));
@@ -533,19 +545,14 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(width: 20),
-                      // TODO: Tài liệu
+                      // TODO: Tài liệu - Done
                       Expanded(
                         child: Center(
                           child: FilledButton(
                             onPressed: () async {
-                              // idStudent.clear();
                               print("Tài liệu môn học");
-                              // print("select row: ${selectRegister.getCells().first.value}");
-                              if (selectRegister.getCells().isNotEmpty) {
-
-                              } else {
-                                Fluttertoast.showToast(msg: "Vui lòng chọn lớp để thực hiện chức năng này");
-                              }
+                              await ref.read(listMaterialProvider.notifier).getListMaterial(data.class_id);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => MaterialManagerPage(infoClass: data,)));
                             },
                             child: const Center(child: Text("Tài liệu")),
                           ),

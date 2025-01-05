@@ -14,6 +14,7 @@ import "package:app_qldt/core/theme/palette.dart";
 import "../../../controller/absence_provider.dart";
 import "../../../controller/messaging_provider.dart";
 import "../../../core/common/formatter.dart";
+import "../../../model/entities/absence_request_model.dart";
 import "../home_skeleton.dart";
 import "../register_class/absence_request_manager.dart";
 
@@ -80,14 +81,14 @@ class _FeedNotiPageState extends ConsumerState<FeedNotiPage> {
                       });
                     }
                     if (item.titlePushNotification == 'Absence request') {
-                      await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(item.message?.split('Lớp: ')[1].split(' - ')[0], 'PENDING', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Lớp: ')[1].split(' - ')[0],)));
+                      List<AbsenceRequestModel>? value = await ref.read(absenceProvider.notifier).getAbsenceRequestLecture(item.message?.split('Lớp: ')[1].split(' - ')[0], 'PENDING', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(value, classIdLecturer: item.message!.split('Lớp: ')[1].split(' - ')[0], dateStart: item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0], status: 'PENDING',)));
                     } else if (item.titlePushNotification == 'Accept Absence request') {
-                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'ACCEPTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0],)));
+                      List<AbsenceRequestModel>? value = await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'ACCEPTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(value, classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0], dateStart: item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0], status: 'ACCEPTED',)));
                     } else if (item.titlePushNotification == 'Reject Absence request') {
-                      await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'REJECTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0],)));
+                      List<AbsenceRequestModel>? value = await ref.read(absenceProvider.notifier).getAbsenceRequestStudent(item.message?.split('Mã lớp: ')[1].split(';')[0], 'REJECTED', item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0]);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => AbsenceRequestManager(value, classIdLecturer: item.message!.split('Mã lớp: ')[1].split(';')[0], dateStart: item.message?.split('Ngày xin nghỉ: ')[1].split(';')[0], status: 'REJECTED',)));
                     }
                   },
                   child: Container(

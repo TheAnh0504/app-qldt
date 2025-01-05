@@ -204,7 +204,10 @@ class _HomeSkeletonState extends ConsumerState<HomeSkeleton> with WidgetsBinding
                         .toString()),
             onDestinationSelected: (value) {
               if (value == 2) {
-                if (ref.read(listClassRegisterNowProvider).value == null) return;
+                if (ref.read(listClassRegisterNowProvider).value == null) {
+                  Fluttertoast.showToast(msg: "Mạng không khả dụng, vui lòng thử lại sau");
+                  return;
+                }
               }
               context.go([feedRoute, messagingRoute, profileRoute, settingsRoute][value]);
             },

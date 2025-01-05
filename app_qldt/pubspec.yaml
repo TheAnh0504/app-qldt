@@ -90,6 +90,7 @@ dependencies:
   syncfusion_flutter_datagrid: ^28.1.33
   connectivity_plus: ^6.1.1
   file_picker: ^8.0.7
+  http: ^1.0.0
 
 dev_dependencies:
   flutter_test:
