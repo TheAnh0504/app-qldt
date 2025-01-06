@@ -457,6 +457,60 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<Map<String, dynamic>> getListSurvey(String class_id) {
+    return api.getListSurvey(class_id).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> createSurvey(File? file, String classId, String title, String deadline, String? description) {
+    return api.createSurvey(file, classId, title, deadline, description).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> updateSurvey(File? file, String assignmentId, String deadline, String? description) {
+    return api.updateSurvey(file, assignmentId, deadline, description).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> deleteSurvey(String survey_id) {
+    return api.deleteSurvey(survey_id).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getListAssignment(String? type, String class_id) {
+    return api.getListAssignment(type, class_id).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> submit(File? file, String assignmentId, String? textResponse) {
+    return api.submit(file, assignmentId, textResponse).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {

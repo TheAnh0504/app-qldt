@@ -6,6 +6,9 @@ import 'package:app_qldt/controller/absence_provider.dart';
 import 'package:app_qldt/controller/account_provider.dart';
 import 'package:app_qldt/controller/attendance_provider.dart';
 import 'package:app_qldt/controller/list_class_provider.dart';
+import 'package:app_qldt/controller/survey_provider.dart';
+import 'package:app_qldt/model/entities/survey_model.dart';
+import 'package:app_qldt/view/pages/assignment/student/submit_assignment_student.dart';
 import 'package:app_qldt/view/pages/attendance/student_get_history_attendance.dart';
 import 'package:app_qldt/view/pages/attendance/teacher_manager_list_attendance.dart';
 import 'package:app_qldt/view/pages/material/material_manager_page.dart';
@@ -35,6 +38,7 @@ import '../../../model/entities/absence_request_model.dart';
 import '../../../model/entities/account_model.dart';
 import '../../../model/entities/class_info_model.dart';
 import '../../../model/entities/message_model.dart';
+import '../assignment/lecturer/manager_lecturer_assiginment.dart';
 import '../messaging/messaging_detail_settings_page.dart';
 import 'absence_request_manager.dart';
 
@@ -521,19 +525,12 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                           child: FilledButton(
                             onPressed: () async {
                               print("Bài tập");
-                              // print("select row: ${selectRegister.getCells().first.value}");
-                              if (selectRegister.getCells().isNotEmpty) {
-                                try {
-                                  await ref.read(infoClassDataProvider.notifier).getClassInfo(selectRegister.getCells().first.value);
-                                } catch (_) {
-                                  Fluttertoast.showToast(msg: "Lấy thông tin lớp ${selectRegister.getCells().first.value} thất bại");
-                                  return;
-                                }
-                                if (ref.read(infoClassDataProvider).value != null) {
-                                  // Navigator.push(context, MaterialPageRoute(builder: (context) => const EditClass()));
-                                }
+                              if (accountModel.role == "LECTURER") {
+                                List<SurveyModel> dataListDay = await ref.read(listSurveyProvider.notifier).getAllSurvey(data.class_id);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ManagerLecturerAssiginment(infoClass: data, listSurveyModel: dataListDay,)));
                               } else {
-                                Fluttertoast.showToast(msg: "Vui lòng chọn lớp để thực hiện chức năng này");
+                                Map<String, dynamic> dataListDay = await ref.read(listSurveyProvider.notifier).getListAssignment("UPCOMING", data.class_id);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitAssignmentStudent(infoClass: data, dataListDay: dataListDay,)));
                               }
                             },
                             child: const Center(child: Text("Bài tập")),
@@ -563,7 +560,7 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                       ),
                       const SizedBox(width: 20),
                       // if (ref.read(accountProvider).value?.role == 'STUDENT') const SizedBox(width: 20),
-                      // TODO: Điểm danh
+                      // TODO: Điểm danh - DOne
                       Expanded(
                         child: Center(
                           child: FilledButton(
@@ -576,52 +573,6 @@ class _InfoClassLecturer extends ConsumerState<InfoClassLecturer> {
                                 List<String> dataListDay = await ref.read(listAttendanceProvider.notifier).getHistoryAttendanceStudent(data.class_id);
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => StudentGetHistoryAttendance(infoClass: data, dataListDay: dataListDay,)));
                               }
-
-                                // showDialog<bool>(
-                                //     context: context,
-                                //     builder: (_) => AlertDialog(
-                                //         title: Text("Xác nhận xóa lớp ${selectRegister.getCells().first.value}?"),
-                                //         content: SingleChildScrollView(
-                                //           child: Column(
-                                //             mainAxisSize: MainAxisSize.min, // Thu nhỏ chiều cao Column
-                                //             mainAxisAlignment: MainAxisAlignment.center,
-                                //             crossAxisAlignment: CrossAxisAlignment.start,
-                                //             children: [
-                                //               Text("Bạn có chắc chắn muốn xóa lớp ${selectRegister.getCells().first.value} không?"),
-                                //               const SizedBox(height: 10),
-                                //               Text.rich(TextSpan(children: [
-                                //                 TextSpan(text: " Lưu ý: ", style: TypeStyle.body4.copyWith(
-                                //                     color: Theme.of(context).colorScheme.error)),
-                                //                 TextSpan(
-                                //                     text: "Hành động xóa lớp không thể hoàn tác.",
-                                //                     style: TypeStyle.body4.copyWith(
-                                //                         color: Theme.of(context).colorScheme.error))
-                                //               ])),
-                                //             ],
-                                //           ),
-                                //         ),
-                                //         actions: [
-                                //           TextButton(
-                                //               onPressed: () => _.pop(true),
-                                //               child: const Text("Xác nhận")),
-                                //           TextButton(
-                                //               onPressed: () => _.pop(false),
-                                //               child: const Text("Hủy"))
-                                //         ])
-                                // ).then((value) async {
-                                //   if (value == null) return;
-                                //   if (value) {
-                                //     if (await ref.read(listClassRegisterNowProvider.notifier).deleteClass(selectRegister.getCells().first.value)) {
-                                //
-                                //       Fluttertoast.showToast(msg: "Xóa lớp ${selectRegister.getCells().first.value} thành công!");
-                                //     } else {
-                                //       Fluttertoast.showToast(msg: "Xóa lớp ${selectRegister.getCells().first.value} thất bại!");
-                                //     }
-                                //   }
-                                // });
-
-
-
                             },
                             child: const Center(child: Text("Điểm danh")),
                           ),

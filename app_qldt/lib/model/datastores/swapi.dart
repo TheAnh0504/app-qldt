@@ -1114,4 +1114,71 @@ class SWApi {
       },
     ).then((value) => value.data);
   }
+
+  Future<Map<String, dynamic>> getListSurvey(String class_id) async {
+    return dio.post("/it5023e/get_all_surveys",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> createSurvey(File? file, String classId, String title, String deadline, String? description) async {
+    return dio.post("/it5023e/create_survey",
+      data: FormData.fromMap(
+          {
+            "file": file == null ? null : await MultipartFile.fromFile(file.path),
+            "token": await accessToken,
+            "classId": classId,
+            "title": title,
+            "deadline": deadline,
+            "description": description
+          }),
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> updateSurvey(File? file, String assignmentId, String deadline, String? description) async {
+    return dio.post("/it5023e/edit_survey",
+      data: FormData.fromMap(
+          {
+            "file": file == null ? null : await MultipartFile.fromFile(file.path),
+            "token": await accessToken,
+            "assignmentId": assignmentId,
+            "deadline": deadline,
+            "description": description
+          }),
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> deleteSurvey(String survey_id) async {
+    return dio.post("/it5023e/delete_survey",
+      data: {
+        "token": await accessToken,
+        "survey_id": survey_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getListAssignment(String? type, String class_id) async {
+    return dio.post("/it5023e/get_student_assignments",
+      data: {
+        "token": await accessToken,
+        "type": type,
+        "class_id": class_id
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> submit(File? file, String assignmentId, String? textResponse) async {
+    return dio.post("/it5023e/submit_survey",
+      data: FormData.fromMap(
+          {
+            "file": file == null ? null : await MultipartFile.fromFile(file.path),
+            "token": await accessToken,
+            "assignmentId": assignmentId,
+            "textResponse": textResponse
+          }),
+    ).then((value) => value.data);
+  }
 }
