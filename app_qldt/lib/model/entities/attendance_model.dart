@@ -9,6 +9,7 @@ class AttendanceModel with _$AttendanceModel {
       {required String attendance_id,
         required String student_id,
         required String status,
+        String? class_id,
       }) = _AttendanceModel;
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) =>

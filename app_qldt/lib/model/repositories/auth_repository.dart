@@ -412,6 +412,51 @@ class AuthApiRepository {
       throw value;
     });
   }
+
+  Future<Map<String, dynamic>> getListDateAttendance(String class_id) {
+    return api.getListDateAttendance(class_id).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getListAttendanceOfDate(String class_id, String date) {
+    return api.getListAttendanceOfDate(class_id, date).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> getHistoryAttendanceStudent(String class_id) {
+    return api.getHistoryAttendanceStudent(class_id).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> createAttendance(String class_id, String date, List<String> attendance_list) {
+    return api.createAttendance(class_id, date, attendance_list).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
+
+  Future<Map<String, dynamic>> updateAttendance(String attendance_id, String status) {
+    return api.updateAttendance(attendance_id, status).then((value) async {
+      if (value["meta"]["code"] == "1000") {
+        return value;
+      }
+      throw value;
+    });
+  }
 }
 
 class AuthLocalRepository {

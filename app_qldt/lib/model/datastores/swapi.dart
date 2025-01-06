@@ -1061,4 +1061,57 @@ class SWApi {
       },
     ).then((value) => value.data);
   }
+
+  Future<Map<String, dynamic>> getListDateAttendance(String class_id) async {
+    return dio.post("/it5023e/get_attendance_dates",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getListAttendanceOfDate(String class_id, String date) async {
+    return dio.post("/it5023e/get_attendance_list",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
+        "date": date,
+        "pageable_request": {
+          "page": "0",
+          "page_size": "50"
+        }
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> getHistoryAttendanceStudent(String class_id) async {
+    return dio.post("/it5023e/get_attendance_record",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> createAttendance(String class_id, String date, List<String> attendance_list) async {
+    return dio.post("/it5023e/take_attendance",
+      data: {
+        "token": await accessToken,
+        "class_id": class_id,
+        "date": date,
+        "attendance_list": attendance_list
+      },
+    ).then((value) => value.data);
+  }
+
+  Future<Map<String, dynamic>> updateAttendance(String attendance_id, String status) async {
+    return dio.post("/it5023e/set_attendance_status",
+      data: {
+        "token": await accessToken,
+        "attendance_id": attendance_id,
+        "status": status,
+      },
+    ).then((value) => value.data);
+  }
 }
