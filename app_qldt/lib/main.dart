@@ -120,6 +120,10 @@ class Test extends HookConsumerWidget {
   }
 }
 
+// - build xong cài vô điện thoại
+// flutter build apk --release
+// adb install build/app/outputs/flutter-apk/app-release.apk
+
 // run app
 class app_qldt extends HookConsumerWidget {
   const app_qldt({super.key});
@@ -169,35 +173,35 @@ class app_qldt extends HookConsumerWidget {
             ),
           );
         }
-        // else if (message.data['type'] == 'MESSAGE') {
-        //   print(ModalRoute.of(context)?.settings.name);
-        //   print("checklog: ${message.data['id']}");
-        //   print("checklog: ${message.senderId}");
-        //   print("checklog: ${message.from}");
-        //   final title = message.notification?.title ?? "Thông báo";
-        //   final body = message.notification?.body ?? "Không có nội dung";
-        //   // ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) + 1;
-        //
-        //   // Hiển thị SnackBar
-        //   scaffoldMessengerKey.currentState?.showSnackBar(
-        //     SnackBar(
-        //       content: Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             title,
-        //             style: const TextStyle(fontWeight: FontWeight.bold),
-        //           ),
-        //           Text(body),
-        //         ],
-        //       ),
-        //       duration: const Duration(seconds: 5),
-        //       behavior: SnackBarBehavior.floating,
-        //       margin: const EdgeInsets.all(10),
-        //     ),
-        //   );
-        // }
+        else if (message.data['type'] == 'MESSAGE') {
+          print(ModalRoute.of(context)?.settings.name);
+          print("checklog: ${message.data['id']}");
+          print("checklog: ${message.senderId}");
+          print("checklog: ${message.from}");
+          final title = message.notification?.title ?? "Thông báo";
+          final body = message.notification?.body ?? "Không có nội dung";
+          // ref.read(countNotificationProvider.notifier).state = ref.watch(countNotificationProvider) + 1;
+
+          // Hiển thị SnackBar
+          scaffoldMessengerKey.currentState?.showSnackBar(
+            SnackBar(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(body),
+                ],
+              ),
+              duration: const Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(10),
+            ),
+          );
+        }
 
       });
 
